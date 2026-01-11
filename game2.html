@@ -1,0 +1,753 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Boxel Rebound 彈跳方塊遊戲</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            color: #fff;
+            padding: 20px;
+        }
+        header {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        h1 {
+            font-size: 2.8rem;
+            margin-bottom: 10px;
+            background: linear-gradient(90deg, #00dbde, #fc00ff);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+        }
+        .subtitle {
+            font-size: 1.2rem;
+            color: #a0a0c0;
+            margin-bottom: 20px;
+        }
+        .game-container {
+            position: relative;
+            margin-bottom: 20px;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+        }
+        canvas {
+            display: block;
+            background-color: #0f3460;
+        }
+        .stats {
+            display: flex;
+            justify-content: space-between;
+            width: 800px;
+            margin-bottom: 15px;
+            background-color: rgba(255, 255, 255, 0.1);
+            padding: 15px;
+            border-radius: 10px;
+            backdrop-filter: blur(5px);
+        }
+        .stat-box {
+            text-align: center;
+            flex: 1;
+        }
+        .stat-value {
+            font-size: 2rem;
+            font-weight: bold;
+            color: #00dbde;
+        }
+        .stat-label {
+            font-size: 0.9rem;
+            color: #a0a0c0;
+            margin-top: 5px;
+        }
+        .controls {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 15px;
+            width: 800px;
+            margin-top: 20px;
+        }
+        button {
+            padding: 12px 25px;
+            font-size: 1rem;
+            background: linear-gradient(90deg, #00dbde, #fc00ff);
+            color: white;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: bold;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+        }
+        button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.4);
+        }
+        button:active {
+            transform: translateY(1px);
+        }
+        .instructions {
+            width: 800px;
+            background-color: rgba(255, 255, 255, 0.1);
+            padding: 20px;
+            border-radius: 10px;
+            margin-top: 25px;
+            backdrop-filter: blur(5px);
+        }
+        .instructions h2 {
+            color: #00dbde;
+            margin-bottom: 15px;
+            font-size: 1.5rem;
+        }
+        .instructions p {
+            margin-bottom: 10px;
+            line-height: 1.5;
+            color: #e0e0ff;
+        }
+        .key {
+            display: inline-block;
+            background-color: rgba(0, 0, 0, 0.4);
+            padding: 3px 8px;
+            border-radius: 5px;
+            font-family: monospace;
+            margin: 0 5px;
+            border: 1px solid #555;
+        }
+        .game-over {
+            display: none;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: rgba(0, 0, 0, 0.85);
+            padding: 40px;
+            border-radius: 15px;
+            text-align: center;
+            z-index: 10;
+            box-shadow: 0 0 40px rgba(0, 219, 222, 0.3);
+            border: 2px solid #00dbde;
+        }
+        .game-over h2 {
+            font-size: 3rem;
+            color: #fc00ff;
+            margin-bottom: 20px;
+        }
+        .game-over p {
+            font-size: 1.5rem;
+            margin-bottom: 30px;
+        }
+        .mobile-controls {
+            display: none;
+            margin-top: 20px;
+            width: 300px;
+            justify-content: center;
+            gap: 20px;
+        }
+        .mobile-btn {
+            width: 70px;
+            height: 70px;
+            background-color: rgba(255, 255, 255, 0.2);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 30px;
+            user-select: none;
+            cursor: pointer;
+        }
+        @media (max-width: 850px) {
+            .game-container, .stats, .controls, .instructions {
+                width: 95vw;
+            }
+            h1 {
+                font-size: 2.2rem;
+            }
+            canvas {
+                width: 95vw;
+                height: auto;
+            }
+        }
+        @media (max-width: 600px) {
+            .mobile-controls {
+                display: flex;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Boxel Rebound</h1>
+        <div class="subtitle">控制方塊在多個平台上彈跳，收集所有星星！</div>
+    </header>
+    
+    <div class="stats">
+        <div class="stat-box">
+            <div class="stat-value" id="score">0</div>
+            <div class="stat-label">分數</div>
+        </div>
+        <div class="stat-box">
+            <div class="stat-value" id="stars">0/10</div>
+            <div class="stat-label">收集的星星</div>
+        </div>
+        <div class="stat-box">
+            <div class="stat-value" id="lives">3</div>
+            <div class="stat-label">生命</div>
+        </div>
+    </div>
+    
+    <div class="game-container">
+        <canvas id="gameCanvas" width="800" height="500"></canvas>
+        <div id="gameOver" class="game-over">
+            <h2>遊戲結束</h2>
+            <p>最終分數: <span id="finalScore">0</span></p>
+            <button id="restartButton">重新開始遊戲</button>
+        </div>
+    </div>
+    
+    <div class="mobile-controls">
+        <div class="mobile-btn" id="leftBtn">←</div>
+        <div class="mobile-btn" id="jumpBtn">↑</div>
+        <div class="mobile-btn" id="rightBtn">→</div>
+    </div>
+    
+    <div class="controls">
+        <button id="startButton">開始遊戲</button>
+        <button id="pauseButton">暫停遊戲</button>
+        <button id="resetButton">重置遊戲</button>
+        <button id="helpButton">遊戲說明</button>
+    </div>
+    
+    <div class="instructions">
+        <h2>遊戲說明</h2>
+        <p>使用 <span class="key">←</span> <span class="key">→</span> 方向鍵或 <span class="key">A</span> <span class="key">D</span> 鍵控制方塊左右移動。</p>
+        <p>使用 <span class="key">空格鍵</span> 或 <span class="key">↑</span> 方向鍵或 <span class="key">W</span> 鍵讓方塊跳躍。</p>
+        <p>收集所有星星獲得高分，避免從平台上掉落。</p>
+        <p>每掉落一次會損失一條生命，生命值歸零則遊戲結束。</p>
+        <p>在某些平台上跳躍會獲得額外彈跳力！</p>
+    </div>
+
+    <script>
+        // 遊戲變數
+        const canvas = document.getElementById('gameCanvas');
+        const ctx = canvas.getContext('2d');
+        const scoreElement = document.getElementById('score');
+        const starsElement = document.getElementById('stars');
+        const livesElement = document.getElementById('lives');
+        const gameOverElement = document.getElementById('gameOver');
+        const finalScoreElement = document.getElementById('finalScore');
+        
+        // 按鈕元素
+        const startButton = document.getElementById('startButton');
+        const pauseButton = document.getElementById('pauseButton');
+        const resetButton = document.getElementById('resetButton');
+        const restartButton = document.getElementById('restartButton');
+        const helpButton = document.getElementById('helpButton');
+        
+        // 移動設備控制按鈕
+        const leftBtn = document.getElementById('leftBtn');
+        const rightBtn = document.getElementById('rightBtn');
+        const jumpBtn = document.getElementById('jumpBtn');
+        
+        // 遊戲狀態
+        let game = {
+            running: false,
+            paused: false,
+            score: 0,
+            starsCollected: 0,
+            totalStars: 10,
+            lives: 3,
+            level: 1,
+            gravity: 0.5,
+            friction: 0.9,
+            keys: {}
+        };
+        
+        // 玩家方塊
+        const player = {
+            x: canvas.width / 2 - 25,
+            y: canvas.height / 2,
+            width: 30,
+            height: 30,
+            velX: 0,
+            velY: 0,
+            speed: 5,
+            jumping: false,
+            color: '#00dbde',
+            draw: function() {
+                ctx.fillStyle = this.color;
+                ctx.fillRect(this.x, this.y, this.width, this.height);
+                
+                // 添加一些細節
+                ctx.fillStyle = '#ffffff';
+                ctx.fillRect(this.x + 5, this.y + 5, 8, 8);
+                ctx.fillRect(this.x + 17, this.y + 5, 8, 8);
+            },
+            update: function() {
+                // 左右移動
+                if (game.keys['ArrowLeft'] || game.keys['KeyA'] || game.keys['a']) {
+                    this.velX = -this.speed;
+                } else if (game.keys['ArrowRight'] || game.keys['KeyD'] || game.keys['d']) {
+                    this.velX = this.speed;
+                } else {
+                    this.velX *= 0.8; // 逐漸減速
+                }
+                
+                // 跳躍
+                if ((game.keys['Space'] || game.keys['ArrowUp'] || game.keys['KeyW'] || game.keys['w']) && !this.jumping) {
+                    this.velY = -12;
+                    this.jumping = true;
+                }
+                
+                // 應用重力
+                this.velY += game.gravity;
+                
+                // 應用摩擦力
+                this.velX *= game.friction;
+                
+                // 更新位置
+                this.x += this.velX;
+                this.y += this.velY;
+                
+                // 邊界檢查
+                if (this.x < 0) this.x = 0;
+                if (this.x + this.width > canvas.width) this.x = canvas.width - this.width;
+                
+                // 如果玩家掉落到底部，重置位置並減少生命
+                if (this.y > canvas.height) {
+                    game.lives--;
+                    livesElement.textContent = game.lives;
+                    resetPlayer();
+                    
+                    if (game.lives <= 0) {
+                        endGame();
+                    }
+                }
+            }
+        };
+        
+        // 平台類別
+        class Platform {
+            constructor(x, y, width, height, color = '#4ecca3', bounceFactor = 1.0) {
+                this.x = x;
+                this.y = y;
+                this.width = width;
+                this.height = height;
+                this.color = color;
+                this.bounceFactor = bounceFactor; // 彈跳係數
+            }
+            
+            draw() {
+                ctx.fillStyle = this.color;
+                ctx.fillRect(this.x, this.y, this.width, this.height);
+                
+                // 平台細節
+                ctx.fillStyle = this.bounceFactor > 1.0 ? '#ffdd00' : '#386fa4';
+                for (let i = 0; i < this.width; i += 15) {
+                    ctx.fillRect(this.x + i, this.y + this.height - 5, 8, 5);
+                }
+            }
+        }
+        
+        // 星星類別
+        class Star {
+            constructor(x, y) {
+                this.x = x;
+                this.y = y;
+                this.radius = 8;
+                this.collected = false;
+                this.rotation = 0;
+                this.pulse = 0;
+                this.pulseDirection = 1;
+            }
+            
+            draw() {
+                if (this.collected) return;
+                
+                ctx.save();
+                ctx.translate(this.x, this.y);
+                ctx.rotate(this.rotation);
+                
+                // 星星脈動效果
+                const pulseRadius = this.radius + Math.sin(this.pulse) * 2;
+                
+                // 繪製星星
+                ctx.fillStyle = '#ffdd00';
+                ctx.beginPath();
+                for (let i = 0; i < 5; i++) {
+                    const angle = (i * 2 * Math.PI) / 5;
+                    const spikeAngle = angle - Math.PI / 2;
+                    
+                    // 外部點
+                    const outerX = Math.cos(spikeAngle) * pulseRadius;
+                    const outerY = Math.sin(spikeAngle) * pulseRadius;
+                    
+                    if (i === 0) {
+                        ctx.moveTo(outerX, outerY);
+                    } else {
+                        ctx.lineTo(outerX, outerY);
+                    }
+                    
+                    // 內部點
+                    const innerAngle = spikeAngle + Math.PI / 5;
+                    const innerX = Math.cos(innerAngle) * (pulseRadius / 2);
+                    const innerY = Math.sin(innerAngle) * (pulseRadius / 2);
+                    ctx.lineTo(innerX, innerY);
+                }
+                ctx.closePath();
+                ctx.fill();
+                
+                // 星星內部
+                ctx.fillStyle = '#ffffff';
+                ctx.beginPath();
+                ctx.arc(0, 0, pulseRadius / 2.5, 0, Math.PI * 2);
+                ctx.fill();
+                
+                ctx.restore();
+                
+                // 更新動畫
+                this.rotation += 0.05;
+                this.pulse += 0.1 * this.pulseDirection;
+                
+                if (this.pulse > 1) {
+                    this.pulseDirection = -1;
+                } else if (this.pulse < -1) {
+                    this.pulseDirection = 1;
+                }
+            }
+            
+            checkCollision() {
+                if (this.collected) return false;
+                
+                const playerCenterX = player.x + player.width / 2;
+                const playerCenterY = player.y + player.height / 2;
+                const distance = Math.sqrt(
+                    Math.pow(playerCenterX - this.x, 2) + 
+                    Math.pow(playerCenterY - this.y, 2)
+                );
+                
+                return distance < (player.width / 2 + this.radius);
+            }
+        }
+        
+        // 創建平台
+        const platforms = [
+            new Platform(100, 450, 150, 20, '#4ecca3', 1.0),
+            new Platform(300, 380, 120, 20, '#ff9a00', 1.3), // 高彈跳平台
+            new Platform(500, 320, 180, 20, '#4ecca3', 1.0),
+            new Platform(200, 250, 140, 20, '#4ecca3', 1.0),
+            new Platform(450, 200, 120, 20, '#ff9a00', 1.3), // 高彈跳平台
+            new Platform(100, 150, 160, 20, '#4ecca3', 1.0),
+            new Platform(350, 100, 200, 20, '#4ecca3', 1.0),
+            new Platform(600, 400, 150, 20, '#4ecca3', 1.0),
+            new Platform(650, 280, 100, 20, '#ff9a00', 1.5), // 超高彈跳平台
+            new Platform(50, 350, 120, 20, '#4ecca3', 1.0)
+        ];
+        
+        // 創建星星
+        const stars = [];
+        const starPositions = [
+            {x: 175, y: 420},
+            {x: 360, y: 350},
+            {x: 590, y: 290},
+            {x: 270, y: 220},
+            {x: 510, y: 170},
+            {x: 180, y: 120},
+            {x: 450, y: 70},
+            {x: 675, y: 370},
+            {x: 700, y: 250},
+            {x: 110, y: 320}
+        ];
+        
+        starPositions.forEach(pos => {
+            stars.push(new Star(pos.x, pos.y));
+        });
+        
+        // 碰撞檢測
+        function checkCollision() {
+            player.jumping = true;
+            
+            for (let platform of platforms) {
+                // 檢查玩家是否在平台上方並且正在下降
+                if (
+                    player.velY > 0 &&
+                    player.y + player.height <= platform.y + 10 &&
+                    player.y + player.height + player.velY >= platform.y &&
+                    player.x + player.width >= platform.x &&
+                    player.x <= platform.x + platform.width
+                ) {
+                    player.jumping = false;
+                    player.velY = -player.velY * platform.bounceFactor; // 應用平台彈跳係數
+                    player.y = platform.y - player.height;
+                    
+                    // 如果是在高彈跳平台上，添加視覺效果
+                    if (platform.bounceFactor > 1.0) {
+                        createParticles(player.x + player.width/2, player.y + player.height, platform.color);
+                    }
+                    
+                    break;
+                }
+            }
+            
+            // 檢查星星收集
+            for (let star of stars) {
+                if (!star.collected && star.checkCollision()) {
+                    star.collected = true;
+                    game.starsCollected++;
+                    game.score += 100;
+                    
+                    // 更新顯示
+                    scoreElement.textContent = game.score;
+                    starsElement.textContent = `${game.starsCollected}/${game.totalStars}`;
+                    
+                    // 創建收集效果
+                    createParticles(star.x, star.y, '#ffdd00', 15);
+                    
+                    // 如果收集了所有星星，增加生命和分數
+                    if (game.starsCollected === game.totalStars) {
+                        game.lives++;
+                        game.score += 500;
+                        livesElement.textContent = game.lives;
+                        scoreElement.textContent = game.score;
+                        
+                        // 重置星星
+                        setTimeout(() => {
+                            stars.forEach(s => s.collected = false);
+                            game.starsCollected = 0;
+                            starsElement.textContent = `${game.starsCollected}/${game.totalStars}`;
+                        }, 2000);
+                    }
+                }
+            }
+        }
+        
+        // 粒子系統用於特效
+        const particles = [];
+        
+        function createParticles(x, y, color, count = 8) {
+            for (let i = 0; i < count; i++) {
+                particles.push({
+                    x: x,
+                    y: y,
+                    velX: (Math.random() - 0.5) * 6,
+                    velY: (Math.random() - 0.5) * 6,
+                    radius: Math.random() * 4 + 2,
+                    color: color,
+                    life: 30
+                });
+            }
+        }
+        
+        function updateParticles() {
+            for (let i = particles.length - 1; i >= 0; i--) {
+                const p = particles[i];
+                
+                p.x += p.velX;
+                p.y += p.velY;
+                p.life--;
+                
+                // 移除生命結束的粒子
+                if (p.life <= 0) {
+                    particles.splice(i, 1);
+                }
+            }
+        }
+        
+        function drawParticles() {
+            for (let p of particles) {
+                ctx.beginPath();
+                ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
+                ctx.fillStyle = p.color;
+                ctx.globalAlpha = p.life / 30;
+                ctx.fill();
+                ctx.globalAlpha = 1.0;
+            }
+        }
+        
+        // 重置玩家位置
+        function resetPlayer() {
+            player.x = canvas.width / 2 - 25;
+            player.y = canvas.height / 2;
+            player.velX = 0;
+            player.velY = 0;
+            player.jumping = false;
+        }
+        
+        // 遊戲結束
+        function endGame() {
+            game.running = false;
+            finalScoreElement.textContent = game.score;
+            gameOverElement.style.display = 'block';
+        }
+        
+        // 重置遊戲
+        function resetGame() {
+            game.score = 0;
+            game.starsCollected = 0;
+            game.lives = 3;
+            game.level = 1;
+            
+            scoreElement.textContent = game.score;
+            starsElement.textContent = `${game.starsCollected}/${game.totalStars}`;
+            livesElement.textContent = game.lives;
+            
+            stars.forEach(star => star.collected = false);
+            particles.length = 0;
+            
+            resetPlayer();
+            gameOverElement.style.display = 'none';
+        }
+        
+        // 遊戲主循環
+        function gameLoop() {
+            // 清除畫布
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            
+            // 繪製背景
+            ctx.fillStyle = '#0f3460';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            
+            // 繪製漸變背景效果
+            const gradient = ctx.createLinearGradient(0, 0, canvas.width, canvas.height);
+            gradient.addColorStop(0, 'rgba(15, 52, 96, 0.8)');
+            gradient.addColorStop(1, 'rgba(30, 30, 60, 0.8)');
+            ctx.fillStyle = gradient;
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            
+            // 繪製平台
+            platforms.forEach(platform => platform.draw());
+            
+            // 繪製星星
+            stars.forEach(star => star.draw());
+            
+            // 更新和繪製粒子
+            updateParticles();
+            drawParticles();
+            
+            // 更新和繪製玩家
+            if (game.running && !game.paused) {
+                player.update();
+                checkCollision();
+            }
+            
+            player.draw();
+            
+            // 繪製遊戲狀態文字
+            ctx.fillStyle = 'rgba(255, 255, 255, 0.8)';
+            ctx.font = '16px Arial';
+            ctx.fillText(`分數: ${game.score}`, 20, 30);
+            ctx.fillText(`星星: ${game.starsCollected}/${game.totalStars}`, 20, 55);
+            ctx.fillText(`生命: ${game.lives}`, 20, 80);
+            
+            if (game.paused) {
+                ctx.fillStyle = 'rgba(0, 0, 0, 0.7)';
+                ctx.fillRect(0, 0, canvas.width, canvas.height);
+                
+                ctx.fillStyle = '#ffffff';
+                ctx.font = 'bold 48px Arial';
+                ctx.textAlign = 'center';
+                ctx.fillText('遊戲暫停', canvas.width / 2, canvas.height / 2);
+                ctx.font = '24px Arial';
+                ctx.fillText('按「繼續遊戲」按鈕恢復', canvas.width / 2, canvas.height / 2 + 40);
+                ctx.textAlign = 'left';
+            }
+            
+            // 繼續遊戲循環
+            if (game.running) {
+                requestAnimationFrame(gameLoop);
+            }
+        }
+        
+        // 事件監聽器
+        window.addEventListener('keydown', (e) => {
+            game.keys[e.code] = true;
+        });
+        
+        window.addEventListener('keyup', (e) => {
+            game.keys[e.code] = false;
+        });
+        
+        // 移動設備控制
+        leftBtn.addEventListener('mousedown', () => game.keys['ArrowLeft'] = true);
+        leftBtn.addEventListener('mouseup', () => game.keys['ArrowLeft'] = false);
+        leftBtn.addEventListener('touchstart', () => game.keys['ArrowLeft'] = true);
+        leftBtn.addEventListener('touchend', () => game.keys['ArrowLeft'] = false);
+        
+        rightBtn.addEventListener('mousedown', () => game.keys['ArrowRight'] = true);
+        rightBtn.addEventListener('mouseup', () => game.keys['ArrowRight'] = false);
+        rightBtn.addEventListener('touchstart', () => game.keys['ArrowRight'] = true);
+        rightBtn.addEventListener('touchend', () => game.keys['ArrowRight'] = false);
+        
+        jumpBtn.addEventListener('mousedown', () => game.keys['Space'] = true);
+        jumpBtn.addEventListener('mouseup', () => game.keys['Space'] = false);
+        jumpBtn.addEventListener('touchstart', () => game.keys['Space'] = true);
+        jumpBtn.addEventListener('touchend', () => game.keys['Space'] = false);
+        
+        // 按鈕事件
+        startButton.addEventListener('click', () => {
+            if (!game.running) {
+                game.running = true;
+                game.paused = false;
+                gameLoop();
+                startButton.textContent = '繼續遊戲';
+            } else if (game.paused) {
+                game.paused = false;
+                startButton.textContent = '繼續遊戲';
+            } else {
+                game.paused = true;
+                startButton.textContent = '繼續遊戲';
+            }
+        });
+        
+        pauseButton.addEventListener('click', () => {
+            if (game.running && !game.paused) {
+                game.paused = true;
+                startButton.textContent = '繼續遊戲';
+            } else if (game.running && game.paused) {
+                game.paused = false;
+                startButton.textContent = '暫停遊戲';
+            }
+        });
+        
+        resetButton.addEventListener('click', () => {
+            resetGame();
+            if (!game.running) {
+                game.running = true;
+                game.paused = false;
+                gameLoop();
+                startButton.textContent = '暫停遊戲';
+            }
+        });
+        
+        restartButton.addEventListener('click', () => {
+            resetGame();
+            game.running = true;
+            game.paused = false;
+            gameLoop();
+            startButton.textContent = '暫停遊戲';
+        });
+        
+        helpButton.addEventListener('click', () => {
+            alert('Boxel Rebound 遊戲說明：\n\n1. 使用方向鍵或A/D鍵控制方塊左右移動\n2. 使用空格鍵或上方向鍵或W鍵跳躍\n3. 收集所有星星獲得高分\n4. 避免從平台掉落，每次掉落損失一條生命\n5. 橙色平台有更高彈跳力\n6. 收集所有星星後會重置並獲得額外生命');
+        });
+        
+        // 初始遊戲設定
+        resetGame();
+        gameLoop();
+    </script>
+</body>
+</html>

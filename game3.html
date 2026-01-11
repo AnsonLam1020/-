@@ -1,0 +1,854 @@
+<!DOCTYPE html>
+<html lang="zh-HK">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>包剪揼遊戲</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', 'Microsoft JhengHei', sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            color: #fff;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 900px;
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        
+        header {
+            text-align: center;
+            margin-bottom: 30px;
+            width: 100%;
+        }
+        
+        h1 {
+            font-size: 3.5rem;
+            margin-bottom: 10px;
+            background: linear-gradient(90deg, #ff9a9e, #fad0c4, #fad0c4, #a1c4fd);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            text-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+        }
+        
+        .subtitle {
+            font-size: 1.2rem;
+            color: #a1c4fd;
+            margin-bottom: 20px;
+        }
+        
+        .game-area {
+            display: flex;
+            justify-content: space-between;
+            width: 100%;
+            margin-bottom: 40px;
+            flex-wrap: wrap;
+        }
+        
+        .player-section, .computer-section {
+            flex: 1;
+            min-width: 300px;
+            padding: 20px;
+            text-align: center;
+            background: rgba(255, 255, 255, 0.08);
+            border-radius: 20px;
+            margin: 10px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+            backdrop-filter: blur(5px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .section-title {
+            font-size: 1.8rem;
+            margin-bottom: 20px;
+            color: #fad0c4;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+        
+        .choice-display {
+            height: 200px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 20px;
+        }
+        
+        .choice-icon {
+            font-size: 8rem;
+            opacity: 0.8;
+            transition: all 0.3s ease;
+        }
+        
+        .rock-icon { color: #ff9a9e; }
+        .paper-icon { color: #a1c4fd; }
+        .scissors-icon { color: #a6ffcb; }
+        
+        .score {
+            font-size: 3rem;
+            font-weight: bold;
+            color: #fad0c4;
+            text-shadow: 0 0 10px rgba(250, 208, 196, 0.5);
+        }
+        
+        .controls {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+        }
+        
+        .choice-btn {
+            background: rgba(255, 255, 255, 0.1);
+            border: none;
+            border-radius: 50%;
+            width: 120px;
+            height: 120px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 3.5rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+        }
+        
+        .choice-btn:hover {
+            transform: translateY(-10px);
+            background: rgba(255, 255, 255, 0.2);
+            box-shadow: 0 15px 25px rgba(0, 0, 0, 0.4);
+        }
+        
+        .choice-btn.active {
+            transform: scale(1.1);
+            box-shadow: 0 0 25px rgba(255, 154, 158, 0.7);
+        }
+        
+        .choice-label {
+            margin-top: 10px;
+            font-size: 1.2rem;
+        }
+        
+        .result-area {
+            width: 100%;
+            text-align: center;
+            margin-bottom: 30px;
+            padding: 25px;
+            background: rgba(255, 255, 255, 0.08);
+            border-radius: 20px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+            backdrop-filter: blur(5px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        #result-text {
+            font-size: 2.5rem;
+            margin-bottom: 15px;
+            min-height: 70px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .win { color: #a6ffcb; text-shadow: 0 0 10px rgba(166, 255, 203, 0.7); }
+        .lose { color: #ff9a9e; text-shadow: 0 0 10px rgba(255, 154, 158, 0.7); }
+        .draw { color: #a1c4fd; text-shadow: 0 0 10px rgba(161, 196, 253, 0.7); }
+        
+        #game-info {
+            font-size: 1.2rem;
+            color: #fad0c4;
+            margin-bottom: 10px;
+        }
+        
+        .game-stats {
+            display: flex;
+            justify-content: space-around;
+            width: 100%;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+        }
+        
+        .stat-box {
+            background: rgba(255, 255, 255, 0.08);
+            padding: 15px 25px;
+            border-radius: 15px;
+            text-align: center;
+            min-width: 180px;
+            margin: 10px;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+        
+        .stat-value {
+            font-size: 2.5rem;
+            font-weight: bold;
+            color: #a1c4fd;
+        }
+        
+        .stat-label {
+            font-size: 1rem;
+            color: #fad0c4;
+            margin-top: 5px;
+        }
+        
+        .buttons {
+            display: flex;
+            gap: 20px;
+            margin-top: 20px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+        
+        .action-btn {
+            padding: 15px 30px;
+            font-size: 1.2rem;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+        }
+        
+        #play-btn {
+            background: linear-gradient(90deg, #ff9a9e, #fad0c4);
+            color: #1a1a2e;
+        }
+        
+        #reset-btn {
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        
+        .action-btn:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 25px rgba(0, 0, 0, 0.4);
+        }
+        
+        #play-btn:hover {
+            background: linear-gradient(90deg, #ff7b81, #f8b9a8);
+        }
+        
+        #reset-btn:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+        
+        .rules {
+            margin-top: 40px;
+            width: 100%;
+            background: rgba(255, 255, 255, 0.08);
+            padding: 25px;
+            border-radius: 20px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+            backdrop-filter: blur(5px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .rules h3 {
+            font-size: 1.8rem;
+            margin-bottom: 15px;
+            color: #a1c4fd;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .rules-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 15px;
+        }
+        
+        .rule-item {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            padding: 10px;
+        }
+        
+        .rule-icon {
+            font-size: 2rem;
+            color: #fad0c4;
+        }
+        
+        .rule-text {
+            font-size: 1.1rem;
+            color: #e6e6e6;
+        }
+        
+        .history {
+            margin-top: 30px;
+            width: 100%;
+            background: rgba(255, 255, 255, 0.08);
+            padding: 25px;
+            border-radius: 20px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+            backdrop-filter: blur(5px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .history h3 {
+            font-size: 1.8rem;
+            margin-bottom: 15px;
+            color: #a1c4fd;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        #history-list {
+            max-height: 200px;
+            overflow-y: auto;
+            padding-right: 10px;
+        }
+        
+        .history-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 12px 15px;
+            margin-bottom: 8px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 10px;
+            border-left: 5px solid #a1c4fd;
+        }
+        
+        .history-item.win {
+            border-left-color: #a6ffcb;
+        }
+        
+        .history-item.lose {
+            border-left-color: #ff9a9e;
+        }
+        
+        .history-item.draw {
+            border-left-color: #a1c4fd;
+        }
+        
+        footer {
+            margin-top: 40px;
+            text-align: center;
+            color: #a1c4fd;
+            font-size: 1rem;
+            padding: 20px;
+            width: 100%;
+        }
+        
+        @media (max-width: 768px) {
+            .game-area {
+                flex-direction: column;
+            }
+            
+            .choice-btn {
+                width: 100px;
+                height: 100px;
+                font-size: 2.8rem;
+            }
+            
+            h1 {
+                font-size: 2.5rem;
+            }
+            
+            .section-title {
+                font-size: 1.5rem;
+            }
+            
+            #result-text {
+                font-size: 2rem;
+            }
+        }
+        
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+        
+        .pulse {
+            animation: pulse 0.5s ease infinite;
+        }
+        
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-10px); }
+            75% { transform: translateX(10px); }
+        }
+        
+        .shake {
+            animation: shake 0.5s ease;
+        }
+        
+        @keyframes glow {
+            0%, 100% { box-shadow: 0 0 10px rgba(255, 154, 158, 0.7); }
+            50% { box-shadow: 0 0 25px rgba(255, 154, 158, 1); }
+        }
+        
+        .glow {
+            animation: glow 1s ease infinite;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1><i class="fas fa-hand-rock"></i> 包剪揼遊戲 <i class="fas fa-hand-scissors"></i></h1>
+            <p class="subtitle">挑戰電腦，測試你的運氣與策略！</p>
+        </header>
+        
+        <div class="game-area">
+            <div class="player-section">
+                <h2 class="section-title"><i class="fas fa-user"></i> 玩家</h2>
+                <div class="choice-display">
+                    <div id="player-choice" class="choice-icon">
+                        <i class="fas fa-question"></i>
+                    </div>
+                </div>
+                <div class="score" id="player-score">0</div>
+            </div>
+            
+            <div class="computer-section">
+                <h2 class="section-title"><i class="fas fa-robot"></i> 電腦</h2>
+                <div class="choice-display">
+                    <div id="computer-choice" class="choice-icon">
+                        <i class="fas fa-question"></i>
+                    </div>
+                </div>
+                <div class="score" id="computer-score">0</div>
+            </div>
+        </div>
+        
+        <div class="controls">
+            <button class="choice-btn" id="rock-btn" data-choice="rock">
+                <i class="fas fa-hand-rock rock-icon"></i>
+                <span class="choice-label">石頭</span>
+            </button>
+            
+            <button class="choice-btn" id="paper-btn" data-choice="paper">
+                <i class="fas fa-hand-paper paper-icon"></i>
+                <span class="choice-label">布</span>
+            </button>
+            
+            <button class="choice-btn" id="scissors-btn" data-choice="scissors">
+                <i class="fas fa-hand-scissors scissors-icon"></i>
+                <span class="choice-label">剪刀</span>
+            </button>
+        </div>
+        
+        <div class="result-area">
+            <div id="result-text">選擇你的出招！</div>
+            <div id="game-info">首先選擇石頭、布或剪刀，然後點擊「出招！」按鈕</div>
+        </div>
+        
+        <div class="game-stats">
+            <div class="stat-box">
+                <div class="stat-value" id="total-games">0</div>
+                <div class="stat-label">總遊戲次數</div>
+            </div>
+            
+            <div class="stat-box">
+                <div class="stat-value" id="win-rate">0%</div>
+                <div class="stat-label">勝率</div>
+            </div>
+            
+            <div class="stat-box">
+                <div class="stat-value" id="win-streak">0</div>
+                <div class="stat-label">連勝次數</div>
+            </div>
+            
+            <div class="stat-box">
+                <div class="stat-value" id="last-choice">-</div>
+                <div class="stat-label">上次出招</div>
+            </div>
+        </div>
+        
+        <div class="buttons">
+            <button class="action-btn" id="play-btn">
+                <i class="fas fa-fist-raised"></i> 出招！
+            </button>
+            
+            <button class="action-btn" id="reset-btn">
+                <i class="fas fa-redo"></i> 重新開始
+            </button>
+        </div>
+        
+        <div class="rules">
+            <h3><i class="fas fa-book"></i> 遊戲規則</h3>
+            <div class="rules-list">
+                <div class="rule-item">
+                    <div class="rule-icon"><i class="fas fa-hand-rock"></i></div>
+                    <div class="rule-text">石頭贏剪刀（石頭打壞剪刀）</div>
+                </div>
+                <div class="rule-item">
+                    <div class="rule-icon"><i class="fas fa-hand-paper"></i></div>
+                    <div class="rule-text">布贏石頭（布包住石頭）</div>
+                </div>
+                <div class="rule-item">
+                    <div class="rule-icon"><i class="fas fa-hand-scissors"></i></div>
+                    <div class="rule-text">剪刀贏布（剪刀剪開布）</div>
+                </div>
+                <div class="rule-item">
+                    <div class="rule-icon"><i class="fas fa-equals"></i></div>
+                    <div class="rule-text">相同選擇為平手</div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="history">
+            <h3><i class="fas fa-history"></i> 遊戲記錄</h3>
+            <div id="history-list">
+                <!-- 歷史記錄會在這裡顯示 -->
+            </div>
+        </div>
+        
+        <footer>
+            <p>HTML5 包剪揼遊戲 &copy; 2023 | 使用 Font Awesome 圖標</p>
+        </footer>
+    </div>
+
+    <script>
+        // 遊戲變數
+        let playerScore = 0;
+        let computerScore = 0;
+        let totalGames = 0;
+        let playerWins = 0;
+        let winStreak = 0;
+        let maxWinStreak = 0;
+        let playerChoice = null;
+        let computerChoice = null;
+        let gameHistory = [];
+        
+        // DOM 元素
+        const playerScoreElement = document.getElementById('player-score');
+        const computerScoreElement = document.getElementById('computer-score');
+        const playerChoiceElement = document.getElementById('player-choice');
+        const computerChoiceElement = document.getElementById('computer-choice');
+        const resultTextElement = document.getElementById('result-text');
+        const gameInfoElement = document.getElementById('game-info');
+        const totalGamesElement = document.getElementById('total-games');
+        const winRateElement = document.getElementById('win-rate');
+        const winStreakElement = document.getElementById('win-streak');
+        const lastChoiceElement = document.getElementById('last-choice');
+        const historyListElement = document.getElementById('history-list');
+        const playButton = document.getElementById('play-btn');
+        const resetButton = document.getElementById('reset-btn');
+        const choiceButtons = document.querySelectorAll('.choice-btn');
+        
+        // 選擇對應的圖標
+        const choiceIcons = {
+            rock: '<i class="fas fa-hand-rock rock-icon"></i>',
+            paper: '<i class="fas fa-hand-paper paper-icon"></i>',
+            scissors: '<i class="fas fa-hand-scissors scissors-icon"></i>',
+            unknown: '<i class="fas fa-question"></i>'
+        };
+        
+        // 選擇對應的文字
+        const choiceTexts = {
+            rock: '石頭',
+            paper: '布',
+            scissors: '剪刀',
+            unknown: '未選擇'
+        };
+        
+        // 初始化遊戲
+        function initGame() {
+            // 重置顯示
+            playerChoiceElement.innerHTML = choiceIcons.unknown;
+            computerChoiceElement.innerHTML = choiceIcons.unknown;
+            resultTextElement.textContent = '選擇你的出招！';
+            resultTextElement.className = '';
+            gameInfoElement.textContent = '首先選擇石頭、布或剪刀，然後點擊「出招！」按鈕';
+            
+            // 移除所有按鈕的 active 類
+            choiceButtons.forEach(btn => btn.classList.remove('active'));
+            
+            // 更新統計數據顯示
+            updateStats();
+            
+            // 清空歷史記錄顯示
+            historyListElement.innerHTML = '<p style="text-align: center; color: #aaa;">尚未有遊戲記錄</p>';
+            
+            // 重置玩家選擇
+            playerChoice = null;
+        }
+        
+        // 更新統計數據顯示
+        function updateStats() {
+            playerScoreElement.textContent = playerScore;
+            computerScoreElement.textContent = computerScore;
+            totalGamesElement.textContent = totalGames;
+            
+            // 計算勝率
+            const winRate = totalGames > 0 ? Math.round((playerWins / totalGames) * 100) : 0;
+            winRateElement.textContent = `${winRate}%`;
+            
+            winStreakElement.textContent = winStreak;
+            
+            // 更新上次出招
+            if (gameHistory.length > 0) {
+                const lastGame = gameHistory[0];
+                lastChoiceElement.textContent = choiceTexts[lastGame.player] || '-';
+            } else {
+                lastChoiceElement.textContent = '-';
+            }
+        }
+        
+        // 電腦隨機選擇
+        function getComputerChoice() {
+            const choices = ['rock', 'paper', 'scissors'];
+            const randomIndex = Math.floor(Math.random() * 3);
+            return choices[randomIndex];
+        }
+        
+        // 決定勝負
+        function determineWinner(player, computer) {
+            if (player === computer) return 'draw';
+            
+            if (
+                (player === 'rock' && computer === 'scissors') ||
+                (player === 'paper' && computer === 'rock') ||
+                (player === 'scissors' && computer === 'paper')
+            ) {
+                return 'player';
+            }
+            
+            return 'computer';
+        }
+        
+        // 播放遊戲
+        function playGame() {
+            if (!playerChoice) {
+                gameInfoElement.textContent = '請先選擇石頭、布或剪刀！';
+                resultTextElement.classList.add('shake');
+                setTimeout(() => {
+                    resultTextElement.classList.remove('shake');
+                }, 500);
+                return;
+            }
+            
+            // 電腦選擇
+            computerChoice = getComputerChoice();
+            
+            // 顯示選擇
+            playerChoiceElement.innerHTML = choiceIcons[playerChoice];
+            computerChoiceElement.innerHTML = choiceIcons[computerChoice];
+            
+            // 添加動畫效果
+            playerChoiceElement.classList.add('pulse');
+            computerChoiceElement.classList.add('pulse');
+            
+            // 決定勝負
+            const winner = determineWinner(playerChoice, computerChoice);
+            
+            // 更新分數和統計
+            totalGames++;
+            
+            let resultText = '';
+            let resultClass = '';
+            
+            if (winner === 'player') {
+                playerScore++;
+                playerWins++;
+                winStreak++;
+                maxWinStreak = Math.max(maxWinStreak, winStreak);
+                resultText = '你贏了！';
+                resultClass = 'win';
+                gameInfoElement.textContent = `${choiceTexts[playerChoice]} 贏 ${choiceTexts[computerChoice]}`;
+            } else if (winner === 'computer') {
+                computerScore++;
+                winStreak = 0;
+                resultText = '電腦贏了！';
+                resultClass = 'lose';
+                gameInfoElement.textContent = `${choiceTexts[computerChoice]} 贏 ${choiceTexts[playerChoice]}`;
+            } else {
+                resultText = '平手！';
+                resultClass = 'draw';
+                gameInfoElement.textContent = '雙方選擇相同';
+            }
+            
+            // 更新結果顯示
+            resultTextElement.textContent = resultText;
+            resultTextElement.className = resultClass;
+            
+            // 添加到歷史記錄
+            addToHistory(playerChoice, computerChoice, winner);
+            
+            // 更新統計數據
+            updateStats();
+            
+            // 移除動畫效果
+            setTimeout(() => {
+                playerChoiceElement.classList.remove('pulse');
+                computerChoiceElement.classList.remove('pulse');
+            }, 1000);
+        }
+        
+        // 添加到歷史記錄
+        function addToHistory(player, computer, winner) {
+            const historyItem = {
+                player,
+                computer,
+                winner,
+                timestamp: new Date().toLocaleTimeString()
+            };
+            
+            // 添加到陣列開頭
+            gameHistory.unshift(historyItem);
+            
+            // 只保留最近的10條記錄
+            if (gameHistory.length > 10) {
+                gameHistory = gameHistory.slice(0, 10);
+            }
+            
+            // 更新歷史記錄顯示
+            updateHistoryDisplay();
+        }
+        
+        // 更新歷史記錄顯示
+        function updateHistoryDisplay() {
+            if (gameHistory.length === 0) {
+                historyListElement.innerHTML = '<p style="text-align: center; color: #aaa;">尚未有遊戲記錄</p>';
+                return;
+            }
+            
+            historyListElement.innerHTML = '';
+            
+            gameHistory.forEach((game, index) => {
+                const historyItem = document.createElement('div');
+                historyItem.className = `history-item ${game.winner}`;
+                
+                const playerChoiceText = choiceTexts[game.player];
+                const computerChoiceText = choiceTexts[game.computer];
+                let resultText = '';
+                
+                if (game.winner === 'player') {
+                    resultText = '玩家贏';
+                } else if (game.winner === 'computer') {
+                    resultText = '電腦贏';
+                } else {
+                    resultText = '平手';
+                }
+                
+                historyItem.innerHTML = `
+                    <div>
+                        <strong>${playerChoiceText}</strong> vs <strong>${computerChoiceText}</strong>
+                    </div>
+                    <div>
+                        <span>${resultText}</span>
+                        <span style="margin-left: 15px; color: #aaa; font-size: 0.9rem;">${game.timestamp}</span>
+                    </div>
+                `;
+                
+                historyListElement.appendChild(historyItem);
+            });
+        }
+        
+        // 重置遊戲
+        function resetGame() {
+            playerScore = 0;
+            computerScore = 0;
+            totalGames = 0;
+            playerWins = 0;
+            winStreak = 0;
+            maxWinStreak = 0;
+            gameHistory = [];
+            
+            initGame();
+            
+            // 顯示重置訊息
+            resultTextElement.textContent = '遊戲已重置！';
+            resultTextElement.className = 'draw';
+            gameInfoElement.textContent = '選擇你的出招開始新遊戲';
+            
+            // 添加動畫效果
+            resultTextElement.classList.add('glow');
+            setTimeout(() => {
+                resultTextElement.classList.remove('glow');
+            }, 2000);
+        }
+        
+        // 事件監聽器
+        choiceButtons.forEach(button => {
+            button.addEventListener('click', () => {
+                // 移除所有按鈕的 active 類
+                choiceButtons.forEach(btn => btn.classList.remove('active'));
+                
+                // 為當前按鈕添加 active 類
+                button.classList.add('active');
+                
+                // 設置玩家選擇
+                playerChoice = button.getAttribute('data-choice');
+                
+                // 更新遊戲提示
+                gameInfoElement.textContent = `已選擇：${choiceTexts[playerChoice]}，點擊「出招！」按鈕開始遊戲`;
+                
+                // 顯示玩家選擇預覽
+                playerChoiceElement.innerHTML = choiceIcons[playerChoice];
+            });
+        });
+        
+        playButton.addEventListener('click', playGame);
+        
+        resetButton.addEventListener('click', resetGame);
+        
+        // 鍵盤控制
+        document.addEventListener('keydown', (event) => {
+            switch(event.key) {
+                case '1':
+                case 'r':
+                    document.getElementById('rock-btn').click();
+                    break;
+                case '2':
+                case 'p':
+                    document.getElementById('paper-btn').click();
+                    break;
+                case '3':
+                case 's':
+                    document.getElementById('scissors-btn').click();
+                    break;
+                case ' ':
+                case 'Enter':
+                    playButton.click();
+                    break;
+                case 'Escape':
+                    resetButton.click();
+                    break;
+            }
+        });
+        
+        // 初始化遊戲
+        initGame();
+        
+        // 初始提示
+        gameInfoElement.innerHTML = `
+            使用方式：<br>
+            1. 點擊上方石頭、布或剪刀按鈕選擇你的出招<br>
+            2. 點擊「出招！」按鈕開始遊戲<br>
+            3. 使用鍵盤快速鍵：1/石頭(R), 2/布(P), 3/剪刀(S), 空格/出招, ESC/重置
+        `;
+    </script>
+</body>
+</html>
