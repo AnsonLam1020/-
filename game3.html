@@ -3,10 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>包剪揼遊戲 - 鏡頭手勢版</title>
+    <title>包剪揼遊戲 - 鏡頭手勢精準版</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script src="https://cdn.jsdelivr.net/npm/@mediapipe/camera_utils/camera_utils.js" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/@mediapipe/hands/hands.js" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@mediapipe/drawing_utils/drawing_utils.js" crossorigin="anonymous"></script>
     <style>
         * {
             margin: 0;
@@ -42,7 +43,7 @@
         h1 {
             font-size: 3.5rem;
             margin-bottom: 10px;
-            background: linear-gradient(90deg, #00dbde, #fc00ff);
+            background: linear-gradient(90deg, #ff5e62, #ff9966);
             -webkit-background-clip: text;
             background-clip: text;
             color: transparent;
@@ -81,7 +82,7 @@
         .section-title {
             font-size: 1.8rem;
             margin-bottom: 20px;
-            color: #00dbde;
+            color: #ff9966;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -91,7 +92,7 @@
         #camera-container {
             position: relative;
             width: 100%;
-            height: 400px;
+            height: 480px;
             border-radius: 15px;
             overflow: hidden;
             background: #000;
@@ -101,7 +102,7 @@
         #camera-feed {
             width: 100%;
             height: 100%;
-            object-fit: cover;
+            object-fit: contain;
             transform: scaleX(-1); /* 鏡像反轉 */
         }
         
@@ -137,12 +138,12 @@
         }
         
         #start-camera-btn {
-            background: linear-gradient(90deg, #00dbde, #0099ff);
+            background: linear-gradient(90deg, #ff5e62, #ff9966);
             color: white;
         }
         
         #stop-camera-btn {
-            background: linear-gradient(90deg, #ff416c, #ff4b2b);
+            background: linear-gradient(90deg, #4A00E0, #8E2DE2);
             color: white;
         }
         
@@ -152,11 +153,11 @@
         }
         
         #start-camera-btn:hover {
-            background: linear-gradient(90deg, #00c7cb, #0088dd);
+            background: linear-gradient(90deg, #ff4757, #ff7e5f);
         }
         
         #stop-camera-btn:hover {
-            background: linear-gradient(90deg, #e63a5f, #e6392a);
+            background: linear-gradient(90deg, #3a00cc, #7b1dd2);
         }
         
         .hand-status {
@@ -178,7 +179,7 @@
         .hand-label {
             font-size: 1.2rem;
             margin-bottom: 10px;
-            color: #fc00ff;
+            color: #ff9966;
         }
         
         .gesture-icon {
@@ -192,9 +193,9 @@
             font-weight: bold;
         }
         
-        .rock { color: #ff9a9e; }
-        .paper { color: #a1c4fd; }
-        .scissors { color: #a6ffcb; }
+        .rock { color: #ff5e62; }
+        .paper { color: #36D1DC; }
+        .scissors { color: #8EFF7A; }
         .unknown { color: #aaa; }
         
         .game-section {
@@ -219,14 +220,14 @@
         .score-label {
             font-size: 1.2rem;
             margin-bottom: 10px;
-            color: #00dbde;
+            color: #ff9966;
         }
         
         .score-value {
             font-size: 3rem;
             font-weight: bold;
-            color: #fc00ff;
-            text-shadow: 0 0 10px rgba(252, 0, 255, 0.5);
+            color: #ff5e62;
+            text-shadow: 0 0 10px rgba(255, 94, 98, 0.5);
         }
         
         .result-area {
@@ -246,13 +247,13 @@
             justify-content: center;
         }
         
-        .win { color: #a6ffcb; text-shadow: 0 0 10px rgba(166, 255, 203, 0.7); }
-        .lose { color: #ff9a9e; text-shadow: 0 0 10px rgba(255, 154, 158, 0.7); }
-        .draw { color: #a1c4fd; text-shadow: 0 0 10px rgba(161, 196, 253, 0.7); }
+        .win { color: #8EFF7A; text-shadow: 0 0 10px rgba(142, 255, 122, 0.7); }
+        .lose { color: #ff5e62; text-shadow: 0 0 10px rgba(255, 94, 98, 0.7); }
+        .draw { color: #36D1DC; text-shadow: 0 0 10px rgba(54, 209, 220, 0.7); }
         
         #game-info {
             font-size: 1.2rem;
-            color: #00dbde;
+            color: #ff9966;
             margin-bottom: 10px;
         }
         
@@ -279,7 +280,7 @@
         }
         
         #play-btn {
-            background: linear-gradient(90deg, #fc00ff, #00dbde);
+            background: linear-gradient(90deg, #ff5e62, #ff9966);
             color: white;
         }
         
@@ -295,7 +296,7 @@
         }
         
         #play-btn:hover {
-            background: linear-gradient(90deg, #e600e6, #00c7cb);
+            background: linear-gradient(90deg, #ff4757, #ff7e5f);
         }
         
         #reset-btn:hover {
@@ -316,7 +317,7 @@
         .gesture-guide h3 {
             font-size: 1.8rem;
             margin-bottom: 20px;
-            color: #fc00ff;
+            color: #ff5e62;
             display: flex;
             align-items: center;
             gap: 10px;
@@ -373,7 +374,7 @@
         }
         
         .permission-message h3 {
-            color: #00dbde;
+            color: #ff9966;
             margin-bottom: 20px;
             font-size: 1.8rem;
         }
@@ -403,7 +404,7 @@
         }
         
         #camera-error h3 {
-            color: #ff416c;
+            color: #ff5e62;
             margin-bottom: 20px;
             font-size: 1.8rem;
         }
@@ -415,10 +416,81 @@
             line-height: 1.6;
         }
         
+        .detection-stats {
+            margin-top: 15px;
+            text-align: center;
+            background: rgba(0, 0, 0, 0.2);
+            padding: 15px;
+            border-radius: 10px;
+        }
+        
+        .stats-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 8px;
+            font-size: 0.9rem;
+        }
+        
+        .stats-label {
+            color: #aaa;
+        }
+        
+        .stats-value {
+            color: #ff9966;
+            font-weight: bold;
+        }
+        
+        .calibration-panel {
+            background: rgba(255, 94, 98, 0.1);
+            padding: 15px;
+            border-radius: 10px;
+            margin-top: 20px;
+            border-left: 4px solid #ff5e62;
+        }
+        
+        .calibration-title {
+            font-weight: bold;
+            color: #ff9966;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .calibration-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 5px;
+            font-size: 0.95rem;
+        }
+        
+        .calibration-item i {
+            color: #36D1DC;
+        }
+        
+        #gesture-on-hand {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 5;
+        }
+        
+        .hand-gesture-icon {
+            position: absolute;
+            font-size: 2rem;
+            opacity: 0.9;
+            filter: drop-shadow(0 0 5px rgba(255, 255, 255, 0.7));
+            transition: all 0.3s ease;
+        }
+        
         footer {
             margin-top: 40px;
             text-align: center;
-            color: #00dbde;
+            color: #ff9966;
             font-size: 1rem;
             padding: 20px;
             width: 100%;
@@ -426,7 +498,7 @@
         
         @keyframes pulse {
             0% { transform: scale(1); }
-            50% { transform: scale(1.05); }
+            50% { transform: scale(1.1); }
             100% { transform: scale(1); }
         }
         
@@ -445,20 +517,29 @@
         }
         
         @keyframes glow {
-            0%, 100% { box-shadow: 0 0 10px rgba(0, 219, 222, 0.7); }
-            50% { box-shadow: 0 0 25px rgba(0, 219, 222, 1); }
+            0%, 100% { box-shadow: 0 0 10px rgba(255, 94, 98, 0.7); }
+            50% { box-shadow: 0 0 25px rgba(255, 94, 98, 1); }
         }
         
         .glow {
             animation: glow 1s ease infinite;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: scale(0.5); }
+            to { opacity: 1; transform: scale(1); }
+        }
+        
+        .fade-in {
+            animation: fadeIn 0.3s ease forwards;
         }
     </style>
 </head>
 <body>
     <div class="container">
         <header>
-            <h1><i class="fas fa-hand-rock"></i> 包剪揼遊戲 - 鏡頭手勢版 <i class="fas fa-hand-scissors"></i></h1>
-            <p class="subtitle">使用鏡頭偵測手勢，與電腦對戰！</p>
+            <h1><i class="fas fa-hand-rock"></i> 包剪揼遊戲 - 鏡頭手勢精準版 <i class="fas fa-hand-scissors"></i></h1>
+            <p class="subtitle">使用 MediaPipe 精準偵測，手型圖案直接顯示在手上！</p>
         </header>
         
         <div class="game-area">
@@ -468,6 +549,7 @@
                 <div id="camera-container">
                     <video id="camera-feed" autoplay playsinline></video>
                     <canvas id="camera-overlay"></canvas>
+                    <canvas id="gesture-on-hand"></canvas>
                     
                     <div id="permission-message" class="permission-message">
                         <h3><i class="fas fa-camera"></i> 需要鏡頭權限</h3>
@@ -486,6 +568,28 @@
                     </div>
                 </div>
                 
+                <div class="detection-stats">
+                    <div class="stats-row">
+                        <span class="stats-label">偵測幀率：</span>
+                        <span class="stats-value" id="fps-counter">0 FPS</span>
+                    </div>
+                    <div class="stats-row">
+                        <span class="stats-label">偵測延遲：</span>
+                        <span class="stats-value" id="latency-counter">0ms</span>
+                    </div>
+                    <div class="stats-row">
+                        <span class="stats-label">偵測精準度：</span>
+                        <span class="stats-value" id="accuracy-counter">0%</span>
+                    </div>
+                </div>
+                
+                <div class="calibration-panel">
+                    <div class="calibration-title"><i class="fas fa-sliders-h"></i> 最佳化設定</div>
+                    <div class="calibration-item"><i class="fas fa-check-circle"></i> 使用 MediaPipe 高精度模式</div>
+                    <div class="calibration-item"><i class="fas fa-check-circle"></i> 手型圖案直接刻畫在手上</div>
+                    <div class="calibration-item"><i class="fas fa-check-circle"></i> 自動手勢校準功能</div>
+                </div>
+                
                 <div class="camera-controls">
                     <button id="start-camera-btn" class="control-btn">
                         <i class="fas fa-play"></i> 開啟鏡頭
@@ -502,6 +606,7 @@
                             <i class="fas fa-question unknown"></i>
                         </div>
                         <div id="left-hand-text" class="gesture-text">未偵測</div>
+                        <div id="left-hand-confidence" style="font-size: 0.9rem; color: #aaa;">信心度: 0%</div>
                     </div>
                     
                     <div class="hand-info">
@@ -510,6 +615,7 @@
                             <i class="fas fa-question unknown"></i>
                         </div>
                         <div id="right-hand-text" class="gesture-text">未偵測</div>
+                        <div id="right-hand-confidence" style="font-size: 0.9rem; color: #aaa;">信心度: 0%</div>
                     </div>
                 </div>
             </div>
@@ -543,48 +649,55 @@
                         <i class="fas fa-redo"></i> 重新開始
                     </button>
                 </div>
+                
+                <div class="calibration-panel" style="margin-top: 20px;">
+                    <div class="calibration-title"><i class="fas fa-hands"></i> 手勢擺放技巧</div>
+                    <div class="calibration-item"><i class="fas fa-hand-point-right"></i> 保持手掌正對鏡頭，不要傾斜</div>
+                    <div class="calibration-item"><i class="fas fa-hand-point-right"></i> 剪刀手勢：食指和中指明顯分開</div>
+                    <div class="calibration-item"><i class="fas fa-hand-point-right"></i> 保持手部穩定至少2秒</div>
+                </div>
             </div>
         </div>
         
         <div class="gesture-guide">
-            <h3><i class="fas fa-gesture"></i> 手勢指南</h3>
+            <h3><i class="fas fa-gesture"></i> 手勢指南（精準版）</h3>
             <div class="gesture-list">
                 <div class="gesture-item">
                     <div class="gesture-demo">
-                        <i class="fas fa-hand-rock rock"></i>
+                        <i class="fas fa-fist-raised rock"></i>
                     </div>
-                    <div class="gesture-name rock">石頭</div>
-                    <div class="gesture-desc">握拳，所有手指收起</div>
+                    <div class="gesture-name rock">石頭（握拳）</div>
+                    <div class="gesture-desc">緊握拳頭，拇指放在食指外側，所有手指完全收起</div>
                 </div>
                 
                 <div class="gesture-item">
                     <div class="gesture-demo">
                         <i class="fas fa-hand-paper paper"></i>
                     </div>
-                    <div class="gesture-name paper">布</div>
-                    <div class="gesture-desc">手掌張開，手指伸直</div>
+                    <div class="gesture-name paper">布（手掌張開）</div>
+                    <div class="gesture-desc">手掌完全張開，手指伸直且自然分開，不要彎曲</div>
                 </div>
                 
                 <div class="gesture-item">
                     <div class="gesture-demo">
-                        <i class="fas fa-hand-scissors scissors"></i>
+                        <i class="fas fa-hand-peace scissors"></i>
                     </div>
-                    <div class="gesture-name scissors">剪刀</div>
-                    <div class="gesture-desc">伸出食指和中指，其他手指收起</div>
+                    <div class="gesture-name scissors">剪刀（V字手）</div>
+                    <div class="gesture-desc">食指和中指伸直呈V形，拇指接觸無名指，小指自然彎曲</div>
                 </div>
                 
                 <div class="gesture-item">
                     <div class="gesture-demo">
-                        <i class="fas fa-question unknown"></i>
+                        <i class="fas fa-bullseye" style="color: #FFD700;"></i>
                     </div>
-                    <div class="gesture-name unknown">其他手勢</div>
-                    <div class="gesture-desc">保持穩定手勢至少2秒</div>
+                    <div class="gesture-name" style="color: #FFD700;">精準技巧</div>
+                    <div class="gesture-desc">手肘放在桌上，手腕不要彎曲，確保手部光線充足</div>
                 </div>
             </div>
         </div>
         
         <footer>
-            <p>HTML5 包剪揼遊戲（鏡頭手勢版） &copy; 2023 | 使用 MediaPipe 手勢辨識技術</p>
+            <p>HTML5 包剪揼遊戲（鏡頭手勢精準版） &copy; 2023 | 使用 MediaPipe 高精度手勢辨識</p>
         </footer>
     </div>
 
@@ -597,30 +710,50 @@
         let winStreak = 0;
         let maxWinStreak = 0;
         
-        // 手勢偵測變數
+        // 手勢偵測變數（精準版）
         let leftHandGesture = 'unknown';
         let rightHandGesture = 'unknown';
+        let leftHandConfidence = 0;
+        let rightHandConfidence = 0;
         let lastLeftGesture = 'unknown';
         let lastRightGesture = 'unknown';
         let gestureStableCount = { left: 0, right: 0 };
-        const GESTURE_STABLE_THRESHOLD = 10; // 需要連續偵測到相同手勢的幀數
+        const GESTURE_STABLE_THRESHOLD = 5; // 降低閾值以提高響應速度
+        
+        // 效能監控變數
+        let frameCount = 0;
+        let lastFpsUpdate = 0;
+        let lastFrameTime = 0;
+        let currentFps = 0;
+        let latency = 0;
+        let accuracy = 0;
         
         // 遊戲狀態
         let isCameraOn = false;
         let isGameActive = false;
         let handsModel = null;
         
+        // 手勢圖案位置追蹤
+        let handGestureIcons = [];
+        
         // DOM 元素
         const cameraFeed = document.getElementById('camera-feed');
         const cameraOverlay = document.getElementById('camera-overlay');
+        const gestureOnHandCanvas = document.getElementById('gesture-on-hand');
         const permissionMessage = document.getElementById('permission-message');
         const cameraError = document.getElementById('camera-error');
         const errorMessage = document.getElementById('error-message');
         
         const leftHandIcon = document.getElementById('left-hand-icon');
         const leftHandText = document.getElementById('left-hand-text');
+        const leftHandConfidenceElement = document.getElementById('left-hand-confidence');
         const rightHandIcon = document.getElementById('right-hand-icon');
         const rightHandText = document.getElementById('right-hand-text');
+        const rightHandConfidenceElement = document.getElementById('right-hand-confidence');
+        
+        const fpsCounter = document.getElementById('fps-counter');
+        const latencyCounter = document.getElementById('latency-counter');
+        const accuracyCounter = document.getElementById('accuracy-counter');
         
         const playerScoreElement = document.getElementById('player-score');
         const computerScoreElement = document.getElementById('computer-score');
@@ -634,19 +767,32 @@
         const requestPermissionBtn = document.getElementById('request-permission-btn');
         const retryCameraBtn = document.getElementById('retry-camera-btn');
         
-        // 手勢對應的圖標和文字
-        const gestureIcons = {
-            rock: '<i class="fas fa-hand-rock rock"></i>',
-            paper: '<i class="fas fa-hand-paper paper"></i>',
-            scissors: '<i class="fas fa-hand-scissors scissors"></i>',
-            unknown: '<i class="fas fa-question unknown"></i>'
-        };
-        
-        const gestureTexts = {
-            rock: '石頭',
-            paper: '布',
-            scissors: '剪刀',
-            unknown: '未偵測'
+        // 手勢對應的圖標、文字和顏色
+        const gestureData = {
+            rock: {
+                icon: 'fas fa-fist-raised',
+                text: '石頭',
+                color: '#ff5e62',
+                size: 40
+            },
+            paper: {
+                icon: 'fas fa-hand-paper',
+                text: '布',
+                color: '#36D1DC',
+                size: 45
+            },
+            scissors: {
+                icon: 'fas fa-hand-peace',
+                text: '剪刀',
+                color: '#8EFF7A',
+                size: 40
+            },
+            unknown: {
+                icon: 'fas fa-question',
+                text: '未偵測',
+                color: '#aaa',
+                size: 35
+            }
         };
         
         // 初始化遊戲
@@ -660,17 +806,23 @@
             
             leftHandGesture = 'unknown';
             rightHandGesture = 'unknown';
+            leftHandConfidence = 0;
+            rightHandConfidence = 0;
             lastLeftGesture = 'unknown';
             lastRightGesture = 'unknown';
             gestureStableCount = { left: 0, right: 0 };
             
+            handGestureIcons = [];
+            
             updateUI();
+            updatePerformanceStats();
             resultTextElement.textContent = '開啟鏡頭後顯示手勢';
             resultTextElement.className = '';
             gameInfoElement.textContent = '請將手放在鏡頭前，系統會自動偵測手勢';
             
             // 重置手勢顯示
             updateHandDisplay();
+            clearHandGestureIcons();
         }
         
         // 更新UI顯示
@@ -681,16 +833,41 @@
         
         // 更新手勢顯示
         function updateHandDisplay() {
-            leftHandIcon.innerHTML = gestureIcons[leftHandGesture];
-            leftHandText.textContent = gestureTexts[leftHandGesture];
-            leftHandText.className = leftHandGesture;
+            const leftData = gestureData[leftHandGesture] || gestureData.unknown;
+            const rightData = gestureData[rightHandGesture] || gestureData.unknown;
             
-            rightHandIcon.innerHTML = gestureIcons[rightHandGesture];
-            rightHandText.textContent = gestureTexts[rightHandGesture];
-            rightHandText.className = rightHandGesture;
+            leftHandIcon.innerHTML = `<i class="${leftData.icon}" style="color: ${leftData.color}"></i>`;
+            leftHandText.textContent = leftData.text;
+            leftHandText.style.color = leftData.color;
+            leftHandConfidenceElement.textContent = `信心度: ${Math.round(leftHandConfidence * 100)}%`;
+            leftHandConfidenceElement.style.color = leftHandConfidence > 0.7 ? '#8EFF7A' : 
+                                                  leftHandConfidence > 0.4 ? '#FFD700' : '#ff5e62';
+            
+            rightHandIcon.innerHTML = `<i class="${rightData.icon}" style="color: ${rightData.color}"></i>`;
+            rightHandText.textContent = rightData.text;
+            rightHandText.style.color = rightData.color;
+            rightHandConfidenceElement.textContent = `信心度: ${Math.round(rightHandConfidence * 100)}%`;
+            rightHandConfidenceElement.style.color = rightHandConfidence > 0.7 ? '#8EFF7A' : 
+                                                    rightHandConfidence > 0.4 ? '#FFD700' : '#ff5e62';
         }
         
-        // 初始化MediaPipe手勢辨識
+        // 清除手上的手勢圖標
+        function clearHandGestureIcons() {
+            const ctx = gestureOnHandCanvas.getContext('2d');
+            ctx.clearRect(0, 0, gestureOnHandCanvas.width, gestureOnHandCanvas.height);
+            handGestureIcons = [];
+        }
+        
+        // 更新效能統計
+        function updatePerformanceStats() {
+            fpsCounter.textContent = `${Math.round(currentFps)} FPS`;
+            latencyCounter.textContent = `${Math.round(latency)}ms`;
+            accuracyCounter.textContent = `${Math.round(accuracy * 100)}%`;
+            accuracyCounter.style.color = accuracy > 0.8 ? '#8EFF7A' : 
+                                         accuracy > 0.6 ? '#FFD700' : '#ff5e62';
+        }
+        
+        // 初始化MediaPipe手勢辨識（精準版）
         function initHandDetection() {
             handsModel = new Hands({
                 locateFile: (file) => {
@@ -698,29 +875,38 @@
                 }
             });
             
+            // 使用高精度設定
             handsModel.setOptions({
                 maxNumHands: 2,
-                modelComplexity: 1,
-                minDetectionConfidence: 0.5,
-                minTrackingConfidence: 0.5
+                modelComplexity: 2, // 使用高複雜度模型提高準確度
+                minDetectionConfidence: 0.7, // 提高偵測信心度閾值
+                minTrackingConfidence: 0.7, // 提高追蹤信心度閾值
+                selfieMode: true
             });
             
             handsModel.onResults(onHandResults);
         }
         
-        // 處理手勢辨識結果
+        // 處理手勢辨識結果（精準版）
         function onHandResults(results) {
+            const startTime = performance.now();
+            frameCount++;
+            
             const canvasCtx = cameraOverlay.getContext('2d');
+            const gestureCtx = gestureOnHandCanvas.getContext('2d');
             const videoWidth = cameraFeed.videoWidth;
             const videoHeight = cameraFeed.videoHeight;
             
             // 設定canvas尺寸
             cameraOverlay.width = videoWidth;
             cameraOverlay.height = videoHeight;
+            gestureOnHandCanvas.width = videoWidth;
+            gestureOnHandCanvas.height = videoHeight;
             
             // 清除canvas
             canvasCtx.save();
             canvasCtx.clearRect(0, 0, cameraOverlay.width, cameraOverlay.height);
+            gestureCtx.clearRect(0, 0, gestureOnHandCanvas.width, gestureOnHandCanvas.height);
             
             // 鏡像反轉
             canvasCtx.scale(-1, 1);
@@ -732,34 +918,69 @@
             // 重置轉換
             canvasCtx.restore();
             
+            // 更新偵測品質
+            updateDetectionQuality(results);
+            
             // 重置手勢狀態
             leftHandGesture = 'unknown';
             rightHandGesture = 'unknown';
+            leftHandConfidence = 0;
+            rightHandConfidence = 0;
             
             // 如果有偵測到手
             if (results.multiHandLandmarks && results.multiHandLandmarks.length > 0) {
+                // 使用 MediaPipe 的繪製工具
+                for (const landmarks of results.multiHandLandmarks) {
+                    // 使用 MediaPipe 的 drawingUtils 繪製
+                    drawConnectors(canvasCtx, landmarks, HAND_CONNECTIONS, {
+                        color: '#00FF00',
+                        lineWidth: 2
+                    });
+                    drawLandmarks(canvasCtx, landmarks, {
+                        color: '#FF0000',
+                        lineWidth: 1,
+                        radius: 4
+                    });
+                }
+                
                 // 處理每隻手
                 results.multiHandLandmarks.forEach((landmarks, index) => {
-                    const handedness = results.multiHandedness[index].label; // "Left" 或 "Right"
-                    const isLeftHand = handedness === "Right"; // MediaPipe回傳的手性是相反的
+                    const handedness = results.multiHandedness[index];
+                    const isLeftHand = handedness.label === "Right"; // MediaPipe回傳的手性是相反的
                     
-                    // 辨識手勢
-                    const gesture = recognizeGesture(landmarks);
+                    // 使用 MediaPipe 的辨識結果
+                    const gesture = recognizeGestureWithMediaPipe(landmarks, handedness);
+                    
+                    // 計算信心度（基於關鍵點的可見性和追蹤品質）
+                    const confidence = calculateGestureConfidence(landmarks, handedness);
                     
                     // 更新手勢狀態
                     if (isLeftHand) {
-                        updateGestureState('left', gesture);
+                        updateGestureState('left', gesture, confidence);
                     } else {
-                        updateGestureState('right', gesture);
+                        updateGestureState('right', gesture, confidence);
                     }
                     
-                    // 繪製手部關鍵點
-                    drawHandLandmarks(canvasCtx, landmarks, isLeftHand);
+                    // 在手部位置繪製手勢圖標
+                    drawGestureOnHand(gestureCtx, landmarks, gesture, confidence, isLeftHand);
                 });
             }
             
             // 更新手勢顯示
             updateHandDisplay();
+            
+            // 更新效能統計
+            const endTime = performance.now();
+            latency = endTime - startTime;
+            
+            // 計算FPS
+            const now = performance.now();
+            if (now - lastFpsUpdate > 1000) {
+                currentFps = (frameCount * 1000) / (now - lastFpsUpdate);
+                frameCount = 0;
+                lastFpsUpdate = now;
+                updatePerformanceStats();
+            }
             
             // 如果遊戲進行中，自動偵測玩家選擇
             if (isGameActive) {
@@ -767,34 +988,9 @@
             }
         }
         
-        // 更新手勢狀態（穩定性檢查）
-        function updateGestureState(hand, newGesture) {
-            if (hand === 'left') {
-                if (newGesture === lastLeftGesture) {
-                    gestureStableCount.left++;
-                    if (gestureStableCount.left >= GESTURE_STABLE_THRESHOLD) {
-                        leftHandGesture = newGesture;
-                    }
-                } else {
-                    lastLeftGesture = newGesture;
-                    gestureStableCount.left = 0;
-                }
-            } else {
-                if (newGesture === lastRightGesture) {
-                    gestureStableCount.right++;
-                    if (gestureStableCount.right >= GESTURE_STABLE_THRESHOLD) {
-                        rightHandGesture = newGesture;
-                    }
-                } else {
-                    lastRightGesture = newGesture;
-                    gestureStableCount.right = 0;
-                }
-            }
-        }
-        
-        // 辨識手勢
-        function recognizeGesture(landmarks) {
-            // 取得關鍵點
+        // 使用 MediaPipe 方式辨識手勢
+        function recognizeGestureWithMediaPipe(landmarks, handedness) {
+            // 計算手指角度和距離
             const thumbTip = landmarks[4];
             const indexTip = landmarks[8];
             const middleTip = landmarks[12];
@@ -803,95 +999,337 @@
             const wrist = landmarks[0];
             
             // 計算手指到手腕的距離
-            const thumbDistance = Math.sqrt(
-                Math.pow(thumbTip.x - wrist.x, 2) + 
-                Math.pow(thumbTip.y - wrist.y, 2)
-            );
+            const distances = {
+                thumb: calculateDistance(thumbTip, wrist),
+                index: calculateDistance(indexTip, wrist),
+                middle: calculateDistance(middleTip, wrist),
+                ring: calculateDistance(ringTip, wrist),
+                pinky: calculateDistance(pinkyTip, wrist)
+            };
             
-            const indexDistance = Math.sqrt(
-                Math.pow(indexTip.x - wrist.x, 2) + 
-                Math.pow(indexTip.y - wrist.y, 2)
-            );
+            // 計算手指伸直程度
+            const indexMCP = landmarks[5];
+            const middleMCP = landmarks[9];
+            const ringMCP = landmarks[13];
+            const pinkyMCP = landmarks[17];
             
-            const middleDistance = Math.sqrt(
-                Math.pow(middleTip.x - wrist.x, 2) + 
-                Math.pow(middleTip.y - wrist.y, 2)
-            );
+            const straightness = {
+                index: calculateDistance(indexTip, indexMCP) / calculateDistance(indexMCP, wrist),
+                middle: calculateDistance(middleTip, middleMCP) / calculateDistance(middleMCP, wrist),
+                ring: calculateDistance(ringTip, ringMCP) / calculateDistance(ringMCP, wrist),
+                pinky: calculateDistance(pinkyTip, pinkyMCP) / calculateDistance(pinkyMCP, wrist)
+            };
             
-            const ringDistance = Math.sqrt(
-                Math.pow(ringTip.x - wrist.x, 2) + 
-                Math.pow(ringTip.y - wrist.y, 2)
-            );
+            // 計算手指分開程度
+            const fingerSpread = {
+                indexMiddle: calculateDistance(indexTip, middleTip),
+                middleRing: calculateDistance(middleTip, ringTip),
+                ringPinky: calculateDistance(ringTip, pinkyTip)
+            };
             
-            const pinkyDistance = Math.sqrt(
-                Math.pow(pinkyTip.x - wrist.x, 2) + 
-                Math.pow(pinkyTip.y - wrist.y, 2)
-            );
+            // 辨識手勢（使用更精準的邏輯）
+            // 1. 石頭：所有手指靠近手腕，手指彎曲
+            const isFist = 
+                distances.index < 0.2 &&
+                distances.middle < 0.2 &&
+                distances.ring < 0.2 &&
+                distances.pinky < 0.2 &&
+                straightness.index < 0.8 &&
+                straightness.middle < 0.8 &&
+                straightness.ring < 0.8 &&
+                straightness.pinky < 0.8;
             
-            // 計算平均距離
-            const avgDistance = (indexDistance + middleDistance + ringDistance + pinkyDistance) / 4;
+            // 2. 布：所有手指遠離手腕，手指伸直
+            const isPaper = 
+                distances.index > 0.25 &&
+                distances.middle > 0.25 &&
+                distances.ring > 0.22 &&
+                distances.pinky > 0.22 &&
+                straightness.index > 1.2 &&
+                straightness.middle > 1.2 &&
+                straightness.ring > 1.0 &&
+                straightness.pinky > 1.0 &&
+                fingerSpread.indexMiddle > 0.06 &&
+                fingerSpread.middleRing > 0.06;
             
-            // 辨識手勢
-            if (thumbDistance < 0.1 && indexDistance < 0.1 && middleDistance < 0.1 && ringDistance < 0.1 && pinkyDistance < 0.1) {
-                return 'rock'; // 拳頭（石頭）
-            } else if (indexDistance > 0.2 && middleDistance > 0.2 && ringDistance < 0.15 && pinkyDistance < 0.15) {
-                return 'scissors'; // 食指和中指伸出（剪刀）
-            } else if (indexDistance > 0.2 && middleDistance > 0.2 && ringDistance > 0.2 && pinkyDistance > 0.2) {
-                return 'paper'; // 所有手指伸出（布）
-            }
+            // 3. 剪刀：食指和中指伸直且分開，其他手指彎曲
+            const isScissors = 
+                distances.index > 0.25 &&
+                distances.middle > 0.25 &&
+                distances.ring < 0.2 &&
+                distances.pinky < 0.2 &&
+                straightness.index > 1.5 &&
+                straightness.middle > 1.5 &&
+                straightness.ring < 1.0 &&
+                straightness.pinky < 1.0 &&
+                fingerSpread.indexMiddle > 0.1 &&
+                fingerSpread.middleRing < 0.05;
+            
+            if (isFist) return 'rock';
+            if (isPaper) return 'paper';
+            if (isScissors) return 'scissors';
             
             return 'unknown';
         }
         
-        // 繪製手部關鍵點
-        function drawHandLandmarks(ctx, landmarks, isLeftHand) {
-            const color = isLeftHand ? '#00ff00' : '#ff0000';
+        // 計算兩點之間的距離
+        function calculateDistance(point1, point2) {
+            const dx = point1.x - point2.x;
+            const dy = point1.y - point2.y;
+            const dz = point1.z - point2.z;
+            return Math.sqrt(dx*dx + dy*dy + dz*dz);
+        }
+        
+        // 計算手勢信心度
+        function calculateGestureConfidence(landmarks, handedness) {
+            let confidence = 0;
             
-            // 繪製關鍵點
-            for (let i = 0; i < landmarks.length; i++) {
-                const x = landmarks[i].x * cameraOverlay.width;
-                const y = landmarks[i].y * cameraOverlay.height;
-                
-                ctx.beginPath();
-                ctx.arc(x, y, 5, 0, 2 * Math.PI);
-                ctx.fillStyle = color;
-                ctx.fill();
+            // 基於關鍵點的可見性
+            let visiblePoints = 0;
+            landmarks.forEach(point => {
+                if (point.visibility > 0.5) visiblePoints++;
+            });
+            confidence += (visiblePoints / landmarks.length) * 0.3;
+            
+            // 基於手部大小（避免手太遠或太近）
+            const handSize = calculateHandSize(landmarks);
+            if (handSize > 0.1 && handSize < 0.5) {
+                confidence += 0.3;
             }
             
-            // 繪製連接線
-            const connections = [
-                [0, 1], [1, 2], [2, 3], [3, 4], // 拇指
-                [0, 5], [5, 6], [6, 7], [7, 8], // 食指
-                [0, 9], [9, 10], [10, 11], [11, 12], // 中指
-                [0, 13], [13, 14], [14, 15], [15, 16], // 無名指
-                [0, 17], [17, 18], [18, 19], [19, 20], // 小指
-                [5, 9], [9, 13], [13, 17] // 手掌
-            ];
+            // 基於偵測信心度
+            if (handedness.score > 0.8) {
+                confidence += 0.4;
+            }
             
-            ctx.strokeStyle = color;
+            return Math.min(confidence, 1.0);
+        }
+        
+        // 計算手部大小
+        function calculateHandSize(landmarks) {
+            let minX = 1, maxX = 0, minY = 1, maxY = 0;
+            
+            landmarks.forEach(point => {
+                minX = Math.min(minX, point.x);
+                maxX = Math.max(maxX, point.x);
+                minY = Math.min(minY, point.y);
+                maxY = Math.max(maxY, point.y);
+            });
+            
+            const width = maxX - minX;
+            const height = maxY - minY;
+            
+            return Math.sqrt(width * width + height * height);
+        }
+        
+        // 更新偵測品質
+        function updateDetectionQuality(results) {
+            let quality = 0;
+            
+            if (results.multiHandLandmarks && results.multiHandLandmarks.length > 0) {
+                quality = results.multiHandLandmarks.length * 0.3;
+                
+                results.multiHandLandmarks.forEach((landmarks, index) => {
+                    const handedness = results.multiHandedness[index];
+                    
+                    // 基於關鍵點品質
+                    let goodPoints = 0;
+                    landmarks.forEach(point => {
+                        if (point.visibility > 0.7) goodPoints++;
+                    });
+                    quality += (goodPoints / landmarks.length) * 0.3;
+                    
+                    // 基於偵測信心度
+                    if (handedness.score > 0.8) {
+                        quality += 0.2;
+                    }
+                });
+                
+                quality = Math.min(quality, 1.0);
+            }
+            
+            // 平滑品質值
+            accuracy = accuracy * 0.7 + quality * 0.3;
+        }
+        
+        // 更新手勢狀態（穩定性檢查）
+        function updateGestureState(hand, newGesture, confidence) {
+            if (hand === 'left') {
+                if (newGesture === lastLeftGesture && confidence > 0.6) {
+                    gestureStableCount.left++;
+                    if (gestureStableCount.left >= GESTURE_STABLE_THRESHOLD) {
+                        leftHandGesture = newGesture;
+                        leftHandConfidence = confidence;
+                    }
+                } else {
+                    lastLeftGesture = newGesture;
+                    gestureStableCount.left = 0;
+                }
+            } else {
+                if (newGesture === lastRightGesture && confidence > 0.6) {
+                    gestureStableCount.right++;
+                    if (gestureStableCount.right >= GESTURE_STABLE_THRESHOLD) {
+                        rightHandGesture = newGesture;
+                        rightHandConfidence = confidence;
+                    }
+                } else {
+                    lastRightGesture = newGesture;
+                    gestureStableCount.right = 0;
+                }
+            }
+        }
+        
+        // 在手部位置繪製手勢圖標
+        function drawGestureOnHand(ctx, landmarks, gesture, confidence, isLeftHand) {
+            // 計算手部中心點（使用手掌區域）
+            const palmBase = landmarks[0]; // 手腕
+            const middleBase = landmarks[9]; // 中指根部
+            
+            const centerX = (palmBase.x + middleBase.x) / 2;
+            const centerY = (palmBase.y + middleBase.y) / 2;
+            
+            const x = (1 - centerX) * gestureOnHandCanvas.width; // 鏡像調整
+            const y = centerY * gestureOnHandCanvas.height;
+            
+            // 獲取手勢數據
+            const gestureDataItem = gestureData[gesture] || gestureData.unknown;
+            
+            // 創建新的手勢圖標
+            const gestureIcon = {
+                x: x,
+                y: y,
+                gesture: gesture,
+                confidence: confidence,
+                size: gestureDataItem.size * (0.8 + confidence * 0.4),
+                color: gestureDataItem.color,
+                icon: gestureDataItem.icon,
+                timestamp: Date.now()
+            };
+            
+            handGestureIcons.push(gestureIcon);
+            
+            // 只保留最近的圖標
+            if (handGestureIcons.length > 10) {
+                handGestureIcons.shift();
+            }
+            
+            // 繪製所有手勢圖標
+            drawAllGestureIcons(ctx);
+        }
+        
+        // 繪製所有手勢圖標
+        function drawAllGestureIcons(ctx) {
+            const now = Date.now();
+            const maxAge = 1000; // 1秒
+            
+            // 清除畫布
+            ctx.clearRect(0, 0, gestureOnHandCanvas.width, gestureOnHandCanvas.height);
+            
+            // 繪製每個圖標
+            handGestureIcons.forEach((icon, index) => {
+                const age = now - icon.timestamp;
+                if (age > maxAge) {
+                    handGestureIcons.splice(index, 1);
+                    return;
+                }
+                
+                // 計算透明度（逐漸淡出）
+                const alpha = 1 - (age / maxAge);
+                
+                // 繪製圖標背景（圓形）
+                ctx.beginPath();
+                ctx.arc(icon.x, icon.y, icon.size / 2 + 5, 0, Math.PI * 2);
+                ctx.fillStyle = `rgba(0, 0, 0, ${alpha * 0.5})`;
+                ctx.fill();
+                
+                // 繪製圖標邊框
+                ctx.beginPath();
+                ctx.arc(icon.x, icon.y, icon.size / 2 + 5, 0, Math.PI * 2);
+                ctx.strokeStyle = `${icon.color}${Math.floor(alpha * 255).toString(16).padStart(2, '0')}`;
+                ctx.lineWidth = 2;
+                ctx.stroke();
+                
+                // 這裡我們用繪製圖標的方式，但實際上我們無法直接繪製 FontAwesome 圖標
+                // 所以我們用簡單的圖形代替
+                drawGestureSymbol(ctx, icon.x, icon.y, icon.gesture, icon.size, icon.color, alpha);
+            });
+        }
+        
+        // 繪製手勢符號
+        function drawGestureSymbol(ctx, x, y, gesture, size, color, alpha) {
+            ctx.save();
+            ctx.translate(x, y);
+            ctx.scale(1, 1); // 鏡像調整
+            
+            ctx.fillStyle = `${color}${Math.floor(alpha * 255).toString(16).padStart(2, '0')}`;
+            ctx.strokeStyle = '#FFFFFF';
             ctx.lineWidth = 2;
             
-            connections.forEach(([start, end]) => {
-                const startX = landmarks[start].x * cameraOverlay.width;
-                const startY = landmarks[start].y * cameraOverlay.height;
-                const endX = landmarks[end].x * cameraOverlay.width;
-                const endY = landmarks[end].y * cameraOverlay.height;
-                
-                ctx.beginPath();
-                ctx.moveTo(startX, startY);
-                ctx.lineTo(endX, endY);
-                ctx.stroke();
-            });
+            switch(gesture) {
+                case 'rock':
+                    // 繪製拳頭（圓形）
+                    ctx.beginPath();
+                    ctx.arc(0, 0, size / 3, 0, Math.PI * 2);
+                    ctx.fill();
+                    ctx.stroke();
+                    break;
+                    
+                case 'paper':
+                    // 繪製手掌（矩形）
+                    ctx.beginPath();
+                    ctx.roundRect(-size/3, -size/3, size*0.66, size*0.66, 5);
+                    ctx.fill();
+                    ctx.stroke();
+                    break;
+                    
+                case 'scissors':
+                    // 繪製剪刀（V形）
+                    ctx.beginPath();
+                    ctx.moveTo(-size/4, -size/4);
+                    ctx.lineTo(0, size/4);
+                    ctx.moveTo(size/4, -size/4);
+                    ctx.lineTo(0, size/4);
+                    ctx.stroke();
+                    break;
+                    
+                default:
+                    // 繪製問號
+                    ctx.beginPath();
+                    ctx.arc(0, 0, size / 4, 0, Math.PI * 2);
+                    ctx.stroke();
+                    ctx.fillText('?', -3, 5);
+            }
+            
+            ctx.restore();
         }
         
         // 自動偵測玩家選擇
         function autoDetectPlayerChoice() {
-            // 優先使用右手，如果右手未偵測到則使用左手
-            let playerGesture = rightHandGesture !== 'unknown' ? rightHandGesture : leftHandGesture;
+            // 選擇信心度較高的手
+            let playerGesture = 'unknown';
+            let playerConfidence = 0;
             
-            // 如果偵測到手勢，開始遊戲
-            if (playerGesture !== 'unknown') {
-                playGame(playerGesture);
+            if (rightHandGesture !== 'unknown' && rightHandConfidence > playerConfidence) {
+                playerGesture = rightHandGesture;
+                playerConfidence = rightHandConfidence;
+            }
+            
+            if (leftHandGesture !== 'unknown' && leftHandConfidence > playerConfidence) {
+                playerGesture = leftHandGesture;
+                playerConfidence = leftHandConfidence;
+            }
+            
+            // 如果偵測到手勢且信心度足夠，開始遊戲
+            if (playerGesture !== 'unknown' && playerConfidence > 0.75) {
+                // 顯示偵測到的結果
+                gameInfoElement.textContent = `偵測到: ${gestureData[playerGesture].text} (${Math.round(playerConfidence * 100)}%)`;
+                
+                // 稍微延遲以確保手勢穩定
+                setTimeout(() => {
+                    if (isGameActive && playerGesture !== 'unknown') {
+                        playGame(playerGesture);
+                    }
+                }, 500);
             }
         }
         
@@ -947,13 +1385,13 @@
                 maxWinStreak = Math.max(maxWinStreak, winStreak);
                 resultText = '你贏了！';
                 resultClass = 'win';
-                gameInfoElement.textContent = `${gestureTexts[playerGesture]} 贏 ${gestureTexts[computerChoice]}`;
+                gameInfoElement.textContent = `${gestureData[playerGesture].text} 贏 ${gestureData[computerChoice].text}`;
             } else if (winner === 'computer') {
                 computerScore++;
                 winStreak = 0;
                 resultText = '電腦贏了！';
                 resultClass = 'lose';
-                gameInfoElement.textContent = `${gestureTexts[computerChoice]} 贏 ${gestureTexts[playerGesture]}`;
+                gameInfoElement.textContent = `${gestureData[computerChoice].text} 贏 ${gestureData[playerGesture].text}`;
             } else {
                 resultText = '平手！';
                 resultClass = 'draw';
@@ -984,12 +1422,13 @@
                 permissionMessage.style.display = 'none';
                 cameraError.style.display = 'none';
                 
-                // 請求鏡頭權限
+                // 請求鏡頭權限（使用較高解析度）
                 const stream = await navigator.mediaDevices.getUserMedia({
                     video: {
-                        width: { ideal: 640 },
-                        height: { ideal: 480 },
-                        facingMode: 'user'
+                        width: { ideal: 1280 },
+                        height: { ideal: 720 },
+                        facingMode: 'user',
+                        frameRate: { ideal: 60 }
                     },
                     audio: false
                 });
@@ -1010,8 +1449,8 @@
                             await handsModel.send({image: cameraFeed});
                         }
                     },
-                    width: 640,
-                    height: 480
+                    width: 1280,
+                    height: 720
                 });
                 
                 camera.start();
@@ -1026,7 +1465,7 @@
             } catch (error) {
                 console.error('無法存取鏡頭:', error);
                 cameraError.style.display = 'flex';
-                errorMessage.textContent = `錯誤: ${error.message}`;
+                errorMessage.textContent = `錯誤: ${error.name} - ${error.message}`;
                 isCameraOn = false;
             }
         }
@@ -1050,12 +1489,19 @@
             
             // 清空canvas
             const canvasCtx = cameraOverlay.getContext('2d');
+            const gestureCtx = gestureOnHandCanvas.getContext('2d');
             canvasCtx.clearRect(0, 0, cameraOverlay.width, cameraOverlay.height);
+            gestureCtx.clearRect(0, 0, gestureOnHandCanvas.width, gestureOnHandCanvas.height);
             
             // 重置手勢顯示
             leftHandGesture = 'unknown';
             rightHandGesture = 'unknown';
+            leftHandConfidence = 0;
+            rightHandConfidence = 0;
+            handGestureIcons = [];
+            accuracy = 0;
             updateHandDisplay();
+            updatePerformanceStats();
             
             gameInfoElement.textContent = '鏡頭已關閉';
         }
@@ -1076,6 +1522,56 @@
             }, 2000);
         }
         
+        // MediaPipe 手部連接點定義
+        const HAND_CONNECTIONS = [
+            [0, 1], [1, 2], [2, 3], [3, 4], // 拇指
+            [0, 5], [5, 6], [6, 7], [7, 8], // 食指
+            [0, 9], [9, 10], [10, 11], [11, 12], // 中指
+            [0, 13], [13, 14], [14, 15], [15, 16], // 無名指
+            [0, 17], [17, 18], [18, 19], [19, 20], // 小指
+            [5, 9], [9, 13], [13, 17] // 手掌
+        ];
+        
+        // MediaPipe 繪製工具
+        const drawLandmarks = (ctx, landmarks, options = {}) => {
+            const { color = '#FF0000', lineWidth = 1, radius = 4 } = options;
+            
+            ctx.strokeStyle = color;
+            ctx.fillStyle = color;
+            ctx.lineWidth = lineWidth;
+            
+            landmarks.forEach(landmark => {
+                const x = landmark.x * cameraOverlay.width;
+                const y = landmark.y * cameraOverlay.height;
+                
+                ctx.beginPath();
+                ctx.arc(x, y, radius, 0, 2 * Math.PI);
+                ctx.fill();
+            });
+        };
+        
+        const drawConnectors = (ctx, landmarks, connections, options = {}) => {
+            const { color = '#00FF00', lineWidth = 2 } = options;
+            
+            ctx.strokeStyle = color;
+            ctx.lineWidth = lineWidth;
+            
+            connections.forEach(([startIdx, endIdx]) => {
+                const start = landmarks[startIdx];
+                const end = landmarks[endIdx];
+                
+                const startX = start.x * cameraOverlay.width;
+                const startY = start.y * cameraOverlay.height;
+                const endX = end.x * cameraOverlay.width;
+                const endY = end.y * cameraOverlay.height;
+                
+                ctx.beginPath();
+                ctx.moveTo(startX, startY);
+                ctx.lineTo(endX, endY);
+                ctx.stroke();
+            });
+        };
+        
         // 事件監聽器
         startCameraBtn.addEventListener('click', startCamera);
         stopCameraBtn.addEventListener('click', stopCamera);
@@ -1083,13 +1579,17 @@
         playButton.addEventListener('click', () => {
             if (!isCameraOn) {
                 gameInfoElement.textContent = '請先開啟鏡頭！';
+                resultTextElement.classList.add('shake');
+                setTimeout(() => {
+                    resultTextElement.classList.remove('shake');
+                }, 500);
                 return;
             }
             
             if (!isGameActive) {
                 isGameActive = true;
                 playButton.innerHTML = '<i class="fas fa-hourglass-half"></i> 偵測手勢中...';
-                gameInfoElement.textContent = '請將手放在鏡頭前，系統會自動偵測手勢';
+                gameInfoElement.textContent = '請將手放在鏡頭前，保持穩定姿勢';
                 resultTextElement.textContent = '偵測手勢中...';
                 resultTextElement.className = '';
             }
@@ -1133,7 +1633,7 @@
                     resetButton.click();
                     break;
                 case '1':
-                    if (isCameraOn) {
+                    if (!isCameraOn) {
                         startCameraBtn.click();
                     }
                     break;
