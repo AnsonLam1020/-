@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Boxel Rebound 彈跳方塊遊戲</title>
+    <title>彈跳方塊遊戲</title>
     <style>
         * {
             margin: 0;
@@ -26,7 +26,7 @@
             margin-bottom: 20px;
         }
         h1 {
-            font-size: 2.8rem;
+            font-size: 3.2rem;
             margin-bottom: 10px;
             background: linear-gradient(90deg, #00dbde, #fc00ff);
             -webkit-background-clip: text;
@@ -73,6 +73,37 @@
             font-size: 0.9rem;
             color: #a0a0c0;
             margin-top: 5px;
+        }
+        .combo-display {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            text-align: right;
+            z-index: 5;
+        }
+        .combo-count {
+            font-size: 1.8rem;
+            font-weight: bold;
+            color: #ffdd00;
+            text-shadow: 0 0 10px rgba(255, 221, 0, 0.5);
+        }
+        .combo-text {
+            font-size: 1rem;
+            color: #ff9900;
+        }
+        .combo-timer {
+            height: 4px;
+            background: linear-gradient(90deg, #ff9900, #ff3300);
+            border-radius: 2px;
+            margin-top: 5px;
+            width: 100%;
+            overflow: hidden;
+        }
+        .combo-timer-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #00ff88, #00ccff);
+            width: 100%;
+            transition: width 0.1s linear;
         }
         .controls {
             display: flex;
@@ -151,6 +182,29 @@
             font-size: 1.5rem;
             margin-bottom: 30px;
         }
+        .level-up {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: rgba(0, 0, 0, 0.85);
+            padding: 40px;
+            border-radius: 15px;
+            text-align: center;
+            z-index: 10;
+            box-shadow: 0 0 40px rgba(255, 221, 0, 0.5);
+            border: 2px solid #ffdd00;
+            display: none;
+        }
+        .level-up h2 {
+            font-size: 3rem;
+            color: #ffdd00;
+            margin-bottom: 20px;
+        }
+        .level-up p {
+            font-size: 1.5rem;
+            margin-bottom: 30px;
+        }
         .mobile-controls {
             display: none;
             margin-top: 20px;
@@ -175,7 +229,7 @@
                 width: 95vw;
             }
             h1 {
-                font-size: 2.2rem;
+                font-size: 2.5rem;
             }
             canvas {
                 width: 95vw;
@@ -186,13 +240,20 @@
             .mobile-controls {
                 display: flex;
             }
+            .combo-display {
+                top: 10px;
+                right: 10px;
+            }
+            .combo-count {
+                font-size: 1.4rem;
+            }
         }
     </style>
 </head>
 <body>
     <header>
-        <h1>Boxel Rebound</h1>
-        <div class="subtitle">控制方塊在多個平台上彈跳，收集所有星星！</div>
+        <h1>彈跳方塊</h1>
+        <div class="subtitle">跳躍、收集、連擊！挑戰無限關卡！</div>
     </header>
     
     <div class="stats">
@@ -201,8 +262,8 @@
             <div class="stat-label">分數</div>
         </div>
         <div class="stat-box">
-            <div class="stat-value" id="stars">0/10</div>
-            <div class="stat-label">收集的星星</div>
+            <div class="stat-value" id="level">第1關</div>
+            <div class="stat-label">關卡</div>
         </div>
         <div class="stat-box">
             <div class="stat-value" id="lives">3</div>
@@ -212,10 +273,24 @@
     
     <div class="game-container">
         <canvas id="gameCanvas" width="800" height="500"></canvas>
+        <div class="combo-display">
+            <div class="combo-text">連擊倍數</div>
+            <div class="combo-count" id="comboCount">x1</div>
+            <div class="combo-timer">
+                <div class="combo-timer-fill" id="comboTimer"></div>
+            </div>
+        </div>
         <div id="gameOver" class="game-over">
             <h2>遊戲結束</h2>
             <p>最終分數: <span id="finalScore">0</span></p>
+            <p>最高連擊: <span id="maxCombo">x1</span></p>
             <button id="restartButton">重新開始遊戲</button>
+        </div>
+        <div id="levelUp" class="level-up">
+            <h2>關卡完成！</h2>
+            <p>第<span id="currentLevel">1</span>關完成</p>
+            <p>獲得額外生命！</p>
+            <button id="nextLevelButton">下一關</button>
         </div>
     </div>
     
@@ -236,9 +311,10 @@
         <h2>遊戲說明</h2>
         <p>使用 <span class="key">←</span> <span class="key">→</span> 方向鍵或 <span class="key">A</span> <span class="key">D</span> 鍵控制方塊左右移動。</p>
         <p>使用 <span class="key">空格鍵</span> 或 <span class="key">↑</span> 方向鍵或 <span class="key">W</span> 鍵讓方塊跳躍。</p>
-        <p>收集所有星星獲得高分，避免從平台上掉落。</p>
+        <p>收集星星獲得高分，連續收集獲得連擊倍數！</p>
         <p>每掉落一次會損失一條生命，生命值歸零則遊戲結束。</p>
-        <p>在某些平台上跳躍會獲得額外彈跳力！</p>
+        <p>完成關卡後地圖會隨機變化，增加挑戰性！</p>
+        <p><strong>連擊系統</strong>: 3秒內收集下一個星星，倍數會增加！</p>
     </div>
 
     <script>
@@ -246,16 +322,22 @@
         const canvas = document.getElementById('gameCanvas');
         const ctx = canvas.getContext('2d');
         const scoreElement = document.getElementById('score');
-        const starsElement = document.getElementById('stars');
+        const levelElement = document.getElementById('level');
         const livesElement = document.getElementById('lives');
         const gameOverElement = document.getElementById('gameOver');
+        const levelUpElement = document.getElementById('levelUp');
         const finalScoreElement = document.getElementById('finalScore');
+        const maxComboElement = document.getElementById('maxCombo');
+        const currentLevelElement = document.getElementById('currentLevel');
+        const comboCountElement = document.getElementById('comboCount');
+        const comboTimerElement = document.getElementById('comboTimer');
         
         // 按鈕元素
         const startButton = document.getElementById('startButton');
         const pauseButton = document.getElementById('pauseButton');
         const resetButton = document.getElementById('resetButton');
         const restartButton = document.getElementById('restartButton');
+        const nextLevelButton = document.getElementById('nextLevelButton');
         const helpButton = document.getElementById('helpButton');
         
         // 移動設備控制按鈕
@@ -263,22 +345,24 @@
         const rightBtn = document.getElementById('rightBtn');
         const jumpBtn = document.getElementById('jumpBtn');
         
-        // 遊戲狀態 - 調整物理參數
+        // 遊戲狀態
         let game = {
             running: false,
             paused: false,
             score: 0,
-            starsCollected: 0,
-            totalStars: 10,
-            lives: 3,
             level: 1,
-            gravity: 0.4,       // 降低重力，使跳躍更柔和
-            friction: 0.85,     // 增加摩擦力，減速更快
+            lives: 3,
+            gravity: 0.28,
+            friction: 0.85,
             keys: {},
-            lastFrameTime: 0
+            lastFrameTime: 0,
+            combo: 1,
+            comboTime: 0,
+            maxCombo: 1,
+            lastStarTime: 0
         };
         
-        // 玩家方塊 - 降低速度
+        // 玩家方塊
         const player = {
             x: canvas.width / 2 - 25,
             y: canvas.height / 2,
@@ -286,62 +370,61 @@
             height: 30,
             velX: 0,
             velY: 0,
-            speed: 3.5,         // 降低水平移動速度
+            speed: 3.2,
             jumping: false,
             color: '#00dbde',
             canJump: true,
             lastPlatform: null,
             justBounced: false,
+            maxJumpHeight: 8.2,
             
             draw: function() {
                 ctx.fillStyle = this.color;
                 ctx.fillRect(this.x, this.y, this.width, this.height);
                 
-                // 添加一些細節
                 ctx.fillStyle = '#ffffff';
                 ctx.fillRect(this.x + 5, this.y + 5, 8, 8);
                 ctx.fillRect(this.x + 17, this.y + 5, 8, 8);
                 
-                // 如果剛彈跳，顯示特效
                 if (this.justBounced) {
                     ctx.fillStyle = '#ff9900';
                     ctx.beginPath();
                     ctx.arc(this.x + this.width/2, this.y - 15, 8, 0, Math.PI * 2);
                     ctx.fill();
                 }
+                
+                if (game.combo > 1) {
+                    ctx.fillStyle = '#ffdd00';
+                    ctx.font = 'bold 16px Arial';
+                    ctx.textAlign = 'center';
+                    ctx.fillText(`x${game.combo}`, this.x + this.width/2, this.y - 25);
+                    ctx.textAlign = 'left';
+                }
             },
             
             update: function(deltaTime) {
-                // 重置彈跳標記
                 this.justBounced = false;
                 
-                // 左右移動
                 if (game.keys['ArrowLeft'] || game.keys['KeyA'] || game.keys['a']) {
                     this.velX = -this.speed;
                 } else if (game.keys['ArrowRight'] || game.keys['KeyD'] || game.keys['d']) {
                     this.velX = this.speed;
                 } else {
-                    this.velX *= game.friction; // 使用遊戲設定的摩擦力
+                    this.velX *= game.friction;
                 }
                 
-                // 跳躍 - 降低跳躍速度
                 if ((game.keys['Space'] || game.keys['ArrowUp'] || game.keys['KeyW'] || game.keys['w']) && this.canJump && !this.jumping) {
-                    this.velY = -9;  // 降低跳躍初始速度
+                    this.velY = -this.maxJumpHeight;
                     this.jumping = true;
                     this.canJump = false;
                     
-                    // 創建跳躍特效
                     createParticles(this.x + this.width/2, this.y + this.height, this.color, 5);
                 }
                 
-                // 應用重力
                 this.velY += game.gravity;
-                
-                // 更新位置
                 this.x += this.velX;
                 this.y += this.velY;
                 
-                // 邊界檢查
                 if (this.x < 0) {
                     this.x = 0;
                     this.velX = 0;
@@ -351,7 +434,6 @@
                     this.velX = 0;
                 }
                 
-                // 如果玩家掉落到底部，重置位置並減少生命
                 if (this.y > canvas.height) {
                     game.lives--;
                     livesElement.textContent = game.lives;
@@ -364,7 +446,7 @@
             }
         };
         
-        // 平台類別 - 調整彈跳參數
+        // 平台類別
         class Platform {
             constructor(x, y, width, height, color = '#4ecca3', bounceFactor = 1.0) {
                 this.x = x;
@@ -374,22 +456,19 @@
                 this.color = color;
                 this.bounceFactor = bounceFactor;
                 this.isSolid = true;
-                this.bounceVelocity = 8;  // 降低基礎彈跳速度
+                this.bounceVelocity = 7.0;
+                this.lastBounceTime = 0;
             }
             
             draw() {
-                // 繪製平台主體
                 ctx.fillStyle = this.color;
                 ctx.fillRect(this.x, this.y, this.width, this.height);
                 
-                // 繪製平台邊框
                 ctx.strokeStyle = this.bounceFactor > 1.0 ? '#ffaa00' : '#2a8c6e';
                 ctx.lineWidth = 2;
                 ctx.strokeRect(this.x, this.y, this.width, this.height);
                 
-                // 平台細節
                 if (this.bounceFactor > 1.0) {
-                    // 高彈跳平台 - 彈簧圖案
                     ctx.fillStyle = '#ffdd00';
                     for (let i = 0; i < this.width; i += 20) {
                         ctx.beginPath();
@@ -397,14 +476,12 @@
                         ctx.fill();
                     }
                 } else {
-                    // 普通平台
                     ctx.fillStyle = '#386fa4';
                     for (let i = 0; i < this.width; i += 15) {
                         ctx.fillRect(this.x + i, this.y + this.height - 5, 8, 5);
                     }
                 }
                 
-                // 顯示彈跳係數
                 if (this.bounceFactor > 1.0) {
                     ctx.fillStyle = '#ffffff';
                     ctx.font = 'bold 12px Arial';
@@ -414,9 +491,7 @@
                 }
             }
             
-            // 檢查與玩家的碰撞並處理彈跳
             checkCollision() {
-                // 計算玩家與平台的邊界
                 const playerLeft = player.x;
                 const playerRight = player.x + player.width;
                 const playerTop = player.y;
@@ -427,50 +502,66 @@
                 const platformTop = this.y;
                 const platformBottom = this.y + this.height;
                 
-                // 檢查是否有重疊
                 if (playerRight > platformLeft && 
                     playerLeft < platformRight && 
                     playerBottom > platformTop && 
                     playerTop < platformBottom) {
                     
-                    // 計算各個方向的重疊量
                     const overlapLeft = playerRight - platformLeft;
                     const overlapRight = platformRight - playerLeft;
                     const overlapTop = playerBottom - platformTop;
                     const overlapBottom = platformBottom - playerTop;
                     
-                    // 找出最小的重疊方向
                     const minOverlap = Math.min(overlapLeft, overlapRight, overlapTop, overlapBottom);
                     
-                    // 根據最小重疊方向解決碰撞
                     if (minOverlap === overlapTop && player.velY > 0) {
-                        // 從上方碰撞（落在平台上）
                         player.y = platformTop - player.height;
                         
-                        // 如果是第一次接觸這個平台，應用彈跳
-                        if (player.lastPlatform !== this) {
-                            // 計算彈跳速度（降低整體彈跳高度）
-                            const bounceSpeed = Math.max(
-                                this.bounceVelocity * this.bounceFactor, 
-                                Math.abs(player.velY) * this.bounceFactor * 0.5
-                            );
+                        const currentTime = Date.now();
+                        
+                        if (player.lastPlatform !== this || currentTime - this.lastBounceTime > 100) {
+                            let bounceSpeed;
                             
-                            // 應用彈跳
+                            if (this.bounceFactor > 1.0) {
+                                const effectiveBounceFactor = this.bounceFactor * 1.1;
+                                bounceSpeed = Math.max(
+                                    this.bounceVelocity * effectiveBounceFactor,
+                                    Math.abs(player.velY) * effectiveBounceFactor * 0.6
+                                );
+                            } else {
+                                const heightMultiplier = 1.2;
+                                bounceSpeed = Math.max(
+                                    this.bounceVelocity * heightMultiplier,
+                                    Math.abs(player.velY) * 0.5
+                                );
+                            }
+                            
+                            bounceSpeed = Math.min(bounceSpeed, 16);
+                            
                             player.velY = -bounceSpeed;
                             player.jumping = true;
                             player.canJump = false;
                             player.justBounced = true;
                             player.lastPlatform = this;
+                            this.lastBounceTime = currentTime;
                             
-                            // 創建彈跳特效
+                            const particleColor = this.bounceFactor > 1.0 ? '#ff9900' : '#4ecca3';
                             createParticles(
                                 player.x + player.width/2, 
                                 player.y + player.height, 
-                                this.bounceFactor > 1.0 ? '#ff9900' : this.color, 
-                                10
+                                particleColor, 
+                                8
                             );
+                            
+                            if (bounceSpeed > 10) {
+                                createParticles(
+                                    player.x + player.width/2, 
+                                    player.y, 
+                                    '#ffff00', 
+                                    4
+                                );
+                            }
                         } else {
-                            // 已經在這個平台上，停止彈跳
                             player.velY = 0;
                             player.jumping = false;
                             player.canJump = true;
@@ -478,23 +569,19 @@
                         
                         return 'top';
                     } else if (minOverlap === overlapBottom) {
-                        // 從下方碰撞（頭撞到平台）
                         player.y = platformBottom;
-                        player.velY = Math.abs(player.velY) * 0.2; // 更輕微的反彈
+                        player.velY = Math.abs(player.velY) * 0.25;
                         return 'bottom';
                     } else if (minOverlap === overlapLeft) {
-                        // 從左側碰撞
                         player.x = platformLeft - player.width;
                         player.velX = 0;
                         return 'left';
                     } else if (minOverlap === overlapRight) {
-                        // 從右側碰撞
                         player.x = platformRight;
                         player.velX = 0;
                         return 'right';
                     }
                 } else {
-                    // 如果玩家離開了這個平台，重置記錄
                     if (player.lastPlatform === this) {
                         player.lastPlatform = null;
                     }
@@ -523,17 +610,14 @@
                 ctx.translate(this.x, this.y);
                 ctx.rotate(this.rotation);
                 
-                // 星星脈動效果
                 const pulseRadius = this.radius + Math.sin(this.pulse) * 2;
                 
-                // 繪製星星
                 ctx.fillStyle = '#ffdd00';
                 ctx.beginPath();
                 for (let i = 0; i < 5; i++) {
                     const angle = (i * 2 * Math.PI) / 5;
                     const spikeAngle = angle - Math.PI / 2;
                     
-                    // 外部點
                     const outerX = Math.cos(spikeAngle) * pulseRadius;
                     const outerY = Math.sin(spikeAngle) * pulseRadius;
                     
@@ -543,7 +627,6 @@
                         ctx.lineTo(outerX, outerY);
                     }
                     
-                    // 內部點
                     const innerAngle = spikeAngle + Math.PI / 5;
                     const innerX = Math.cos(innerAngle) * (pulseRadius / 2);
                     const innerY = Math.sin(innerAngle) * (pulseRadius / 2);
@@ -552,7 +635,6 @@
                 ctx.closePath();
                 ctx.fill();
                 
-                // 星星內部
                 ctx.fillStyle = '#ffffff';
                 ctx.beginPath();
                 ctx.arc(0, 0, pulseRadius / 2.5, 0, Math.PI * 2);
@@ -560,7 +642,6 @@
                 
                 ctx.restore();
                 
-                // 更新動畫
                 this.rotation += 0.05;
                 this.pulse += 0.1 * this.pulseDirection;
                 
@@ -585,100 +666,306 @@
             }
         }
         
-        // 創建平台 - 使用調整後的參數
-        const platforms = [
-            new Platform(100, 450, 150, 20, '#4ecca3', 1.0),
-            new Platform(300, 380, 120, 20, '#ff9a00', 1.4), // 高彈跳平台
-            new Platform(500, 320, 180, 20, '#4ecca3', 1.0),
-            new Platform(200, 250, 140, 20, '#4ecca3', 1.0),
-            new Platform(450, 200, 120, 20, '#ff9a00', 1.4), // 高彈跳平台
-            new Platform(100, 150, 160, 20, '#4ecca3', 1.0),
-            new Platform(350, 100, 200, 20, '#4ecca3', 1.0),
-            new Platform(600, 400, 150, 20, '#4ecca3', 1.0),
-            new Platform(650, 280, 100, 20, '#ff9a00', 1.6), // 超高彈跳平台
-            new Platform(50, 350, 120, 20, '#4ecca3', 1.0)
-        ];
+        // 遊戲物件
+        let platforms = [];
+        let stars = [];
         
-        // 創建星星
-        const stars = [];
-        const starPositions = [
-            {x: 175, y: 420},
-            {x: 360, y: 350},
-            {x: 590, y: 290},
-            {x: 270, y: 220},
-            {x: 510, y: 170},
-            {x: 180, y: 120},
-            {x: 450, y: 70},
-            {x: 675, y: 370},
-            {x: 700, y: 250},
-            {x: 110, y: 320}
-        ];
-        
-        starPositions.forEach(pos => {
-            stars.push(new Star(pos.x, pos.y));
-        });
-        
-        // 碰撞檢測
-        function checkCollision() {
-            player.jumping = true;
-            player.canJump = false;
+        // 改進的關卡生成算法 - 確保所有平台都可達
+        function initializeGameObjects() {
+            platforms = [];
+            stars = [];
             
-            // 檢查與所有平台的碰撞
-            let hasGroundCollision = false;
+            // 根據關卡調整難度 - 保持簡單
+            const basePlatformCount = 6;
+            const extraPlatforms = Math.min(Math.floor(game.level / 4), 2); // 降低難度增長
+            const platformCount = basePlatformCount + extraPlatforms;
             
-            for (let platform of platforms) {
-                const collisionSide = platform.checkCollision();
+            const minPlatformWidth = 120;    // 增加平台寬度
+            const maxPlatformWidth = 200;
+            const platformHeight = 20;
+            
+            // 1. 創建起始平台（底部中央）
+            const startPlatformWidth = 180;
+            const startPlatformX = canvas.width / 2 - startPlatformWidth / 2;
+            const startPlatformY = canvas.height - 120;
+            
+            const startPlatform = new Platform(
+                startPlatformX,
+                startPlatformY,
+                startPlatformWidth,
+                platformHeight,
+                '#4ecca3',
+                1.0
+            );
+            platforms.push(startPlatform);
+            
+            // 在起始平台上放一個星星
+            stars.push(new Star(
+                startPlatformX + startPlatformWidth / 2,
+                startPlatformY - 20
+            ));
+            
+            // 2. 創建可達的平台網絡（樹狀結構）
+            let remainingPlatforms = platformCount - 1;
+            let currentPlatforms = [startPlatform];
+            let platformIndex = 0;
+            
+            // 平台的最大垂直跳躍距離（根據物理計算）
+            const maxJumpHeight = 130; // 像素
+            const maxHorizontalDistance = 180; // 像素
+            
+            while (remainingPlatforms > 0 && platformIndex < currentPlatforms.length) {
+                const sourcePlatform = currentPlatforms[platformIndex];
                 
-                if (collisionSide === 'top') {
-                    hasGroundCollision = true;
+                // 從當前平台生成1-2個可達的子平台
+                const childrenToGenerate = Math.min(1 + Math.floor(Math.random() * 2), remainingPlatforms);
+                
+                for (let i = 0; i < childrenToGenerate; i++) {
+                    let validPosition = false;
+                    let attempts = 0;
+                    let newPlatform = null;
                     
-                    // 如果玩家站在平台上但不是剛彈跳
-                    if (!player.justBounced) {
-                        player.jumping = false;
-                        player.canJump = true;
+                    while (!validPosition && attempts < 50) {
+                        // 隨機決定新平台相對於源平台的位置
+                        const horizontalOffset = (Math.random() - 0.5) * 2 * maxHorizontalDistance;
+                        const verticalOffset = - (50 + Math.random() * (maxJumpHeight - 50)); // 向上
+                        
+                        // 計算新平台位置
+                        const centerX = sourcePlatform.x + sourcePlatform.width / 2;
+                        const centerY = sourcePlatform.y;
+                        
+                        let newX = centerX + horizontalOffset;
+                        let newY = centerY + verticalOffset;
+                        
+                        // 確保新平台在畫布內且不會太高
+                        if (newY < 60) { // 不會太高
+                            attempts++;
+                            continue;
+                        }
+                        
+                        // 隨機決定平台寬度
+                        const newWidth = minPlatformWidth + Math.random() * (maxPlatformWidth - minPlatformWidth);
+                        newX -= newWidth / 2;
+                        
+                        // 確保在畫布內
+                        newX = Math.max(20, Math.min(newX, canvas.width - newWidth - 20));
+                        
+                        // 檢查與現有平台的重疊
+                        validPosition = true;
+                        for (const platform of platforms) {
+                            const horizontalDistance = Math.abs((platform.x + platform.width/2) - (newX + newWidth/2));
+                            const verticalDistance = Math.abs(platform.y - newY);
+                            
+                            // 檢查重疊
+                            if (horizontalDistance < (platform.width/2 + newWidth/2 + 30) && 
+                                verticalDistance < 30) {
+                                validPosition = false;
+                                break;
+                            }
+                        }
+                        
+                        if (validPosition) {
+                            // 檢查是否可從源平台到達
+                            const horizontalDistance = Math.abs((sourcePlatform.x + sourcePlatform.width/2) - (newX + newWidth/2));
+                            const verticalDistance = sourcePlatform.y - newY; // 正數表示新平台在上方
+                            
+                            // 確保新平台在可達範圍內
+                            if (verticalDistance > 0 && verticalDistance <= maxJumpHeight && 
+                                horizontalDistance <= maxHorizontalDistance) {
+                                
+                                // 隨機決定平台類型
+                                const bouncyChance = 0.2 + Math.min(game.level * 0.02, 0.15);
+                                const isBouncy = Math.random() < bouncyChance;
+                                const bounceFactor = isBouncy ? 1.15 + Math.random() * 0.25 : 1.0;
+                                const color = isBouncy ? '#ff9a00' : '#4ecca3';
+                                
+                                newPlatform = new Platform(newX, newY, newWidth, platformHeight, color, bounceFactor);
+                            } else {
+                                validPosition = false;
+                            }
+                        }
+                        
+                        attempts++;
+                    }
+                    
+                    if (newPlatform && validPosition) {
+                        platforms.push(newPlatform);
+                        currentPlatforms.push(newPlatform);
+                        remainingPlatforms--;
+                        
+                        // 在新平台上放1-2個星星
+                        const starsOnPlatform = Math.random() < 0.7 ? 1 : 2;
+                        for (let s = 0; s < starsOnPlatform; s++) {
+                            const starX = newPlatform.x + newPlatform.width * (0.2 + 0.6 * Math.random());
+                            const starY = newPlatform.y - 20;
+                            stars.push(new Star(starX, starY));
+                        }
+                        
+                        // 如果需要連接平台（水平距離較遠時）
+                        const horizontalDistance = Math.abs((sourcePlatform.x + sourcePlatform.width/2) - (newPlatform.x + newPlatform.width/2));
+                        const verticalDistance = sourcePlatform.y - newPlatform.y;
+                        
+                        if (horizontalDistance > 120 && verticalDistance < 100 && remainingPlatforms > 0) {
+                            // 添加一個中間平台作為橋樑
+                            const bridgeX = (sourcePlatform.x + sourcePlatform.width/2 + newPlatform.x + newPlatform.width/2) / 2 - 60;
+                            const bridgeY = (sourcePlatform.y + newPlatform.y) / 2;
+                            const bridgeWidth = 120;
+                            
+                            let bridgeValid = true;
+                            for (const platform of platforms) {
+                                if (Math.abs(platform.y - bridgeY) < 30 && 
+                                    Math.abs((platform.x + platform.width/2) - (bridgeX + bridgeWidth/2)) < (platform.width/2 + bridgeWidth/2 + 20)) {
+                                    bridgeValid = false;
+                                    break;
+                                }
+                            }
+                            
+                            if (bridgeValid) {
+                                const bridgePlatform = new Platform(
+                                    bridgeX,
+                                    bridgeY,
+                                    bridgeWidth,
+                                    platformHeight,
+                                    '#4ecca3',
+                                    1.0
+                                );
+                                
+                                platforms.push(bridgePlatform);
+                                currentPlatforms.push(bridgePlatform);
+                                remainingPlatforms--;
+                                
+                                // 在橋樑上放一個星星
+                                stars.push(new Star(
+                                    bridgeX + bridgeWidth / 2,
+                                    bridgeY - 20
+                                ));
+                            }
+                        }
                     }
                 }
+                
+                platformIndex++;
             }
             
-            // 如果沒有任何平台碰撞，玩家正在跳躍
-            if (!hasGroundCollision) {
-                player.jumping = true;
-                player.canJump = false;
+            // 3. 確保至少有5個星星，最多12個
+            while (stars.length < 5) {
+                const randomPlatform = platforms[Math.floor(Math.random() * platforms.length)];
+                const starX = randomPlatform.x + randomPlatform.width * (0.2 + 0.6 * Math.random());
+                const starY = randomPlatform.y - 20;
+                stars.push(new Star(starX, starY));
             }
             
-            // 檢查星星收集
-            for (let star of stars) {
-                if (!star.collected && star.checkCollision()) {
-                    star.collected = true;
-                    game.starsCollected++;
-                    game.score += 100;
-                    
-                    // 更新顯示
-                    scoreElement.textContent = game.score;
-                    starsElement.textContent = `${game.starsCollected}/${game.totalStars}`;
-                    
-                    // 創建收集效果
-                    createParticles(star.x, star.y, '#ffdd00', 15);
-                    
-                    // 如果收集了所有星星，增加生命和分數
-                    if (game.starsCollected === game.totalStars) {
-                        game.lives++;
-                        game.score += 500;
-                        livesElement.textContent = game.lives;
-                        scoreElement.textContent = game.score;
-                        
-                        // 重置星星
-                        setTimeout(() => {
-                            stars.forEach(s => s.collected = false);
-                            game.starsCollected = 0;
-                            starsElement.textContent = `${game.starsCollected}/${game.totalStars}`;
-                        }, 2000);
-                    }
+            if (stars.length > 12) {
+                stars = stars.slice(0, 12);
+            }
+            
+            // 4. 驗證所有平台都可從起始平台到達（路徑檢查）
+            console.log(`生成完畢：${platforms.length}個平台，${stars.length}個星星`);
+        }
+        
+        // 連擊系統
+        function updateComboSystem(currentTime) {
+            if (game.comboTime > 0) {
+                game.comboTime -= 16;
+                if (game.comboTime <= 0) {
+                    game.combo = 1;
+                    game.comboTime = 0;
+                }
+                
+                const timerPercent = (game.comboTime / 3000) * 100;
+                comboTimerElement.style.width = `${timerPercent}%`;
+            }
+            
+            comboCountElement.textContent = `x${game.combo}`;
+            
+            if (game.combo >= 5) {
+                comboCountElement.style.color = '#ff3300';
+                comboCountElement.style.textShadow = '0 0 15px rgba(255, 51, 0, 0.7)';
+            } else if (game.combo >= 3) {
+                comboCountElement.style.color = '#ff9900';
+                comboCountElement.style.textShadow = '0 0 12px rgba(255, 153, 0, 0.6)';
+            } else {
+                comboCountElement.style.color = '#ffdd00';
+                comboCountElement.style.textShadow = '0 0 10px rgba(255, 221, 0, 0.5)';
+            }
+        }
+        
+        // 收集星星
+        function collectStar(star, currentTime) {
+            star.collected = true;
+            
+            const timeSinceLastStar = currentTime - game.lastStarTime;
+            if (timeSinceLastStar < 3000) {
+                game.combo++;
+                game.comboTime = 3000;
+                
+                createParticles(star.x, star.y, '#ff9900', 8 + game.combo * 2);
+                createFloatingText(`連擊 x${game.combo}!`, star.x, star.y, '#ff9900');
+                
+                if (game.combo > game.maxCombo) {
+                    game.maxCombo = game.combo;
+                }
+            } else {
+                game.combo = 1;
+                game.comboTime = 3000;
+            }
+            
+            game.lastStarTime = currentTime;
+            
+            const baseScore = 100;
+            const comboBonus = Math.floor(baseScore * (game.combo - 1) * 0.5);
+            const totalScore = baseScore + comboBonus;
+            
+            game.score += totalScore;
+            scoreElement.textContent = game.score;
+            
+            createParticles(star.x, star.y, '#ffdd00', 12);
+            
+            const remainingStars = stars.filter(s => !s.collected).length;
+            if (remainingStars === 0) {
+                completeLevel();
+            }
+        }
+        
+        // 創建漂浮文字
+        const floatingTexts = [];
+        
+        function createFloatingText(text, x, y, color) {
+            floatingTexts.push({
+                text: text,
+                x: x,
+                y: y,
+                color: color,
+                life: 60,
+                velocityY: -1.5
+            });
+        }
+        
+        function updateFloatingTexts() {
+            for (let i = floatingTexts.length - 1; i >= 0; i--) {
+                const text = floatingTexts[i];
+                text.y += text.velocityY;
+                text.life--;
+                
+                if (text.life <= 0) {
+                    floatingTexts.splice(i, 1);
                 }
             }
         }
         
-        // 粒子系統用於特效
+        function drawFloatingTexts() {
+            for (const text of floatingTexts) {
+                ctx.fillStyle = text.color;
+                ctx.font = 'bold 20px Arial';
+                ctx.textAlign = 'center';
+                ctx.globalAlpha = text.life / 60;
+                ctx.fillText(text.text, text.x, text.y);
+                ctx.globalAlpha = 1.0;
+                ctx.textAlign = 'left';
+            }
+        }
+        
+        // 粒子系統
         const particles = [];
         
         function createParticles(x, y, color, count = 8) {
@@ -686,9 +973,9 @@
                 particles.push({
                     x: x,
                     y: y,
-                    velX: (Math.random() - 0.5) * 4,  // 降低粒子速度
-                    velY: (Math.random() - 0.5) * 4,
-                    radius: Math.random() * 3 + 2,
+                    velX: (Math.random() - 0.5) * 3.5,
+                    velY: (Math.random() - 0.5) * 3.5,
+                    radius: Math.random() * 2.5 + 1.5,
                     color: color,
                     life: 25
                 });
@@ -703,7 +990,6 @@
                 p.y += p.velY;
                 p.life--;
                 
-                // 移除生命結束的粒子
                 if (p.life <= 0) {
                     particles.splice(i, 1);
                 }
@@ -721,10 +1007,82 @@
             }
         }
         
+        // 碰撞檢測
+        function checkCollision() {
+            player.jumping = true;
+            player.canJump = false;
+            
+            let hasGroundCollision = false;
+            
+            for (let platform of platforms) {
+                const collisionSide = platform.checkCollision();
+                
+                if (collisionSide === 'top') {
+                    hasGroundCollision = true;
+                    
+                    if (!player.justBounced) {
+                        player.jumping = false;
+                        player.canJump = true;
+                    }
+                }
+            }
+            
+            if (!hasGroundCollision) {
+                player.jumping = true;
+                player.canJump = false;
+            }
+            
+            const currentTime = Date.now();
+            for (let star of stars) {
+                if (!star.collected && star.checkCollision()) {
+                    collectStar(star, currentTime);
+                }
+            }
+        }
+        
+        // 完成關卡
+        function completeLevel() {
+            game.running = false;
+            game.paused = true;
+            
+            game.lives++;
+            livesElement.textContent = game.lives;
+            
+            currentLevelElement.textContent = game.level;
+            levelUpElement.style.display = 'block';
+        }
+        
+        // 下一關
+        function nextLevel() {
+            game.level++;
+            levelElement.textContent = `第${game.level}關`;
+            
+            initializeGameObjects();
+            resetPlayer();
+            
+            levelUpElement.style.display = 'none';
+            
+            game.running = true;
+            game.paused = false;
+            game.lastFrameTime = performance.now();
+            requestAnimationFrame(gameLoop);
+        }
+        
         // 重置玩家位置
         function resetPlayer() {
-            player.x = canvas.width / 2 - 25;
-            player.y = canvas.height / 2;
+            // 找到起始平台（最底部的那個）
+            const startPlatform = platforms.reduce((lowest, platform) => {
+                return platform.y > lowest.y ? platform : lowest;
+            });
+            
+            if (startPlatform) {
+                player.x = startPlatform.x + startPlatform.width / 2 - player.width / 2;
+                player.y = startPlatform.y - player.height - 10;
+            } else {
+                player.x = canvas.width / 2 - player.width / 2;
+                player.y = canvas.height / 2;
+            }
+            
             player.velX = 0;
             player.velY = 0;
             player.jumping = false;
@@ -737,58 +1095,63 @@
         function endGame() {
             game.running = false;
             finalScoreElement.textContent = game.score;
+            maxComboElement.textContent = `x${game.maxCombo}`;
             gameOverElement.style.display = 'block';
         }
         
         // 重置遊戲
         function resetGame() {
             game.score = 0;
-            game.starsCollected = 0;
-            game.lives = 3;
             game.level = 1;
+            game.lives = 3;
+            game.combo = 1;
+            game.comboTime = 0;
+            game.maxCombo = 1;
+            game.lastStarTime = 0;
             
             scoreElement.textContent = game.score;
-            starsElement.textContent = `${game.starsCollected}/${game.totalStars}`;
+            levelElement.textContent = `第${game.level}關`;
             livesElement.textContent = game.lives;
+            comboCountElement.textContent = 'x1';
+            comboTimerElement.style.width = '0%';
             
-            stars.forEach(star => star.collected = false);
+            initializeGameObjects();
+            
             particles.length = 0;
+            floatingTexts.length = 0;
             
             resetPlayer();
             gameOverElement.style.display = 'none';
+            levelUpElement.style.display = 'none';
         }
         
         // 遊戲主循環
         function gameLoop(timestamp) {
-            // 計算時間差
             const deltaTime = timestamp - game.lastFrameTime || 0;
             game.lastFrameTime = timestamp;
             
-            // 清除畫布
+            updateComboSystem(timestamp);
+            
             ctx.clearRect(0, 0, canvas.width, canvas.height);
             
-            // 繪製背景
             ctx.fillStyle = '#0f3460';
             ctx.fillRect(0, 0, canvas.width, canvas.height);
             
-            // 繪製漸變背景效果
             const gradient = ctx.createLinearGradient(0, 0, canvas.width, canvas.height);
             gradient.addColorStop(0, 'rgba(15, 52, 96, 0.8)');
             gradient.addColorStop(1, 'rgba(30, 30, 60, 0.8)');
             ctx.fillStyle = gradient;
             ctx.fillRect(0, 0, canvas.width, canvas.height);
             
-            // 繪製平台
             platforms.forEach(platform => platform.draw());
-            
-            // 繪製星星
             stars.forEach(star => star.draw());
             
-            // 更新和繪製粒子
             updateParticles();
             drawParticles();
             
-            // 更新和繪製玩家
+            updateFloatingTexts();
+            drawFloatingTexts();
+            
             if (game.running && !game.paused) {
                 player.update(deltaTime);
                 checkCollision();
@@ -796,20 +1159,19 @@
             
             player.draw();
             
-            // 繪製遊戲狀態文字
             ctx.fillStyle = 'rgba(255, 255, 255, 0.8)';
             ctx.font = '16px Arial';
             ctx.fillText(`分數: ${game.score}`, 20, 30);
-            ctx.fillText(`星星: ${game.starsCollected}/${game.totalStars}`, 20, 55);
+            ctx.fillText(`關卡: ${game.level}`, 20, 55);
             ctx.fillText(`生命: ${game.lives}`, 20, 80);
+            ctx.fillText(`連擊: x${game.combo}`, 20, 105);
             
-            // 繪製速度提示
             ctx.fillStyle = 'rgba(255, 255, 255, 0.6)';
             ctx.font = '14px Arial';
-            ctx.fillText('速度已調整 - 更易控制', 20, canvas.height - 20);
-            ctx.fillText('橙色平台彈跳力更高', 20, canvas.height - 40);
+            ctx.fillText('關卡已優化 - 所有平台都可到達！', 20, canvas.height - 20);
+            ctx.fillText('使用樹狀結構生成確保可玩性', 20, canvas.height - 40);
             
-            if (game.paused) {
+            if (game.paused && levelUpElement.style.display !== 'block') {
                 ctx.fillStyle = 'rgba(0, 0, 0, 0.7)';
                 ctx.fillRect(0, 0, canvas.width, canvas.height);
                 
@@ -822,7 +1184,6 @@
                 ctx.textAlign = 'left';
             }
             
-            // 繼續遊戲循環
             if (game.running) {
                 requestAnimationFrame(gameLoop);
             }
@@ -832,7 +1193,6 @@
         window.addEventListener('keydown', (e) => {
             game.keys[e.code] = true;
             
-            // 防止空格鍵滾動頁面
             if (e.code === 'Space') {
                 e.preventDefault();
             }
@@ -918,8 +1278,10 @@
             startButton.textContent = '暫停遊戲';
         });
         
+        nextLevelButton.addEventListener('click', nextLevel);
+        
         helpButton.addEventListener('click', () => {
-            alert('Boxel Rebound 遊戲說明：\n\n1. 使用方向鍵或A/D鍵控制方塊左右移動\n2. 使用空格鍵或上方向鍵或W鍵跳躍\n3. 收集所有星星獲得高分\n4. 避免從平台掉落，每次掉落損失一條生命\n5. 橙色平台有更高彈跳力\n6. 收集所有星星後會重置並獲得額外生命\n\n最新調整：\n- 降低移動和跳躍速度\n- 更柔和的物理效果\n- 更好的遊戲控制性');
+            alert('彈跳方塊遊戲說明：\n\n1. 使用方向鍵或A/D鍵控制方塊左右移動\n2. 使用空格鍵或上方向鍵或W鍵跳躍\n3. 收集星星獲得分數，3秒內連續收集獲得連擊倍數！\n4. 避免從平台掉落，每次掉落損失一條生命\n5. 所有平台都有基本彈跳，橙色平台彈跳力更高\n6. 收集所有星星後進入下一關，地圖會隨機變化\n7. 完成關卡獲得額外生命\n\n最新調整：\n- 改進關卡生成算法，使用樹狀結構\n- 確保所有平台都可從起始平台到達\n- 降低難度增長速度\n- 增加平台寬度，更容易站立');
         });
         
         // 初始遊戲設定
@@ -927,4 +1289,4 @@
         requestAnimationFrame(gameLoop);
     </script>
 </body>
-</html> 
+</html>

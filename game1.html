@@ -45,8 +45,9 @@ h1 {
 }
 
 .game-info {
-    display: flex;
-    justify-content: space-between;
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 15px;
     width: 100%;
     margin-bottom: 20px;
     background-color: #222;
@@ -55,24 +56,32 @@ h1 {
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
 }
 
-.score-container, .high-score-container, .fruit-counter-container {
+.info-container {
     text-align: center;
 }
 
-.score-label, .high-score-label, .fruit-counter-label {
-    font-size: 1.2rem;
+.info-label {
+    font-size: 1rem;
     color: #aaa;
     margin-bottom: 5px;
 }
 
-.score-value, .high-score-value, .fruit-counter-value {
-    font-size: 2rem;
+.info-value {
+    font-size: 1.8rem;
     font-weight: bold;
     color: #4CAF50;
 }
 
-.fruit-counter-value {
+.timer-value {
+    color: #2196F3;
+}
+
+.high-time-value {
     color: #FF9800;
+}
+
+.fruit-counter-value {
+    color: #9C27B0;
 }
 
 .game-container {
@@ -87,73 +96,29 @@ h1 {
     box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
 }
 
-.controls {
+.game-status {
+    font-size: 1.3rem;
+    margin-top: 15px;
+    height: 30px;
+    color: #ff9800;
+    font-weight: bold;
+    text-align: center;
+    width: 100%;
+}
+
+/* 控制按鈕區域 */
+.control-buttons {
     display: flex;
     flex-direction: column;
     align-items: center;
-    margin-top: 20px;
     width: 100%;
-}
-
-.instructions {
-    background-color: #222;
-    padding: 20px;
-    border-radius: 10px;
     margin-bottom: 20px;
-    width: 100%;
-    line-height: 1.6;
-}
-
-.instructions h2 {
-    color: #4CAF50;
-    margin-bottom: 10px;
-    font-size: 1.5rem;
-}
-
-.instructions ul {
-    margin-left: 20px;
-}
-
-.instructions li {
-    margin-bottom: 8px;
-}
-
-.key-controls {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
-    gap: 15px;
-    margin-bottom: 20px;
-}
-
-.key {
-    background-color: #333;
-    padding: 10px 20px;
-    border-radius: 8px;
-    font-weight: bold;
-    min-width: 60px;
-    text-align: center;
-    box-shadow: 0 3px 5px rgba(0, 0, 0, 0.2);
-}
-
-.key.up-down {
-    order: 1;
-    width: 100%;
-    display: flex;
-    justify-content: center;
-    gap: 15px;
-}
-
-.key.left-right {
-    order: 2;
-    display: flex;
-    gap: 15px;
 }
 
 .buttons {
     display: flex;
     gap: 15px;
-    margin-top: 10px;
+    margin-bottom: 15px;
 }
 
 button {
@@ -194,11 +159,65 @@ button:active {
     background-color: #d32f2f;
 }
 
-.game-status {
-    font-size: 1.3rem;
-    margin-top: 15px;
-    height: 30px;
-    color: #ff9800;
+/* 鍵盤控制指示 */
+.key-controls {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 15px;
+    margin-bottom: 10px;
+}
+
+.key {
+    background-color: #333;
+    padding: 10px 20px;
+    border-radius: 8px;
+    font-weight: bold;
+    min-width: 60px;
+    text-align: center;
+    box-shadow: 0 3px 5px rgba(0, 0, 0, 0.2);
+}
+
+.key.up-down {
+    order: 1;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+}
+
+.key.left-right {
+    order: 2;
+    display: flex;
+    gap: 15px;
+}
+
+/* 遊戲說明 */
+.instructions {
+    background-color: #222;
+    padding: 20px;
+    border-radius: 10px;
+    margin-top: 10px;
+    width: 100%;
+    line-height: 1.6;
+}
+
+.instructions h2 {
+    color: #4CAF50;
+    margin-bottom: 10px;
+    font-size: 1.5rem;
+}
+
+.instructions ul {
+    margin-left: 20px;
+}
+
+.instructions li {
+    margin-bottom: 8px;
+}
+
+.instructions .highlight {
+    color: #4CAF50;
     font-weight: bold;
 }
 
@@ -261,7 +280,7 @@ footer {
 
 @media (max-width: 768px) {
     .game-info {
-        flex-direction: column;
+        grid-template-columns: repeat(2, 1fr);
         gap: 15px;
     }
     
@@ -281,6 +300,15 @@ footer {
         width: 100%;
         height: auto;
     }
+    
+    .buttons {
+        flex-direction: column;
+        width: 100%;
+    }
+    
+    button {
+        width: 100%;
+    }
 }
 
 @media (max-width: 480px) {
@@ -292,13 +320,12 @@ footer {
         padding: 15px;
     }
     
-    .buttons {
-        flex-direction: column;
-        width: 100%;
+    .info-label {
+        font-size: 0.9rem;
     }
     
-    button {
-        width: 100%;
+    .info-value {
+        font-size: 1.5rem;
     }
 }
 </style>
@@ -311,17 +338,37 @@ footer {
     </header>
     
     <div class="game-info">
-        <div class="score-container">
-            <div class="score-label">當前分數</div>
-            <div id="score" class="score-value">0</div>
+        <div class="info-container">
+            <div class="info-label">當前分數</div>
+            <div id="score" class="info-value">0</div>
         </div>
-        <div class="high-score-container">
-            <div class="high-score-label">最高分數</div>
-            <div id="highScore" class="high-score-value">0</div>
+        <div class="info-container">
+            <div class="info-label">最高分數</div>
+            <div id="highScore" class="info-value">0</div>
         </div>
-        <div class="fruit-counter-container">
-            <div class="fruit-counter-label">水果計數</div>
-            <div id="fruitCounter" class="fruit-counter-value">0/5</div>
+        <div class="info-container">
+            <div class="info-label">遊戲時間</div>
+            <div id="timer" class="info-value timer-value">00:00</div>
+        </div>
+        <div class="info-container">
+            <div class="info-label">最佳時間</div>
+            <div id="highTime" class="info-value high-time-value">00:00</div>
+        </div>
+        <div class="info-container">
+            <div class="info-label">水果計數</div>
+            <div id="fruitCounter" class="info-value fruit-counter-value">0/5</div>
+        </div>
+        <div class="info-container">
+            <div class="info-label">水果數量</div>
+            <div id="foodCount" class="info-value">3</div>
+        </div>
+        <div class="info-container">
+            <div class="info-label">蛇身長度</div>
+            <div id="snakeLength" class="info-value">3</div>
+        </div>
+        <div class="info-container">
+            <div class="info-label">遊戲速度</div>
+            <div id="gameSpeed" class="info-value">慢</div>
         </div>
     </div>
     
@@ -329,19 +376,14 @@ footer {
         <canvas id="gameCanvas" width="600" height="400"></canvas>
     </div>
     
-    <div id="gameStatus" class="game-status"></div>
+    <div id="gameStatus" class="game-status">點擊「開始遊戲」按鈕開始</div>
     
-    <div class="controls">
-        <div class="instructions">
-            <h2>遊戲說明</h2>
-            <ul>
-                <li>使用鍵盤方向鍵或 WASD 控制蛇的移動方向</li>
-                <li>蛇需要吃掉水果才能變長並增加分數</li>
-                <li>每吃掉一個水果得10分</li>
-                <li>每吃掉5個水果：蛇身會變色、水果會變換、立即加100分</li>
-                <li>蛇撞到牆壁或自己的身體遊戲結束</li>
-                <li>點擊暫停/繼續按鈕可以暫停遊戲</li>
-            </ul>
+    <!-- 控制按鈕區域（在遊戲畫布下方，說明上方） -->
+    <div class="control-buttons">
+        <div class="buttons">
+            <button id="startBtn">開始遊戲</button>
+            <button id="pauseBtn">暫停遊戲</button>
+            <button id="restartBtn">重新開始</button>
         </div>
         
         <div class="key-controls">
@@ -363,12 +405,28 @@ footer {
                 <button class="mobile-btn down" id="downBtn">↓</button>
             </div>
         </div>
-        
-        <div class="buttons">
-            <button id="startBtn">開始遊戲</button>
-            <button id="pauseBtn">暫停遊戲</button>
-            <button id="restartBtn">重新開始</button>
-        </div>
+    </div>
+    
+    <!-- 遊戲說明（在控制按鈕下方） -->
+    <div class="instructions">
+        <h2>遊戲說明</h2>
+        <ul>
+            <li>使用鍵盤<span class="highlight">方向鍵</span>或<span class="highlight">WASD</span>控制蛇的移動方向</li>
+            <li>蛇需要吃掉<span class="highlight">水果</span>才能變長並增加分數</li>
+            <li>每吃掉一個水果得<span class="highlight">10分</span></li>
+            <li><span class="highlight">每吃掉5個水果：</span>
+                <ul style="margin-left: 20px; margin-top: 5px;">
+                    <li>蛇身會<span class="highlight">變色</span></li>
+                    <li>水果會<span class="highlight">變換</span>種類</li>
+                    <li>立即加<span class="highlight">100分</span>獎勵</li>
+                </ul>
+            </li>
+            <li><span class="highlight">多個水果</span>同時出現在遊戲中，增加挑戰性</li>
+            <li><span class="highlight">計時器</span>記錄你的遊戲時間，挑戰最佳記錄！</li>
+            <li>遊戲開始速度為<span class="highlight">慢速</span>，隨著<span class="highlight">分數增加</span>速度會<span class="highlight">逐漸加快</span>（每100分加速一次）</li>
+            <li>蛇撞到<span class="highlight">牆壁</span>或<span class="highlight">自己的身體</span>遊戲結束</li>
+            <li>點擊<span class="highlight">暫停/繼續</span>按鈕可以暫停遊戲</li>
+        </ul>
     </div>
     
     <footer>
@@ -382,8 +440,13 @@ const canvas = document.getElementById('gameCanvas');
 const ctx = canvas.getContext('2d');
 const scoreElement = document.getElementById('score');
 const highScoreElement = document.getElementById('highScore');
+const timerElement = document.getElementById('timer');
+const highTimeElement = document.getElementById('highTime');
 const gameStatusElement = document.getElementById('gameStatus');
 const fruitCounterElement = document.getElementById('fruitCounter');
+const foodCountElement = document.getElementById('foodCount');
+const snakeLengthElement = document.getElementById('snakeLength');
+const gameSpeedElement = document.getElementById('gameSpeed');
 const startBtn = document.getElementById('startBtn');
 const pauseBtn = document.getElementById('pauseBtn');
 const restartBtn = document.getElementById('restartBtn');
@@ -400,10 +463,10 @@ const gridWidth = canvas.width / gridSize;
 const gridHeight = canvas.height / gridSize;
 
 let snake = [];
-let food = {};
+let foods = []; // 改為食物陣列
 let direction = 'right';
 let nextDirection = 'right';
-let gameSpeed = 120; // 毫秒
+let gameSpeedValue = 180; // 改為慢速開始（原來是120）
 let gameInterval;
 let score = 0;
 let highScore = localStorage.getItem('snakeHighScore') || 0;
@@ -414,6 +477,18 @@ let gamePaused = false;
 let fruitCount = 0; // 吃水果計數器
 let snakeColorIndex = 0; // 蛇身顏色索引
 let fruitTypeIndex = 0; // 水果類型索引
+let lastSpeedUpdateScore = 0; // 記錄上次更新速度時的分數
+
+// 計時器變數
+let startTime = 0;
+let elapsedTime = 0;
+let timerInterval;
+let highTime = localStorage.getItem('snakeHighTime') || 0;
+
+// 食物設定
+const MAX_FOODS = 5; // 同時最多食物數量
+const MIN_FOODS = 3; // 最少食物數量
+let currentFoodCount = MIN_FOODS;
 
 // 蛇身顏色陣列
 const snakeColors = [
@@ -439,6 +514,52 @@ const fruitTypes = [
     { name: '鳳梨', color: '#FFC107', stemColor: '#8D6E63', leafColor: '#7CB342' }
 ];
 
+// 格式化時間
+function formatTime(seconds) {
+    const mins = Math.floor(seconds / 60);
+    const secs = Math.floor(seconds % 60);
+    return `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+}
+
+// 更新計時器
+function updateTimer() {
+    if (gameRunning && !gamePaused) {
+        elapsedTime = Math.floor((Date.now() - startTime) / 1000);
+        timerElement.textContent = formatTime(elapsedTime);
+        
+        // 隨著時間增加食物數量（每30秒增加一個）
+        if (elapsedTime % 30 === 0 && foods.length < MAX_FOODS && elapsedTime > 0) {
+            generateFood();
+            gameStatusElement.textContent = `遊戲進行${elapsedTime}秒，新增一個水果！`;
+            setTimeout(() => {
+                if (gameRunning && !gamePaused) {
+                    gameStatusElement.textContent = '遊戲進行中';
+                }
+            }, 1500);
+        }
+    }
+}
+
+// 開始計時器
+function startTimer() {
+    startTime = Date.now() - (elapsedTime * 1000);
+    timerInterval = setInterval(updateTimer, 1000);
+}
+
+// 停止計時器
+function stopTimer() {
+    clearInterval(timerInterval);
+}
+
+// 更新最佳時間
+function updateHighTime() {
+    if (elapsedTime > highTime) {
+        highTime = elapsedTime;
+        highTimeElement.textContent = formatTime(highTime);
+        localStorage.setItem('snakeHighTime', highTime);
+    }
+}
+
 // 初始化遊戲
 function initGame() {
     // 初始化蛇 - 從中間開始，長度為3
@@ -448,12 +569,20 @@ function initGame() {
         {x: Math.floor(gridWidth / 2) - 2, y: Math.floor(gridHeight / 2)}
     ];
     
-    // 初始化食物
-    generateFood();
+    // 初始化食物陣列
+    foods = [];
+    currentFoodCount = MIN_FOODS;
+    for (let i = 0; i < currentFoodCount; i++) {
+        generateFood();
+    }
     
     // 重置方向
     direction = 'right';
     nextDirection = 'right';
+    
+    // 重置遊戲速度為慢速
+    gameSpeedValue = 180;
+    lastSpeedUpdateScore = 0;
     
     // 重置分數
     score = 0;
@@ -466,22 +595,88 @@ function initGame() {
     fruitTypeIndex = 0;
     fruitCounterElement.textContent = `${fruitCount}/5`;
     
+    // 重置計時器
+    elapsedTime = 0;
+    timerElement.textContent = '00:00';
+    highTimeElement.textContent = formatTime(highTime);
+    
+    // 更新顯示資訊
+    updateDisplayInfo();
+    
     // 重置遊戲狀態
     gameStatusElement.textContent = '點擊「開始遊戲」按鈕開始';
     gameRunning = false;
     gamePaused = false;
     
+    // 停止計時器
+    stopTimer();
+    
     // 繪製初始狀態
     draw();
+}
+
+// 更新顯示資訊
+function updateDisplayInfo() {
+    foodCountElement.textContent = foods.length;
+    snakeLengthElement.textContent = snake.length;
+    
+    // 更新遊戲速度顯示
+    if (gameSpeedValue <= 100) {
+        gameSpeedElement.textContent = '快';
+    } else if (gameSpeedValue <= 150) {
+        gameSpeedElement.textContent = '中';
+    } else {
+        gameSpeedElement.textContent = '慢';
+    }
+}
+
+// 檢查並更新遊戲速度（根據分數） - 修正為每100分加速一次
+function updateGameSpeed() {
+    // 每增加100分，遊戲速度加快一次（從50分改為100分）
+    const speedIncreaseThreshold = 100;
+    
+    // 計算應該增加幾次速度
+    const speedIncreases = Math.floor((score - lastSpeedUpdateScore) / speedIncreaseThreshold);
+    
+    if (speedIncreases > 0) {
+        // 每次加速減少15毫秒，但最低不低於60毫秒
+        const newSpeed = Math.max(60, gameSpeedValue - (speedIncreases * 15));
+        
+        if (newSpeed < gameSpeedValue) {
+            gameSpeedValue = newSpeed;
+            
+            // 更新遊戲間隔
+            clearInterval(gameInterval);
+            gameInterval = setInterval(update, gameSpeedValue);
+            
+            // 更新顯示
+            updateDisplayInfo();
+            
+            // 顯示速度變化提示
+            let speedLevel = '慢';
+            if (gameSpeedValue <= 100) speedLevel = '快';
+            else if (gameSpeedValue <= 150) speedLevel = '中';
+            
+            gameStatusElement.textContent = `分數達到${score}，遊戲速度已加快為${speedLevel}速！`;
+            setTimeout(() => {
+                if (gameRunning && !gamePaused) {
+                    gameStatusElement.textContent = '遊戲進行中';
+                }
+            }, 1500);
+            
+            // 更新記錄（確保下次在正確的分數閾值檢查）
+            lastSpeedUpdateScore = score - (score % speedIncreaseThreshold);
+        }
+    }
 }
 
 // 生成食物
 function generateFood() {
     // 隨機位置
-    food = {
+    const food = {
         x: Math.floor(Math.random() * gridWidth),
         y: Math.floor(Math.random() * gridHeight),
-        type: fruitTypes[fruitTypeIndex] // 設定水果類型
+        type: fruitTypes[fruitTypeIndex] // 使用當前水果類型
     };
     
     // 確保食物不會生成在蛇身上
@@ -490,6 +685,17 @@ function generateFood() {
             return generateFood(); // 遞迴直到找到空位置
         }
     }
+    
+    // 確保食物不會生成在其他食物上
+    for (let existingFood of foods) {
+        if (existingFood.x === food.x && existingFood.y === food.y) {
+            return generateFood(); // 遞迴直到找到空位置
+        }
+    }
+    
+    // 將食物加入陣列
+    foods.push(food);
+    updateDisplayInfo();
 }
 
 // 繪製遊戲
@@ -576,47 +782,49 @@ function draw() {
         }
     }
     
-    // 繪製食物
-    const currentFruit = food.type;
-    ctx.fillStyle = currentFruit.color;
-    
-    // 根據水果類型繪製不同形狀
-    if (currentFruit.name === '香蕉') {
-        // 香蕉形狀
-        ctx.beginPath();
-        const foodX = food.x * gridSize + gridSize / 2;
-        const foodY = food.y * gridSize + gridSize / 2;
-        ctx.moveTo(foodX - gridSize/3, foodY);
-        ctx.bezierCurveTo(
-            foodX - gridSize/4, foodY - gridSize/3,
-            foodX + gridSize/4, foodY - gridSize/3,
-            foodX + gridSize/3, foodY
-        );
-        ctx.bezierCurveTo(
-            foodX + gridSize/4, foodY + gridSize/3,
-            foodX - gridSize/4, foodY + gridSize/3,
-            foodX - gridSize/3, foodY
-        );
-        ctx.closePath();
-        ctx.fill();
-    } else {
-        // 圓形水果 (蘋果、橘子等)
-        ctx.beginPath();
-        const foodX = food.x * gridSize + gridSize / 2;
-        const foodY = food.y * gridSize + gridSize / 2;
-        const radius = gridSize / 2 - 2;
-        ctx.arc(foodX, foodY, radius, 0, Math.PI * 2);
-        ctx.fill();
+    // 繪製所有食物
+    for (let food of foods) {
+        const currentFruit = food.type;
+        ctx.fillStyle = currentFruit.color;
         
-        // 水果梗
-        ctx.fillStyle = currentFruit.stemColor;
-        ctx.fillRect(foodX - 1, foodY - radius - 3, 2, 5);
-        
-        // 水果葉子
-        ctx.fillStyle = currentFruit.leafColor;
-        ctx.beginPath();
-        ctx.ellipse(foodX + 5, foodY - radius - 2, 4, 2, 0, 0, Math.PI * 2);
-        ctx.fill();
+        // 根據水果類型繪製不同形狀
+        if (currentFruit.name === '香蕉') {
+            // 香蕉形狀
+            ctx.beginPath();
+            const foodX = food.x * gridSize + gridSize / 2;
+            const foodY = food.y * gridSize + gridSize / 2;
+            ctx.moveTo(foodX - gridSize/3, foodY);
+            ctx.bezierCurveTo(
+                foodX - gridSize/4, foodY - gridSize/3,
+                foodX + gridSize/4, foodY - gridSize/3,
+                foodX + gridSize/3, foodY
+            );
+            ctx.bezierCurveTo(
+                foodX + gridSize/4, foodY + gridSize/3,
+                foodX - gridSize/4, foodY + gridSize/3,
+                foodX - gridSize/3, foodY
+            );
+            ctx.closePath();
+            ctx.fill();
+        } else {
+            // 圓形水果 (蘋果、橘子等)
+            ctx.beginPath();
+            const foodX = food.x * gridSize + gridSize / 2;
+            const foodY = food.y * gridSize + gridSize / 2;
+            const radius = gridSize / 2 - 2;
+            ctx.arc(foodX, foodY, radius, 0, Math.PI * 2);
+            ctx.fill();
+            
+            // 水果梗
+            ctx.fillStyle = currentFruit.stemColor;
+            ctx.fillRect(foodX - 1, foodY - radius - 3, 2, 5);
+            
+            // 水果葉子
+            ctx.fillStyle = currentFruit.leafColor;
+            ctx.beginPath();
+            ctx.ellipse(foodX + 5, foodY - radius - 2, 4, 2, 0, 0, Math.PI * 2);
+            ctx.fill();
+        }
     }
 }
 
@@ -660,60 +868,77 @@ function update() {
     snake.unshift(head);
     
     // 檢查是否吃到食物
-    if (head.x === food.x && head.y === food.y) {
-        // 增加水果計數
-        fruitCount++;
-        fruitCounterElement.textContent = `${fruitCount}/5`;
-        
-        // 增加分數
-        score += 10;
-        scoreElement.textContent = score;
-        
-        // 檢查是否達到5個水果
-        if (fruitCount >= 5) {
-            // 立即加100分
-            score += 100;
-            scoreElement.textContent = score;
+    let ateFood = false;
+    for (let i = foods.length - 1; i >= 0; i--) {
+        if (head.x === foods[i].x && head.y === foods[i].y) {
+            // 移除被吃掉的食物
+            foods.splice(i, 1);
             
-            // 蛇身變色
-            snakeColorIndex = (snakeColorIndex + 1) % snakeColors.length;
-            
-            // 水果變換為另一種水果
-            fruitTypeIndex = (fruitTypeIndex + 1) % fruitTypes.length;
-            
-            // 重置水果計數器
-            fruitCount = 0;
+            // 增加水果計數
+            fruitCount++;
             fruitCounterElement.textContent = `${fruitCount}/5`;
             
-            // 顯示特效訊息
-            gameStatusElement.textContent = `恭喜！吃到5個水果，蛇身變色，獲得100分！`;
-            setTimeout(() => {
-                if (gameRunning && !gamePaused) {
-                    gameStatusElement.textContent = '遊戲進行中';
-                }
-            }, 2000);
+            // 增加分數
+            score += 10;
+            scoreElement.textContent = score;
+            
+            // 檢查是否達到5個水果
+            if (fruitCount >= 5) {
+                // 立即加100分
+                score += 100;
+                scoreElement.textContent = score;
+                
+                // 蛇身變色
+                snakeColorIndex = (snakeColorIndex + 1) % snakeColors.length;
+                
+                // 水果變換為另一種水果
+                fruitTypeIndex = (fruitTypeIndex + 1) % fruitTypes.length;
+                
+                // 重置水果計數器
+                fruitCount = 0;
+                fruitCounterElement.textContent = `${fruitCount}/5`;
+                
+                // 顯示特效訊息
+                gameStatusElement.textContent = `恭喜！吃到5個水果，蛇身變色，獲得100分！`;
+                setTimeout(() => {
+                    if (gameRunning && !gamePaused) {
+                        gameStatusElement.textContent = '遊戲進行中';
+                    }
+                }, 2000);
+            }
+            
+            // 檢查並更新遊戲速度（根據分數）
+            updateGameSpeed();
+            
+            // 生成新食物 (確保有足夠的食物)
+            if (foods.length < MAX_FOODS) {
+                generateFood();
+            }
+            
+            ateFood = true;
+            break;
         }
-        
-        // 更新最高分
-        if (score > highScore) {
-            highScore = score;
-            highScoreElement.textContent = highScore;
-            localStorage.setItem('snakeHighScore', highScore);
-        }
-        
-        // 生成新食物
-        generateFood();
-        
-        // 隨著分數增加，遊戲速度加快
-        if (score % 50 === 0 && gameSpeed > 60) {
-            gameSpeed -= 10;
-            clearInterval(gameInterval);
-            gameInterval = setInterval(update, gameSpeed);
-        }
-    } else {
-        // 如果沒吃到食物，移除蛇尾
+    }
+    
+    // 如果沒吃到食物，移除蛇尾
+    if (!ateFood) {
         snake.pop();
     }
+    
+    // 確保有足夠的食物
+    while (foods.length < MIN_FOODS) {
+        generateFood();
+    }
+    
+    // 更新最高分
+    if (score > highScore) {
+        highScore = score;
+        highScoreElement.textContent = highScore;
+        localStorage.setItem('snakeHighScore', highScore);
+    }
+    
+    // 更新顯示資訊
+    updateDisplayInfo();
     
     // 繪製更新後的遊戲狀態
     draw();
@@ -725,9 +950,12 @@ function startGame() {
         gameRunning = true;
         gamePaused = false;
         gameStatusElement.textContent = '遊戲進行中';
-        gameInterval = setInterval(update, gameSpeed);
+        gameInterval = setInterval(update, gameSpeedValue);
         startBtn.textContent = '遊戲進行中';
         startBtn.disabled = true;
+        
+        // 開始計時器
+        startTimer();
     }
 }
 
@@ -739,14 +967,20 @@ function togglePause() {
         // 繼續遊戲
         gamePaused = false;
         gameStatusElement.textContent = '遊戲進行中';
-        gameInterval = setInterval(update, gameSpeed);
+        gameInterval = setInterval(update, gameSpeedValue);
         pauseBtn.textContent = '暫停遊戲';
+        
+        // 繼續計時器
+        startTimer();
     } else {
         // 暫停遊戲
         gamePaused = true;
         clearInterval(gameInterval);
         gameStatusElement.textContent = '遊戲已暫停';
         pauseBtn.textContent = '繼續遊戲';
+        
+        // 停止計時器
+        stopTimer();
     }
 }
 
@@ -754,7 +988,14 @@ function togglePause() {
 function gameOver() {
     gameRunning = false;
     clearInterval(gameInterval);
-    gameStatusElement.textContent = `遊戲結束！最終分數: ${score}`;
+    
+    // 停止計時器
+    stopTimer();
+    
+    // 更新最佳時間
+    updateHighTime();
+    
+    gameStatusElement.textContent = `遊戲結束！最終分數: ${score}，遊戲時間: ${formatTime(elapsedTime)}`;
     startBtn.textContent = '重新開始';
     startBtn.disabled = false;
     
@@ -765,11 +1006,13 @@ function gameOver() {
     ctx.fillStyle = '#fff';
     ctx.font = '36px Arial';
     ctx.textAlign = 'center';
-    ctx.fillText('遊戲結束', canvas.width / 2, canvas.height / 2 - 30);
+    ctx.fillText('遊戲結束', canvas.width / 2, canvas.height / 2 - 50);
     
     ctx.font = '24px Arial';
-    ctx.fillText(`分數: ${score}`, canvas.width / 2, canvas.height / 2 + 10);
-    ctx.fillText(`最高分數: ${highScore}`, canvas.width / 2, canvas.height / 2 + 40);
+    ctx.fillText(`分數: ${score}`, canvas.width / 2, canvas.height / 2 - 10);
+    ctx.fillText(`最高分數: ${highScore}`, canvas.width / 2, canvas.height / 2 + 20);
+    ctx.fillText(`遊戲時間: ${formatTime(elapsedTime)}`, canvas.width / 2, canvas.height / 2 + 50);
+    ctx.fillText(`最佳時間: ${formatTime(highTime)}`, canvas.width / 2, canvas.height / 2 + 80);
 }
 
 // 鍵盤控制
@@ -816,6 +1059,7 @@ pauseBtn.addEventListener('click', togglePause);
 
 restartBtn.addEventListener('click', function() {
     clearInterval(gameInterval);
+    stopTimer();
     initGame();
     if (!gamePaused) {
         startGame();
