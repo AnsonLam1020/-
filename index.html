@@ -3,45 +3,914 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>我的遊戲館</title>
+    <title>Anson Game - 遊戲中心</title>
     <style>
-        body {
-            font-family: Arial, sans-serif;
-            background: #1a1a2e;
-            color: white;
-            text-align: center;
-            padding: 40px;
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
         }
-        h1 { margin-bottom: 30px; }
-        .games { display: flex; flex-wrap: wrap; justify-content: center; gap: 15px; }
+        
+        body {
+            font-family: 'Segoe UI', 'Microsoft JhengHei', sans-serif;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            color: white;
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+        
+        header {
+            text-align: center;
+            margin-bottom: 40px;
+            padding-top: 20px;
+        }
+        
+        h1 {
+            font-size: 3.5rem;
+            margin-bottom: 10px;
+            background: linear-gradient(90deg, #ff6b6b, #4ecdc4, #45b7d1);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            text-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+            letter-spacing: 1px;
+        }
+        
+        .logo {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 10px;
+        }
+        
+        .logo-icon {
+            font-size: 2.5rem;
+            margin-right: 15px;
+        }
+        
+        .subtitle {
+            font-size: 1.2rem;
+            color: #a9b7c6;
+            margin-bottom: 30px;
+        }
+        
+        .category-tabs {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 15px;
+            margin-bottom: 40px;
+        }
+        
+        .category-tab {
+            background: rgba(45, 45, 68, 0.7);
+            border: none;
+            color: white;
+            padding: 12px 25px;
+            border-radius: 50px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-size: 1rem;
+        }
+        
+        .category-tab:hover {
+            background: rgba(61, 61, 92, 0.9);
+            transform: translateY(-3px);
+        }
+        
+        .category-tab.active {
+            background: linear-gradient(90deg, #4ecdc4, #45b7d1);
+            box-shadow: 0 5px 15px rgba(69, 183, 209, 0.4);
+        }
+        
+        .category-section {
+            margin-bottom: 60px;
+        }
+        
+        .category-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 25px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid rgba(78, 205, 196, 0.3);
+        }
+        
+        .category-icon {
+            font-size: 2rem;
+            margin-right: 15px;
+            background: rgba(78, 205, 196, 0.2);
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .category-title {
+            font-size: 2rem;
+            color: #4ecdc4;
+        }
+        
+        .category-description {
+            color: #a9b7c6;
+            margin-left: 20px;
+            font-size: 1rem;
+        }
+        
+        .games-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 25px;
+        }
+        
         .game-card {
-            background: #2d2d44;
-            padding: 25px 35px;
-            border-radius: 10px;
+            background: rgba(45, 45, 68, 0.8);
+            border-radius: 15px;
+            padding: 25px 20px;
             text-decoration: none;
             color: white;
-            transition: 0.3s;
+            transition: all 0.3s ease;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            position: relative;
+            overflow: hidden;
         }
-        .game-card:hover { background: #3d3d5c; transform: scale(1.05); }
-        .icon { font-size: 2em; }
+        
+        .game-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 5px;
+            background: linear-gradient(90deg, #ff6b6b, #4ecdc4, #45b7d1);
+        }
+        
+        .game-card:hover {
+            transform: translateY(-10px);
+            background: rgba(61, 61, 92, 0.9);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.3);
+        }
+        
+        .game-icon {
+            font-size: 3rem;
+            margin-bottom: 15px;
+            height: 70px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .game-title {
+            font-size: 1.4rem;
+            margin-bottom: 10px;
+            font-weight: 600;
+            text-align: center;
+        }
+        
+        .game-description {
+            font-size: 0.9rem;
+            color: #a9b7c6;
+            text-align: center;
+            line-height: 1.5;
+            margin-bottom: 20px;
+            flex-grow: 1;
+        }
+        
+        .game-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-bottom: 15px;
+            justify-content: center;
+        }
+        
+        .game-tag {
+            background: rgba(78, 205, 196, 0.2);
+            color: #4ecdc4;
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 500;
+        }
+        
+        .play-btn {
+            background: linear-gradient(90deg, #4ecdc4, #45b7d1);
+            color: white;
+            border: none;
+            padding: 10px 25px;
+            border-radius: 50px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            box-shadow: 0 5px 15px rgba(69, 183, 209, 0.3);
+            width: 100%;
+            max-width: 180px;
+        }
+        
+        .play-btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 8px 20px rgba(69, 183, 209, 0.5);
+        }
+        
+        .play-btn.coming-soon {
+            background: linear-gradient(90deg, #6b6b6b, #8a8a8a);
+            cursor: not-allowed;
+        }
+        
+        .play-btn.coming-soon:hover {
+            transform: none;
+            box-shadow: 0 5px 15px rgba(139, 139, 139, 0.3);
+        }
+        
+        footer {
+            text-align: center;
+            margin-top: 60px;
+            padding: 25px;
+            color: #a9b7c6;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            background: rgba(26, 26, 46, 0.7);
+            border-radius: 10px;
+        }
+        
+        .footer-logo {
+            font-size: 1.8rem;
+            margin-bottom: 15px;
+            font-weight: bold;
+            color: #4ecdc4;
+        }
+        
+        /* 響應式設計 */
+        @media (max-width: 992px) {
+            .category-header {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            
+            .category-description {
+                margin-left: 0;
+                margin-top: 10px;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 2.5rem;
+            }
+            
+            .category-title {
+                font-size: 1.6rem;
+            }
+            
+            .games-grid {
+                grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+                gap: 20px;
+            }
+            
+            .game-card {
+                padding: 20px 15px;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            h1 {
+                font-size: 2rem;
+            }
+            
+            .games-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .category-tabs {
+                gap: 10px;
+            }
+            
+            .category-tab {
+                padding: 10px 20px;
+                font-size: 0.9rem;
+            }
+        }
+        
+        /* 動畫效果 */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .category-section {
+            animation: fadeIn 0.5s ease forwards;
+        }
+        
+        /* 隱藏/顯示類別 */
+        .category-hidden {
+            display: none;
+        }
+        
+        /* 所有遊戲的特殊樣式 */
+        #all-games .category-icon {
+            background: linear-gradient(90deg, rgba(255, 107, 107, 0.2), rgba(78, 205, 196, 0.2), rgba(69, 183, 209, 0.2));
+        }
+        
+        .all-games-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 25px;
+        }
+        
+        .all-games-section {
+            margin-bottom: 40px;
+        }
+        
+        .all-games-section-title {
+            font-size: 1.5rem;
+            color: #ff6b6b;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid rgba(255, 107, 107, 0.3);
+        }
     </style>
 </head>
 <body>
-    <h1>🎮 我的遊戲館</h1>
-    <div class="games">
-        <a href="game1.html" class="game-card">
-            <div class="icon">🐍</div>
-            <div>貪食蛇</div>
-        </a>
-        <a href="game2.html" class="game-card">
-            <div class="icon">♦️</div>
-            <div>彈跳方塊遊戲</div>
-        </a>
-         <a href="game3.html" class="game-card">
-            <div class="icon">✊</div>
-            <div>包剪揼</div>
-        </a>
-        <!-- 加更多遊戲 -->
+    <div class="container">
+        <header>
+            <div class="logo">
+                <div class="logo-icon">🎮</div>
+                <h1>Anson Game</h1>
+            </div>
+            <p class="subtitle">探索各種精彩遊戲，享受無盡樂趣！</p>
+            
+            <div class="category-tabs">
+                <button class="category-tab active" data-category="all-games">所有遊戲</button>
+                <button class="category-tab" data-category="mini-games">小遊戲</button>
+                <button class="category-tab" data-category="interactive-games">互動遊戲</button>
+                <button class="category-tab" data-category="puzzle-games">益智遊戲</button>
+                <button class="category-tab" data-category="arcade-games">街機遊戲</button>
+            </div>
+        </header>
+        
+        <!-- 所有遊戲類別 -->
+        <section class="category-section" id="all-games">
+            <div class="category-header">
+                <div class="category-icon">🌟</div>
+                <div>
+                    <h2 class="category-title">所有遊戲</h2>
+                    <p class="category-description">Anson Game 的所有遊戲合集，包含各種類型，一次滿足您的遊戲需求！</p>
+                </div>
+            </div>
+            
+            <!-- 小遊戲區塊 -->
+            <div class="all-games-section">
+                <h3 class="all-games-section-title">🎯 小遊戲</h3>
+                <div class="all-games-grid">
+                    <!-- 貪食蛇遊戲 -->
+                    <a href="game1.html" class="game-card">
+                        <div class="game-icon">🐍</div>
+                        <div class="game-title">貪食蛇</div>
+                        <div class="game-tags">
+                            <span class="game-tag">經典</span>
+                            <span class="game-tag">街機</span>
+                        </div>
+                        <div class="game-description">控制蛇吃掉食物變長，避免撞到牆壁或自己的身體。看看你能得多少分！</div>
+                        <button class="play-btn">開始遊戲</button>
+                    </a>
+                    
+                    <!-- 彈跳方塊遊戲 -->
+                    <a href="game2.html" class="game-card">
+                        <div class="game-icon">♦️</div>
+                        <div class="game-title">彈跳方塊</div>
+                        <div class="game-tags">
+                            <span class="game-tag">動作</span>
+                            <span class="game-tag">反應</span>
+                        </div>
+                        <div class="game-description">控制方塊跳躍，避開障礙物，盡可能獲得高分。簡單易玩但極具挑戰性！</div>
+                        <button class="play-btn">開始遊戲</button>
+                    </a>
+                    
+                    <!-- 包剪揼遊戲 -->
+                    <a href="game3.html" class="game-card">
+                        <div class="game-icon">✊✋✌️</div>
+                        <div class="game-title">包剪揼</div>
+                        <div class="game-tags">
+                            <span class="game-tag">對戰</span>
+                            <span class="game-tag">運氣</span>
+                        </div>
+                        <div class="game-description">經典的猜拳遊戲，與電腦對戰。包贏剪、剪贏揼、揼贏包，看看你能連勝幾局！</div>
+                        <button class="play-btn">開始遊戲</button>
+                    </a>
+                    
+                    <!-- 打地鼠 -->
+                    <div class="game-card">
+                        <div class="game-icon">🐹</div>
+                        <div class="game-title">打地鼠</div>
+                        <div class="game-tags">
+                            <span class="game-tag">反應</span>
+                            <span class="game-tag">趣味</span>
+                        </div>
+                        <div class="game-description">地鼠會從洞裡隨機冒出，點擊它們獲得積分，挑戰你的反應速度！</div>
+                        <button class="play-btn coming-soon">即將推出</button>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 互動遊戲區塊 -->
+            <div class="all-games-section">
+                <h3 class="all-games-section-title">👥 互動遊戲</h3>
+                <div class="all-games-grid">
+                    <!-- 互動故事遊戲 -->
+                    <div class="game-card">
+                        <div class="game-icon">📖</div>
+                        <div class="game-title">奇幻冒險</div>
+                        <div class="game-tags">
+                            <span class="game-tag">故事</span>
+                            <span class="game-tag">選擇</span>
+                        </div>
+                        <div class="game-description">一款互動式故事遊戲，你的每個選擇都會影響劇情發展，創造屬於你的冒險故事。</div>
+                        <button class="play-btn coming-soon">即將推出</button>
+                    </div>
+                    
+                    <!-- 多人對戰遊戲 -->
+                    <div class="game-card">
+                        <div class="game-icon">⚔️</div>
+                        <div class="game-title">勇士對決</div>
+                        <div class="game-tags">
+                            <span class="game-tag">對戰</span>
+                            <span class="game-tag">策略</span>
+                        </div>
+                        <div class="game-description">選擇你的勇士，與其他玩家或AI對戰，使用技能和策略擊敗對手！</div>
+                        <button class="play-btn coming-soon">即將推出</button>
+                    </div>
+                    
+                    <!-- 模擬經營遊戲 -->
+                    <div class="game-card">
+                        <div class="game-icon">🏪</div>
+                        <div class="game-title">商店模擬器</div>
+                        <div class="game-tags">
+                            <span class="game-tag">經營</span>
+                            <span class="game-tag">模擬</span>
+                        </div>
+                        <div class="game-description">經營你自己的商店，管理庫存、設定價格、服務顧客，打造你的商業帝國！</div>
+                        <button class="play-btn coming-soon">即將推出</button>
+                    </div>
+                    
+                    <!-- 角色扮演遊戲 -->
+                    <div class="game-card">
+                        <div class="game-icon">🧙</div>
+                        <div class="game-title">勇者傳說</div>
+                        <div class="game-tags">
+                            <span class="game-tag">RPG</span>
+                            <span class="game-tag">冒險</span>
+                        </div>
+                        <div class="game-description">扮演一名勇者，探索神秘世界，與怪物戰鬥，解開古老謎題，完成你的使命。</div>
+                        <button class="play-btn coming-soon">即將推出</button>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 益智遊戲區塊 -->
+            <div class="all-games-section">
+                <h3 class="all-games-section-title">🧠 益智遊戲</h3>
+                <div class="all-games-grid">
+                    <!-- 數獨遊戲 -->
+                    <div class="game-card">
+                        <div class="game-icon">🔢</div>
+                        <div class="game-title">數獨挑戰</div>
+                        <div class="game-tags">
+                            <span class="game-tag">邏輯</span>
+                            <span class="game-tag">數字</span>
+                        </div>
+                        <div class="game-description">經典數獨遊戲，填入數字使每行、每列和每個宮都包含1-9且不重複。</div>
+                        <button class="play-btn coming-soon">即將推出</button>
+                    </div>
+                    
+                    <!-- 拼圖遊戲 -->
+                    <div class="game-card">
+                        <div class="game-icon">🧩</div>
+                        <div class="game-title">拼圖遊戲</div>
+                        <div class="game-tags">
+                            <span class="game-tag">圖像</span>
+                            <span class="game-tag">耐心</span>
+                        </div>
+                        <div class="game-description">將打亂的圖片拼回原狀，挑戰你的觀察力和耐心。多種難度可供選擇。</div>
+                        <button class="play-btn coming-soon">即將推出</button>
+                    </div>
+                    
+                    <!-- 記憶配對遊戲 -->
+                    <div class="game-card">
+                        <div class="game-icon">🃏</div>
+                        <div class="game-title">記憶配對</div>
+                        <div class="game-tags">
+                            <span class="game-tag">記憶</span>
+                            <span class="game-tag">配對</span>
+                        </div>
+                        <div class="game-description">翻開卡片配對相同的圖案，訓練你的記憶力。挑戰最短時間完成遊戲！</div>
+                        <button class="play-btn coming-soon">即將推出</button>
+                    </div>
+                    
+                    <!-- 解謎遊戲 -->
+                    <div class="game-card">
+                        <div class="game-icon">🔍</div>
+                        <div class="game-title">密室逃脫</div>
+                        <div class="game-tags">
+                            <span class="game-tag">解謎</span>
+                            <span class="game-tag">逃脫</span>
+                        </div>
+                        <div class="game-description">被困在密室中，尋找線索，解開謎題，找到出口逃離房間！</div>
+                        <button class="play-btn coming-soon">即將推出</button>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 街機遊戲區塊 -->
+            <div class="all-games-section">
+                <h3 class="all-games-section-title">🕹️ 街機遊戲</h3>
+                <div class="all-games-grid">
+                    <!-- 射擊遊戲 -->
+                    <div class="game-card">
+                        <div class="game-icon">🎯</div>
+                        <div class="game-title">射擊靶場</div>
+                        <div class="game-tags">
+                            <span class="game-tag">射擊</span>
+                            <span class="game-tag">精準</span>
+                        </div>
+                        <div class="game-description">測試你的射擊技巧，擊中移動的目標獲得高分。多種武器和關卡等你挑戰。</div>
+                        <button class="play-btn coming-soon">即將推出</button>
+                    </div>
+                    
+                    <!-- 賽車遊戲 -->
+                    <div class="game-card">
+                        <div class="game-icon">🏎️</div>
+                        <div class="game-title">極速賽車</div>
+                        <div class="game-tags">
+                            <span class="game-tag">賽車</span>
+                            <span class="game-tag">速度</span>
+                        </div>
+                        <div class="game-description">駕駛賽車在各種賽道上飛馳，避開障礙物，超越對手，創造最快圈速！</div>
+                        <button class="play-btn coming-soon">即將推出</button>
+                    </div>
+                    
+                    <!-- 平台跳躍遊戲 -->
+                    <div class="game-card">
+                        <div class="game-icon">👾</div>
+                        <div class="game-title">平台冒險</div>
+                        <div class="game-tags">
+                            <span class="game-tag">跳躍</span>
+                            <span class="game-tag">動作</span>
+                        </div>
+                        <div class="game-description">控制角色在各平台間跳躍，避開陷阱，收集寶物，到達終點！</div>
+                        <button class="play-btn coming-soon">即將推出</button>
+                    </div>
+                    
+                    <!-- 飛行射擊遊戲 -->
+                    <div class="game-card">
+                        <div class="game-icon">✈️</div>
+                        <div class="game-title">太空侵略者</div>
+                        <div class="game-tags">
+                            <span class="game-tag">射擊</span>
+                            <span class="game-tag">經典</span>
+                        </div>
+                        <div class="game-description">經典太空射擊遊戲，控制戰機擊落外星入侵者，保護地球！</div>
+                        <button class="play-btn coming-soon">即將推出</button>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <!-- 小遊戲類別 -->
+        <section class="category-section category-hidden" id="mini-games">
+            <div class="category-header">
+                <div class="category-icon">🎯</div>
+                <div>
+                    <h2 class="category-title">小遊戲</h2>
+                    <p class="category-description">快速上手，輕鬆遊玩，適合短時間娛樂的迷你遊戲</p>
+                </div>
+            </div>
+            
+            <div class="games-grid">
+                <!-- 貪食蛇遊戲 -->
+                <a href="game1.html" class="game-card">
+                    <div class="game-icon">🐍</div>
+                    <div class="game-title">貪食蛇</div>
+                    <div class="game-tags">
+                        <span class="game-tag">經典</span>
+                        <span class="game-tag">街機</span>
+                    </div>
+                    <div class="game-description">控制蛇吃掉食物變長，避免撞到牆壁或自己的身體。看看你能得多少分！</div>
+                    <button class="play-btn">開始遊戲</button>
+                </a>
+                
+                <!-- 彈跳方塊遊戲 -->
+                <a href="game2.html" class="game-card">
+                    <div class="game-icon">♦️</div>
+                    <div class="game-title">彈跳方塊</div>
+                    <div class="game-tags">
+                        <span class="game-tag">動作</span>
+                        <span class="game-tag">反應</span>
+                    </div>
+                    <div class="game-description">控制方塊跳躍，避開障礙物，盡可能獲得高分。簡單易玩但極具挑戰性！</div>
+                    <button class="play-btn">開始遊戲</button>
+                </a>
+                
+                <!-- 包剪揼遊戲 -->
+                <a href="game3.html" class="game-card">
+                    <div class="game-icon">✊✋✌️</div>
+                    <div class="game-title">包剪揼</div>
+                    <div class="game-tags">
+                        <span class="game-tag">對戰</span>
+                        <span class="game-tag">運氣</span>
+                    </div>
+                    <div class="game-description">經典的猜拳遊戲，與電腦對戰。包贏剪、剪贏揼、揼贏包，看看你能連勝幾局！</div>
+                    <button class="play-btn">開始遊戲</button>
+                </a>
+                
+                <!-- 打地鼠 -->
+                <div class="game-card">
+                    <div class="game-icon">🐹</div>
+                    <div class="game-title">打地鼠</div>
+                    <div class="game-tags">
+                        <span class="game-tag">反應</span>
+                        <span class="game-tag">趣味</span>
+                    </div>
+                    <div class="game-description">地鼠會從洞裡隨機冒出，點擊它們獲得積分，挑戰你的反應速度！</div>
+                    <button class="play-btn coming-soon">即將推出</button>
+                </div>
+            </div>
+        </section>
+        
+        <!-- 互動遊戲類別 -->
+        <section class="category-section category-hidden" id="interactive-games">
+            <div class="category-header">
+                <div class="category-icon">👥</div>
+                <div>
+                    <h2 class="category-title">互動遊戲</h2>
+                    <p class="category-description">玩家與遊戲深度互動，具有豐富玩法和故事情節的遊戲</p>
+                </div>
+            </div>
+            
+            <div class="games-grid">
+                <!-- 互動故事遊戲 -->
+                <div class="game-card">
+                    <div class="game-icon">📖</div>
+                    <div class="game-title">奇幻冒險</div>
+                    <div class="game-tags">
+                        <span class="game-tag">故事</span>
+                        <span class="game-tag">選擇</span>
+                    </div>
+                    <div class="game-description">一款互動式故事遊戲，你的每個選擇都會影響劇情發展，創造屬於你的冒險故事。</div>
+                    <button class="play-btn coming-soon">即將推出</button>
+                </div>
+                
+                <!-- 多人對戰遊戲 -->
+                <div class="game-card">
+                    <div class="game-icon">⚔️</div>
+                    <div class="game-title">勇士對決</div>
+                    <div class="game-tags">
+                        <span class="game-tag">對戰</span>
+                        <span class="game-tag">策略</span>
+                    </div>
+                    <div class="game-description">選擇你的勇士，與其他玩家或AI對戰，使用技能和策略擊敗對手！</div>
+                    <button class="play-btn coming-soon">即將推出</button>
+                </div>
+                
+                <!-- 模擬經營遊戲 -->
+                <div class="game-card">
+                    <div class="game-icon">🏪</div>
+                    <div class="game-title">商店模擬器</div>
+                    <div class="game-tags">
+                        <span class="game-tag">經營</span>
+                        <span class="game-tag">模擬</span>
+                    </div>
+                    <div class="game-description">經營你自己的商店，管理庫存、設定價格、服務顧客，打造你的商業帝國！</div>
+                    <button class="play-btn coming-soon">即將推出</button>
+                </div>
+                
+                <!-- 角色扮演遊戲 -->
+                <div class="game-card">
+                    <div class="game-icon">🧙</div>
+                    <div class="game-title">勇者傳說</div>
+                    <div class="game-tags">
+                        <span class="game-tag">RPG</span>
+                        <span class="game-tag">冒險</span>
+                    </div>
+                    <div class="game-description">扮演一名勇者，探索神秘世界，與怪物戰鬥，解開古老謎題，完成你的使命。</div>
+                    <button class="play-btn coming-soon">即將推出</button>
+                </div>
+            </div>
+        </section>
+        
+        <!-- 益智遊戲類別 -->
+        <section class="category-section category-hidden" id="puzzle-games">
+            <div class="category-header">
+                <div class="category-icon">🧠</div>
+                <div>
+                    <h2 class="category-title">益智遊戲</h2>
+                    <p class="category-description">挑戰邏輯思維和解決問題能力，適合動腦的遊戲</p>
+                </div>
+            </div>
+            
+            <div class="games-grid">
+                <!-- 數獨遊戲 -->
+                <div class="game-card">
+                    <div class="game-icon">🔢</div>
+                    <div class="game-title">數獨挑戰</div>
+                    <div class="game-tags">
+                        <span class="game-tag">邏輯</span>
+                        <span class="game-tag">數字</span>
+                    </div>
+                    <div class="game-description">經典數獨遊戲，填入數字使每行、每列和每個宮都包含1-9且不重複。</div>
+                    <button class="play-btn coming-soon">即將推出</button>
+                </div>
+                
+                <!-- 拼圖遊戲 -->
+                <div class="game-card">
+                    <div class="game-icon">🧩</div>
+                    <div class="game-title">拼圖遊戲</div>
+                    <div class="game-tags">
+                        <span class="game-tag">圖像</span>
+                        <span class="game-tag">耐心</span>
+                    </div>
+                    <div class="game-description">將打亂的圖片拼回原狀，挑戰你的觀察力和耐心。多種難度可供選擇。</div>
+                    <button class="play-btn coming-soon">即將推出</button>
+                </div>
+                
+                <!-- 記憶配對遊戲 -->
+                <div class="game-card">
+                    <div class="game-icon">🃏</div>
+                    <div class="game-title">記憶配對</div>
+                    <div class="game-tags">
+                        <span class="game-tag">記憶</span>
+                        <span class="game-tag">配對</span>
+                    </div>
+                    <div class="game-description">翻開卡片配對相同的圖案，訓練你的記憶力。挑戰最短時間完成遊戲！</div>
+                    <button class="play-btn coming-soon">即將推出</button>
+                </div>
+                
+                <!-- 解謎遊戲 -->
+                <div class="game-card">
+                    <div class="game-icon">🔍</div>
+                    <div class="game-title">密室逃脫</div>
+                    <div class="game-tags">
+                        <span class="game-tag">解謎</span>
+                        <span class="game-tag">逃脫</span>
+                    </div>
+                    <div class="game-description">被困在密室中，尋找線索，解開謎題，找到出口逃離房間！</div>
+                    <button class="play-btn coming-soon">即將推出</button>
+                </div>
+            </div>
+        </section>
+        
+        <!-- 街機遊戲類別 -->
+        <section class="category-section category-hidden" id="arcade-games">
+            <div class="category-header">
+                <div class="category-icon">🕹️</div>
+                <div>
+                    <h2 class="category-title">街機遊戲</h2>
+                    <p class="category-description">經典街機風格遊戲，快節奏、高挑戰性，追求高分紀錄</p>
+                </div>
+            </div>
+            
+            <div class="games-grid">
+                <!-- 射擊遊戲 -->
+                <div class="game-card">
+                    <div class="game-icon">🎯</div>
+                    <div class="game-title">射擊靶場</div>
+                    <div class="game-tags">
+                        <span class="game-tag">射擊</span>
+                        <span class="game-tag">精準</span>
+                    </div>
+                    <div class="game-description">測試你的射擊技巧，擊中移動的目標獲得高分。多種武器和關卡等你挑戰。</div>
+                    <button class="play-btn coming-soon">即將推出</button>
+                </div>
+                
+                <!-- 賽車遊戲 -->
+                <a href="game4.html" class="game-card">
+                    <div class="game-icon">🏎️</div>
+                    <div class="game-title">極速賽車</div>
+                    <div class="game-tags">
+                        <span class="game-tag">賽車</span>
+                        <span class="game-tag">速度</span>
+                    </div>
+                    <div class="game-description">駕駛賽車在各種賽道上飛馳，避開障礙物，超越對手，創造最快圈速！</div>
+                    <button class="play-btn">開始遊戲</button>
+                </a>
+                
+                <!-- 平台跳躍遊戲 -->
+                <div class="game-card">
+                    <div class="game-icon">👾</div>
+                    <div class="game-title">平台冒險</div>
+                    <div class="game-tags">
+                        <span class="game-tag">跳躍</span>
+                        <span class="game-tag">動作</span>
+                    </div>
+                    <div class="game-description">控制角色在各平台間跳躍，避開陷阱，收集寶物，到達終點！</div>
+                    <button class="play-btn coming-soon">即將推出</button>
+                </div>
+                
+                <!-- 飛行射擊遊戲 -->
+                <div class="game-card">
+                    <div class="game-icon">✈️</div>
+                    <div class="game-title">太空侵略者</div>
+                    <div class="game-tags">
+                        <span class="game-tag">射擊</span>
+                        <span class="game-tag">經典</span>
+                    </div>
+                    <div class="game-description">經典太空射擊遊戲，控制戰機擊落外星入侵者，保護地球！</div>
+                    <button class="play-btn coming-soon">即將推出</button>
+                </div>
+            </div>
+        </section>
+        
+        <footer>
+            <div class="footer-logo">🎮 Anson Game</div>
+            <p>© 2023 Anson Game - 專為遊戲愛好者打造的遊戲平台</p>
+            <p style="margin-top: 10px; font-size: 0.9rem;">探索各種遊戲類型，享受無盡樂趣！遊戲持續更新中...</p>
+        </footer>
     </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // 獲取所有分類標籤和分類區塊
+            const categoryTabs = document.querySelectorAll('.category-tab');
+            const categorySections = document.querySelectorAll('.category-section');
+            
+            // 初始顯示第一個分類（所有遊戲）
+            showCategory('all-games');
+            
+            // 為每個分類標籤添加點擊事件
+            categoryTabs.forEach(tab => {
+                tab.addEventListener('click', function() {
+                    const categoryId = this.getAttribute('data-category');
+                    
+                    // 更新活動標籤
+                    categoryTabs.forEach(t => t.classList.remove('active'));
+                    this.classList.add('active');
+                    
+                    // 顯示對應的分類
+                    showCategory(categoryId);
+                });
+            });
+            
+            // 顯示指定分類的函數
+            function showCategory(categoryId) {
+                // 隱藏所有分類區塊
+                categorySections.forEach(section => {
+                    section.classList.add('category-hidden');
+                });
+                
+                // 顯示指定分類區塊
+                const targetSection = document.getElementById(categoryId);
+                if (targetSection) {
+                    targetSection.classList.remove('category-hidden');
+                }
+            }
+            
+            // 為遊戲卡片添加互動效果
+            const gameCards = document.querySelectorAll('.game-card');
+            
+            gameCards.forEach(card => {
+                card.addEventListener('click', function(e) {
+                    const btn = this.querySelector('.play-btn');
+                    
+                    // 如果是"即將推出"的遊戲，阻止連結並顯示提示
+                    if (btn.classList.contains('coming-soon')) {
+                        e.preventDefault();
+                        
+                        const originalText = btn.textContent;
+                        btn.textContent = '開發中...';
+                        
+                        setTimeout(() => {
+                            btn.textContent = originalText;
+                        }, 1500);
+                    }
+                });
+                
+                // 懸停效果
+                card.addEventListener('mouseenter', function() {
+                    this.style.zIndex = '10';
+                });
+                
+                card.addEventListener('mouseleave', function() {
+                    this.style.zIndex = '1';
+                });
+            });
+            
+            // 頁面加載動畫
+            setTimeout(() => {
+                document.body.style.opacity = 1;
+            }, 100);
+            
+            document.body.style.opacity = 0;
+            document.body.style.transition = 'opacity 0.5s ease';
+        });
+    </script>
 </body>
 </html>
