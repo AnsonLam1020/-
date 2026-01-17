@@ -1,0 +1,1107 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>密室逃脫 - HTML5遊戲</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Microsoft JhengHei', 'Segoe UI', sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            color: #f0f0f0;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1200px;
+            width: 100%;
+            margin: 0 auto;
+        }
+        
+        header {
+            text-align: center;
+            margin-bottom: 20px;
+            padding: 15px;
+            border-bottom: 2px solid #4cc9f0;
+            width: 100%;
+        }
+        
+        h1 {
+            font-size: 2.8rem;
+            margin-bottom: 10px;
+            background: linear-gradient(90deg, #4cc9f0, #4361ee);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+        }
+        
+        .subtitle {
+            font-size: 1.2rem;
+            color: #b8b8d1;
+            margin-bottom: 5px;
+        }
+        
+        .game-area {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+        
+        .room-container {
+            flex: 3;
+            min-width: 300px;
+            background-color: #0f3460;
+            border-radius: 12px;
+            padding: 15px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .room-title {
+            font-size: 1.5rem;
+            margin-bottom: 15px;
+            color: #4cc9f0;
+            text-align: center;
+            padding-bottom: 8px;
+            border-bottom: 1px solid rgba(76, 201, 240, 0.3);
+        }
+        
+        .room-scene {
+            height: 400px;
+            background-color: #1a1a2e;
+            border-radius: 8px;
+            position: relative;
+            overflow: hidden;
+            margin-bottom: 15px;
+            border: 1px solid #2d4059;
+        }
+        
+        .object {
+            position: absolute;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+        }
+        
+        .object:hover {
+            transform: scale(1.05);
+        }
+        
+        .object i {
+            font-size: 2.5rem;
+            margin-bottom: 5px;
+            color: #f72585;
+        }
+        
+        .object span {
+            background-color: rgba(0, 0, 0, 0.7);
+            padding: 3px 8px;
+            border-radius: 4px;
+            font-size: 0.9rem;
+        }
+        
+        .door {
+            bottom: 20px;
+            right: 30px;
+        }
+        
+        .desk {
+            bottom: 20px;
+            left: 30px;
+        }
+        
+        .bookshelf {
+            top: 20px;
+            right: 30px;
+        }
+        
+        .painting {
+            top: 20px;
+            left: 30px;
+        }
+        
+        .safe {
+            bottom: 120px;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+        
+        .controls {
+            flex: 2;
+            min-width: 300px;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+        
+        .panel {
+            background-color: #0f3460;
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.4);
+        }
+        
+        .panel-title {
+            font-size: 1.3rem;
+            margin-bottom: 15px;
+            color: #4cc9f0;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .panel-title i {
+            font-size: 1.5rem;
+        }
+        
+        .inventory {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 10px;
+            margin-top: 10px;
+        }
+        
+        .inventory-slot {
+            background-color: #1a1a2e;
+            border: 1px solid #2d4059;
+            border-radius: 8px;
+            height: 70px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        
+        .inventory-slot:hover {
+            background-color: #2d4059;
+            border-color: #4cc9f0;
+        }
+        
+        .inventory-slot i {
+            font-size: 1.8rem;
+            margin-bottom: 5px;
+            color: #f72585;
+        }
+        
+        .inventory-slot.empty {
+            border: 1px dashed #2d4059;
+            color: #5d5d7a;
+        }
+        
+        .inventory-slot.empty i {
+            color: #5d5d7a;
+        }
+        
+        .message-log {
+            height: 200px;
+            overflow-y: auto;
+            background-color: #1a1a2e;
+            border-radius: 8px;
+            padding: 15px;
+            border: 1px solid #2d4059;
+        }
+        
+        .message {
+            margin-bottom: 10px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid rgba(45, 64, 89, 0.5);
+            line-height: 1.5;
+        }
+        
+        .message:last-child {
+            margin-bottom: 0;
+            border-bottom: none;
+        }
+        
+        .message.system {
+            color: #4cc9f0;
+            font-style: italic;
+        }
+        
+        .message.item {
+            color: #f72585;
+        }
+        
+        .message.puzzle {
+            color: #72efdd;
+        }
+        
+        .action-buttons {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-top: 15px;
+        }
+        
+        .btn {
+            padding: 12px 20px;
+            background: linear-gradient(135deg, #4361ee 0%, #3a0ca3 100%);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            flex: 1;
+            min-width: 140px;
+        }
+        
+        .btn:hover {
+            background: linear-gradient(135deg, #4cc9f0 0%, #4361ee 100%);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(76, 201, 240, 0.3);
+        }
+        
+        .btn:active {
+            transform: translateY(0);
+        }
+        
+        .btn-escape {
+            background: linear-gradient(135deg, #f72585 0%, #b5179e 100%);
+        }
+        
+        .btn-escape:hover {
+            background: linear-gradient(135deg, #ff4da6 0%, #f72585 100%);
+        }
+        
+        .puzzle-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.85);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .modal-content {
+            background: linear-gradient(135deg, #0f3460 0%, #1a1a2e 100%);
+            width: 90%;
+            max-width: 500px;
+            border-radius: 12px;
+            padding: 25px;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.7);
+            border: 1px solid #4cc9f0;
+        }
+        
+        .modal-title {
+            font-size: 1.5rem;
+            margin-bottom: 15px;
+            color: #4cc9f0;
+            text-align: center;
+        }
+        
+        .puzzle-instruction {
+            margin-bottom: 20px;
+            line-height: 1.6;
+            color: #b8b8d1;
+        }
+        
+        .puzzle-input {
+            width: 100%;
+            padding: 12px;
+            background-color: #1a1a2e;
+            border: 1px solid #2d4059;
+            border-radius: 8px;
+            color: white;
+            font-size: 1.1rem;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        
+        .puzzle-input:focus {
+            outline: none;
+            border-color: #4cc9f0;
+        }
+        
+        .modal-buttons {
+            display: flex;
+            gap: 10px;
+        }
+        
+        .modal-btn {
+            flex: 1;
+            padding: 12px;
+            border-radius: 8px;
+            border: none;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        
+        .modal-btn.submit {
+            background-color: #4361ee;
+            color: white;
+        }
+        
+        .modal-btn.submit:hover {
+            background-color: #4cc9f0;
+        }
+        
+        .modal-btn.cancel {
+            background-color: #5d5d7a;
+            color: white;
+        }
+        
+        .modal-btn.cancel:hover {
+            background-color: #6c6c8a;
+        }
+        
+        .hint-system {
+            margin-top: 20px;
+            padding: 15px;
+            background-color: rgba(26, 26, 46, 0.7);
+            border-radius: 8px;
+            border-left: 4px solid #f72585;
+        }
+        
+        .hint-title {
+            font-size: 1.1rem;
+            margin-bottom: 10px;
+            color: #f72585;
+        }
+        
+        .hint-text {
+            color: #b8b8d1;
+            line-height: 1.5;
+        }
+        
+        .game-status {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background-color: #0f3460;
+            padding: 15px;
+            border-radius: 12px;
+            margin-top: 20px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+        }
+        
+        .status-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 5px;
+        }
+        
+        .status-value {
+            font-size: 1.8rem;
+            font-weight: bold;
+            color: #4cc9f0;
+        }
+        
+        .status-label {
+            font-size: 0.9rem;
+            color: #b8b8d1;
+        }
+        
+        .escape-message {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.95);
+            z-index: 2000;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            text-align: center;
+        }
+        
+        .escape-content {
+            background: linear-gradient(135deg, #0f3460 0%, #1a1a2e 100%);
+            width: 90%;
+            max-width: 600px;
+            border-radius: 12px;
+            padding: 40px;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.8);
+            border: 2px solid #4cc9f0;
+        }
+        
+        .escape-title {
+            font-size: 2.5rem;
+            margin-bottom: 20px;
+            color: #f72585;
+        }
+        
+        .escape-text {
+            font-size: 1.2rem;
+            line-height: 1.6;
+            margin-bottom: 30px;
+            color: #b8b8d1;
+        }
+        
+        .restart-btn {
+            padding: 15px 40px;
+            background: linear-gradient(135deg, #f72585 0%, #b5179e 100%);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1.2rem;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+        
+        .restart-btn:hover {
+            background: linear-gradient(135deg, #ff4da6 0%, #f72585 100%);
+            transform: scale(1.05);
+        }
+        
+        @media (max-width: 768px) {
+            .game-area {
+                flex-direction: column;
+            }
+            
+            .inventory {
+                grid-template-columns: repeat(3, 1fr);
+            }
+            
+            .object {
+                transform: scale(0.9);
+            }
+            
+            .object:hover {
+                transform: scale(0.95);
+            }
+            
+            h1 {
+                font-size: 2.2rem;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .inventory {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            
+            .action-buttons {
+                flex-direction: column;
+            }
+            
+            .btn {
+                min-width: 100%;
+            }
+            
+            h1 {
+                font-size: 1.8rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1><i class="fas fa-door-closed"></i> 密室逃脫</h1>
+            <p class="subtitle">你被困在一個神祕的房間中，尋找線索，解開謎題，找到出口逃離！</p>
+            <p class="subtitle">點擊房間中的物品進行探索，收集物品並解開謎題</p>
+        </header>
+        
+        <div class="game-area">
+            <div class="room-container">
+                <h2 class="room-title">神祕房間</h2>
+                <div class="room-scene" id="roomScene">
+                    <!-- 房間中的物品將通過JavaScript動態添加 -->
+                </div>
+                
+                <div class="hint-system">
+                    <div class="hint-title"><i class="fas fa-lightbulb"></i> 遊戲提示</div>
+                    <div class="hint-text" id="hintText">點擊房間中的物品進行探索。首先檢查書桌，你可能會找到有用的物品。</div>
+                </div>
+            </div>
+            
+            <div class="controls">
+                <div class="panel">
+                    <h3 class="panel-title"><i class="fas fa-backpack"></i> 物品欄</h3>
+                    <div class="inventory" id="inventory">
+                        <!-- 物品欄將通過JavaScript動態添加 -->
+                    </div>
+                </div>
+                
+                <div class="panel">
+                    <h3 class="panel-title"><i class="fas fa-comment-alt"></i> 訊息紀錄</h3>
+                    <div class="message-log" id="messageLog">
+                        <!-- 訊息將通過JavaScript動態添加 -->
+                    </div>
+                    
+                    <div class="action-buttons">
+                        <button class="btn" id="hintBtn">
+                            <i class="fas fa-question-circle"></i> 請求提示
+                        </button>
+                        <button class="btn" id="examineBtn">
+                            <i class="fas fa-search"></i> 檢查房間
+                        </button>
+                        <button class="btn btn-escape" id="escapeBtn">
+                            <i class="fas fa-door-open"></i> 嘗試逃脫
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="game-status">
+            <div class="status-item">
+                <div class="status-value" id="puzzlesSolved">0/4</div>
+                <div class="status-label">已解謎題</div>
+            </div>
+            <div class="status-item">
+                <div class="status-value" id="itemsFound">0/6</div>
+                <div class="status-label">找到物品</div>
+            </div>
+            <div class="status-item">
+                <div class="status-value" id="timeSpent">0:00</div>
+                <div class="status-label">用時</div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- 謎題模態框 -->
+    <div class="puzzle-modal" id="puzzleModal">
+        <div class="modal-content">
+            <h3 class="modal-title" id="puzzleTitle">書桌抽屜密碼鎖</h3>
+            <p class="puzzle-instruction" id="puzzleInstruction">這個抽屜被一個四位數密碼鎖鎖住了。或許在房間某處可以找到密碼提示。</p>
+            <input type="text" class="puzzle-input" id="puzzleInput" placeholder="輸入密碼..." maxlength="4">
+            <div class="modal-buttons">
+                <button class="modal-btn submit" id="submitPuzzle">提交</button>
+                <button class="modal-btn cancel" id="cancelPuzzle">取消</button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- 逃脫成功訊息 -->
+    <div class="escape-message" id="escapeMessage">
+        <div class="escape-content">
+            <h2 class="escape-title"><i class="fas fa-trophy"></i> 恭喜逃脫成功！</h2>
+            <div class="escape-text">
+                <p>你成功解開了所有謎題並逃離了神祕房間！</p>
+                <p>你用時: <span id="finalTime">0:00</span></p>
+                <p>你找到了 <span id="finalItems">0</span> 個物品</p>
+                <p>你解開了 <span id="finalPuzzles">0</span> 個謎題</p>
+            </div>
+            <button class="restart-btn" id="restartBtn"><i class="fas fa-redo"></i> 再玩一次</button>
+        </div>
+    </div>
+    
+    <script>
+        // 遊戲狀態變數
+        let gameState = {
+            inventory: [],
+            puzzlesSolved: 0,
+            itemsFound: 0,
+            timeSpent: 0,
+            hintsUsed: 0,
+            currentPuzzle: null,
+            gameActive: true
+        };
+        
+        // 物品定義
+        const items = {
+            key: { id: 'key', name: '銅鑰匙', icon: 'fas fa-key', description: '一把古老的銅鑰匙，看起來可以用來開鎖。', found: false },
+            note: { id: 'note', name: '神秘紙條', icon: 'fas fa-scroll', description: '一張泛黃的紙條，上面寫著: "密碼在書的排列中"', found: false },
+            flashlight: { id: 'flashlight', name: '手電筒', icon: 'fas fa-flashlight', description: '一個還能用的手電筒，也許可以用來照亮黑暗的角落。', found: false },
+            screwdriver: { id: 'screwdriver', name: '螺絲起子', icon: 'fas fa-screwdriver', description: '一把小螺絲起子，可以用來鬆開螺絲。', found: false },
+            book: { id: 'book', name: '舊書', icon: 'fas fa-book', description: '一本舊書，書名是"逃脫的藝術"。', found: false },
+            codePaper: { id: 'codePaper', name: '密碼紙', icon: 'fas fa-file-code', description: '一張寫著數字"7283"的紙條。', found: false }
+        };
+        
+        // 謎題定義
+        const puzzles = {
+            deskDrawer: {
+                id: 'deskDrawer',
+                name: '書桌抽屜密碼鎖',
+                instruction: '這個抽屜被一個四位數密碼鎖鎖住了。或許在房間某處可以找到密碼提示。',
+                answer: '7283',
+                solved: false,
+                hint: '檢查書架上的書，看看它們的排列順序有沒有規律。'
+            },
+            safe: {
+                id: 'safe',
+                name: '保險箱謎題',
+                instruction: '保險箱需要輸入正確的密碼才能打開。密碼隱藏在畫作中。',
+                answer: '1947',
+                solved: false,
+                hint: '仔細查看畫作中的細節，特別是羅馬數字。'
+            },
+            bookshelf: {
+                id: 'bookshelf',
+                name: '書架機關',
+                instruction: '書架似乎有一個隱藏的機關。你需要找到正確的書來觸發它。',
+                answer: 'ESCAPE',
+                solved: false,
+                hint: '查看書架上的書名首字母，試著拼出一個單詞。'
+            },
+            door: {
+                id: 'door',
+                name: '門鎖',
+                instruction: '門被一個複雜的鎖鎖住了，需要鑰匙和密碼才能打開。',
+                answer: 'FINAL',
+                solved: false,
+                hint: '你需要找到鑰匙並解決其他所有謎題才能打開這扇門。'
+            }
+        };
+        
+        // 房間物品定義
+        const roomObjects = [
+            { id: 'desk', name: '書桌', icon: 'fas fa-table', x: 'desk', puzzle: 'deskDrawer' },
+            { id: 'bookshelf', name: '書架', icon: 'fas fa-book-open', x: 'bookshelf', puzzle: 'bookshelf' },
+            { id: 'painting', name: '畫作', icon: 'fas fa-image', x: 'painting', puzzle: 'safe' },
+            { id: 'safe', name: '保險箱', icon: 'fas fa-vault', x: 'safe', puzzle: 'safe' },
+            { id: 'door', name: '門', icon: 'fas fa-door-closed', x: 'door', puzzle: 'door' }
+        ];
+        
+        // 遊戲訊息
+        const messages = [
+            "你醒來發現自己被困在一個神祕的房間中。",
+            "房間裡有一扇門，但被鎖住了。",
+            "你需要尋找線索和物品來解開謎題並逃脫。"
+        ];
+        
+        // 初始化遊戲
+        function initGame() {
+            // 重置遊戲狀態
+            gameState = {
+                inventory: [],
+                puzzlesSolved: 0,
+                itemsFound: 0,
+                timeSpent: 0,
+                hintsUsed: 0,
+                currentPuzzle: null,
+                gameActive: true
+            };
+            
+            // 重置物品狀態
+            Object.keys(items).forEach(key => {
+                items[key].found = false;
+            });
+            
+            // 重置謎題狀態
+            Object.keys(puzzles).forEach(key => {
+                puzzles[key].solved = false;
+            });
+            
+            // 初始化訊息紀錄
+            messages.forEach(msg => addMessage(msg, 'system'));
+            
+            // 初始化房間
+            renderRoom();
+            
+            // 初始化物品欄
+            renderInventory();
+            
+            // 更新遊戲狀態顯示
+            updateGameStatus();
+            
+            // 開始計時
+            startTimer();
+        }
+        
+        // 渲染房間
+        function renderRoom() {
+            const roomScene = document.getElementById('roomScene');
+            roomScene.innerHTML = '';
+            
+            roomObjects.forEach(obj => {
+                const objectDiv = document.createElement('div');
+                objectDiv.className = `object ${obj.x}`;
+                objectDiv.id = obj.id;
+                objectDiv.innerHTML = `
+                    <i class="${obj.icon}"></i>
+                    <span>${obj.name}</span>
+                `;
+                
+                // 添加點擊事件
+                objectDiv.addEventListener('click', () => interactWithObject(obj.id));
+                
+                roomScene.appendChild(objectDiv);
+            });
+        }
+        
+        // 渲染物品欄
+        function renderInventory() {
+            const inventory = document.getElementById('inventory');
+            inventory.innerHTML = '';
+            
+            // 顯示已找到的物品
+            Object.values(items).forEach(item => {
+                if (item.found) {
+                    const slot = document.createElement('div');
+                    slot.className = 'inventory-slot';
+                    slot.id = `slot-${item.id}`;
+                    slot.innerHTML = `
+                        <i class="${item.icon}"></i>
+                        <span>${item.name}</span>
+                    `;
+                    
+                    // 添加點擊事件
+                    slot.addEventListener('click', () => useItem(item.id));
+                    
+                    inventory.appendChild(slot);
+                }
+            });
+            
+            // 填補空位
+            const emptySlots = 6 - Object.values(items).filter(item => item.found).length;
+            for (let i = 0; i < emptySlots; i++) {
+                const slot = document.createElement('div');
+                slot.className = 'inventory-slot empty';
+                slot.innerHTML = `<i class="fas fa-question"></i><span>空位</span>`;
+                inventory.appendChild(slot);
+            }
+        }
+        
+        // 與房間物品互動
+        function interactWithObject(objectId) {
+            if (!gameState.gameActive) return;
+            
+            switch(objectId) {
+                case 'desk':
+                    if (!items.note.found) {
+                        items.note.found = true;
+                        gameState.inventory.push('note');
+                        addMessage(`你在書桌抽屜裡找到了一張${items.note.name}。`, 'item');
+                        addMessage(items.note.description, 'system');
+                        gameState.itemsFound++;
+                    } else if (!items.screwdriver.found) {
+                        items.screwdriver.found = true;
+                        gameState.inventory.push('screwdriver');
+                        addMessage(`你在書桌的另一個抽屜裡找到了一把${items.screwdriver.name}。`, 'item');
+                        addMessage(items.screwdriver.description, 'system');
+                        gameState.itemsFound++;
+                    } else {
+                        if (!puzzles.deskDrawer.solved) {
+                            showPuzzle('deskDrawer');
+                        } else {
+                            addMessage('書桌已經沒有其他東西了。', 'system');
+                        }
+                    }
+                    break;
+                    
+                case 'bookshelf':
+                    if (!items.book.found) {
+                        items.book.found = true;
+                        gameState.inventory.push('book');
+                        addMessage(`你在書架上找到了一本${items.book.name}。`, 'item');
+                        addMessage(items.book.description, 'system');
+                        gameState.itemsFound++;
+                    } else {
+                        if (!puzzles.bookshelf.solved) {
+                            showPuzzle('bookshelf');
+                        } else {
+                            addMessage('書架已經沒有其他東西了。', 'system');
+                        }
+                    }
+                    break;
+                    
+                case 'painting':
+                    if (!items.flashlight.found) {
+                        items.flashlight.found = true;
+                        gameState.inventory.push('flashlight');
+                        addMessage(`你在畫作後面找到了一個${items.flashlight.name}。`, 'item');
+                        addMessage(items.flashlight.description, 'system');
+                        gameState.itemsFound++;
+                    } else {
+                        addMessage('這是一幅描繪古堡的畫作，畫作右下角有一些羅馬數字：I IX IV VII', 'puzzle');
+                        if (!puzzles.safe.solved) {
+                            // 提示保險箱密碼
+                            addMessage('這些數字可能與保險箱的密碼有關。', 'system');
+                        }
+                    }
+                    break;
+                    
+                case 'safe':
+                    if (!puzzles.safe.solved) {
+                        showPuzzle('safe');
+                    } else if (!items.codePaper.found) {
+                        items.codePaper.found = true;
+                        gameState.inventory.push('codePaper');
+                        addMessage(`你從保險箱裡找到了一張${items.codePaper.name}。`, 'item');
+                        addMessage(items.codePaper.description, 'system');
+                        gameState.itemsFound++;
+                    } else {
+                        addMessage('保險箱已經空了。', 'system');
+                    }
+                    break;
+                    
+                case 'door':
+                    if (!items.key.found) {
+                        addMessage('門被鎖住了，需要鑰匙才能打開。', 'system');
+                    } else if (gameState.puzzlesSolved < 4) {
+                        addMessage(`門上有複雜的鎖，需要解決所有謎題才能打開。已解決：${gameState.puzzlesSolved}/4`, 'system');
+                    } else {
+                        if (!puzzles.door.solved) {
+                            showPuzzle('door');
+                        } else {
+                            escapeRoom();
+                        }
+                    }
+                    break;
+            }
+            
+            renderInventory();
+            updateGameStatus();
+        }
+        
+        // 顯示謎題
+        function showPuzzle(puzzleId) {
+            const puzzle = puzzles[puzzleId];
+            gameState.currentPuzzle = puzzleId;
+            
+            document.getElementById('puzzleTitle').textContent = puzzle.name;
+            document.getElementById('puzzleInstruction').textContent = puzzle.instruction;
+            document.getElementById('puzzleInput').value = '';
+            
+            // 根據謎題類型設置輸入框屬性
+            if (puzzleId === 'door') {
+                document.getElementById('puzzleInput').placeholder = '輸入"逃脫"以打開門';
+                document.getElementById('puzzleInput').maxLength = 5;
+            } else {
+                document.getElementById('puzzleInput').placeholder = '輸入答案...';
+                document.getElementById('puzzleInput').maxLength = puzzle.answer.length;
+            }
+            
+            document.getElementById('puzzleModal').style.display = 'flex';
+            document.getElementById('puzzleInput').focus();
+        }
+        
+        // 使用物品
+        function useItem(itemId) {
+            if (!gameState.gameActive) return;
+            
+            const item = items[itemId];
+            addMessage(`你使用了${item.name}: ${item.description}`, 'system');
+            
+            // 特殊物品使用效果
+            if (itemId === 'flashlight') {
+                addMessage('你用手電筒照亮了房間的陰暗角落，發現牆上有一行小字："書架上的書名首字母藏有秘密"', 'puzzle');
+            } else if (itemId === 'screwdriver') {
+                addMessage('你用螺絲起子鬆開了畫框後面的螺絲，發現畫後面有一個暗格。', 'system');
+                if (!items.flashlight.found) {
+                    addMessage('你應該檢查一下畫作後面。', 'hint');
+                }
+            } else if (itemId === 'key' && !puzzles.door.solved) {
+                addMessage('你嘗試用鑰匙開門，但門上還有一個密碼鎖。', 'system');
+            }
+        }
+        
+        // 添加訊息到紀錄
+        function addMessage(text, type) {
+            const messageLog = document.getElementById('messageLog');
+            const messageDiv = document.createElement('div');
+            messageDiv.className = `message ${type}`;
+            messageDiv.textContent = text;
+            
+            messageLog.appendChild(messageDiv);
+            messageLog.scrollTop = messageLog.scrollHeight;
+        }
+        
+        // 更新遊戲狀態顯示
+        function updateGameStatus() {
+            document.getElementById('puzzlesSolved').textContent = `${gameState.puzzlesSolved}/4`;
+            document.getElementById('itemsFound').textContent = `${gameState.itemsFound}/6`;
+        }
+        
+        // 開始計時
+        function startTimer() {
+            const timerElement = document.getElementById('timeSpent');
+            
+            const timerInterval = setInterval(() => {
+                if (gameState.gameActive) {
+                    gameState.timeSpent++;
+                    const minutes = Math.floor(gameState.timeSpent / 60);
+                    const seconds = gameState.timeSpent % 60;
+                    timerElement.textContent = `${minutes}:${seconds.toString().padStart(2, '0')}`;
+                } else {
+                    clearInterval(timerInterval);
+                }
+            }, 1000);
+        }
+        
+        // 逃脫房間
+        function escapeRoom() {
+            if (gameState.gameActive && puzzles.door.solved) {
+                gameState.gameActive = false;
+                
+                // 顯示逃脫成功訊息
+                document.getElementById('finalTime').textContent = document.getElementById('timeSpent').textContent;
+                document.getElementById('finalItems').textContent = gameState.itemsFound;
+                document.getElementById('finalPuzzles').textContent = gameState.puzzlesSolved;
+                document.getElementById('escapeMessage').style.display = 'flex';
+                
+                addMessage('恭喜！你成功逃離了密室！', 'system');
+            }
+        }
+        
+        // 請求提示
+        function requestHint() {
+            if (!gameState.gameActive) return;
+            
+            gameState.hintsUsed++;
+            
+            if (gameState.currentPuzzle && puzzles[gameState.currentPuzzle]) {
+                const hint = puzzles[gameState.currentPuzzle].hint;
+                addMessage(`提示: ${hint}`, 'system');
+                document.getElementById('hintText').textContent = hint;
+            } else {
+                // 一般提示
+                const hints = [
+                    '檢查房間中的每個物品，它們可能隱藏著線索或物品。',
+                    '有些謎題需要結合多個線索才能解決。',
+                    '嘗試使用你找到的物品，它們可能會有特殊用途。',
+                    '注意房間中的細節，數字、顏色或圖案都可能是線索。',
+                    '書架上的書名首字母可能組成一個單詞。',
+                    '畫作中的羅馬數字需要轉換為阿拉伯數字。'
+                ];
+                
+                const randomHint = hints[Math.floor(Math.random() * hints.length)];
+                addMessage(`提示: ${randomHint}`, 'system');
+                document.getElementById('hintText').textContent = randomHint;
+            }
+        }
+        
+        // 檢查房間
+        function examineRoom() {
+            if (!gameState.gameActive) return;
+            
+            const unsolvedPuzzles = Object.values(puzzles).filter(p => !p.solved);
+            const unfoundItems = Object.values(items).filter(i => !i.found);
+            
+            addMessage('你仔細檢查了房間...', 'system');
+            
+            if (unfoundItems.length > 0) {
+                addMessage(`房間中可能還有 ${unfoundItems.length} 個物品尚未找到。`, 'system');
+            }
+            
+            if (unsolvedPuzzles.length > 0) {
+                addMessage(`還有 ${unsolvedPuzzles.length} 個謎題尚未解決。`, 'system');
+            }
+            
+            if (!items.key.found) {
+                addMessage('門被鎖住了，你需要找到鑰匙。', 'system');
+            }
+        }
+        
+        // 嘗試逃脫
+        function tryEscape() {
+            if (!gameState.gameActive) return;
+            
+            if (!items.key.found) {
+                addMessage('門被鎖住了，你需要找到鑰匙才能嘗試開門。', 'system');
+            } else if (gameState.puzzlesSolved < 4) {
+                addMessage(`門上有複雜的鎖，需要解決所有謎題才能打開。已解決：${gameState.puzzlesSolved}/4`, 'system');
+            } else {
+                addMessage('你已經解決了所有謎題，現在可以嘗試開門了！', 'system');
+                showPuzzle('door');
+            }
+        }
+        
+        // 初始化事件監聽器
+        function initEventListeners() {
+            // 提交謎題答案
+            document.getElementById('submitPuzzle').addEventListener('click', () => {
+                const puzzleId = gameState.currentPuzzle;
+                const puzzle = puzzles[puzzleId];
+                const userAnswer = document.getElementById('puzzleInput').value.trim().toUpperCase();
+                
+                if (userAnswer === puzzle.answer) {
+                    // 謎題解決
+                    puzzle.solved = true;
+                    gameState.puzzlesSolved++;
+                    
+                    addMessage(`恭喜！你解決了「${puzzle.name}」！`, 'system');
+                    
+                    // 特殊處理每個謎題解決後的效果
+                    if (puzzleId === 'deskDrawer') {
+                        addMessage('抽屜打開了！裡面有一把銅鑰匙。', 'item');
+                        items.key.found = true;
+                        gameState.inventory.push('key');
+                        gameState.itemsFound++;
+                    } else if (puzzleId === 'bookshelf') {
+                        addMessage('書架移動了，露出後面的保險箱。', 'system');
+                    } else if (puzzleId === 'safe') {
+                        addMessage('保險箱打開了！裡面有一張密碼紙。', 'system');
+                    } else if (puzzleId === 'door') {
+                        addMessage('門鎖打開了！你可以逃離房間了！', 'system');
+                    }
+                    
+                    // 關閉模態框
+                    document.getElementById('puzzleModal').style.display = 'none';
+                    
+                    // 更新遊戲狀態
+                    renderInventory();
+                    updateGameStatus();
+                    
+                    // 如果解決了門的謎題，自動逃脫
+                    if (puzzleId === 'door') {
+                        setTimeout(escapeRoom, 1000);
+                    }
+                } else {
+                    addMessage('答案不正確，請再試一次。', 'system');
+                }
+            });
+            
+            // 取消謎題
+            document.getElementById('cancelPuzzle').addEventListener('click', () => {
+                document.getElementById('puzzleModal').style.display = 'none';
+            });
+            
+            // 按Enter提交謎題答案
+            document.getElementById('puzzleInput').addEventListener('keypress', (e) => {
+                if (e.key === 'Enter') {
+                    document.getElementById('submitPuzzle').click();
+                }
+            });
+            
+            // 請求提示按鈕
+            document.getElementById('hintBtn').addEventListener('click', requestHint);
+            
+            // 檢查房間按鈕
+            document.getElementById('examineBtn').addEventListener('click', examineRoom);
+            
+            // 嘗試逃脫按鈕
+            document.getElementById('escapeBtn').addEventListener('click', tryEscape);
+            
+            // 重新開始按鈕
+            document.getElementById('restartBtn').addEventListener('click', () => {
+                document.getElementById('escapeMessage').style.display = 'none';
+                initGame();
+            });
+        }
+        
+        // 當頁面加載完成時初始化遊戲
+        document.addEventListener('DOMContentLoaded', () => {
+            initGame();
+            initEventListeners();
+        });
+    </script>
+</body>
+</html>
