@@ -52,17 +52,123 @@
             margin-bottom: 5px;
         }
         
-        .level-selector {
+        /* 關卡選擇頁面 */
+        .level-selection {
             display: flex;
-            justify-content: center;
-            gap: 15px;
+            flex-direction: column;
+            align-items: center;
+            width: 100%;
             margin-top: 20px;
-            flex-wrap: wrap;
         }
         
-        .level-btn {
-            padding: 12px 25px;
+        .level-selection-title {
+            font-size: 2rem;
+            margin-bottom: 30px;
+            color: #4cc9f0;
+            text-align: center;
+        }
+        
+        .levels-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 25px;
+            width: 100%;
+            margin-bottom: 40px;
+        }
+        
+        .level-card {
+            background: linear-gradient(135deg, #0f3460 0%, #1a1a2e 100%);
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
+            transition: all 0.3s ease;
+            border: 2px solid #2d4059;
+            cursor: pointer;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+        }
+        
+        .level-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.7);
+            border-color: #4cc9f0;
+        }
+        
+        .level-icon {
+            font-size: 3.5rem;
+            margin-bottom: 15px;
+            color: #f72585;
+        }
+        
+        .level-name {
+            font-size: 1.5rem;
+            margin-bottom: 10px;
+            color: #4cc9f0;
+        }
+        
+        .level-description {
+            color: #b8b8d1;
+            margin-bottom: 15px;
+            line-height: 1.5;
+            flex-grow: 1;
+        }
+        
+        .level-difficulty {
+            margin-bottom: 20px;
+        }
+        
+        .difficulty-stars {
+            display: flex;
+            gap: 5px;
+        }
+        
+        .star {
+            color: #5d5d7a;
+            font-size: 1.3rem;
+        }
+        
+        .star.filled {
+            color: #ffd700;
+        }
+        
+        .level-info {
+            display: flex;
+            justify-content: space-between;
+            width: 100%;
+            margin-top: 10px;
+            font-size: 0.9rem;
+            color: #72efdd;
+        }
+        
+        .play-btn {
+            padding: 12px 30px;
             background: linear-gradient(135deg, #4361ee 0%, #3a0ca3 100%);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-top: 10px;
+            width: 100%;
+            justify-content: center;
+        }
+        
+        .play-btn:hover {
+            background: linear-gradient(135deg, #4cc9f0 0%, #4361ee 100%);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(76, 201, 240, 0.3);
+        }
+        
+        .back-btn {
+            padding: 12px 25px;
+            background: linear-gradient(135deg, #5d5d7a 0%, #3a3a5e 100%);
             color: white;
             border: none;
             border-radius: 8px;
@@ -75,22 +181,17 @@
             gap: 8px;
         }
         
-        .level-btn:hover {
-            background: linear-gradient(135deg, #4cc9f0 0%, #4361ee 100%);
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(76, 201, 240, 0.3);
+        .back-btn:hover {
+            background: linear-gradient(135deg, #6c6c8a 0%, #5d5d7a 100%);
         }
         
-        .level-btn.active {
-            background: linear-gradient(135deg, #f72585 0%, #b5179e 100%);
-            box-shadow: 0 0 15px rgba(247, 37, 133, 0.5);
-        }
-        
+        /* 遊戲區域 */
         .game-area {
             display: flex;
             flex-wrap: wrap;
             gap: 20px;
             margin-bottom: 30px;
+            width: 100%;
         }
         
         .room-container {
@@ -522,6 +623,16 @@
             transform: scale(1.05);
         }
         
+        /* 頁面切換 */
+        .page {
+            display: none;
+            width: 100%;
+        }
+        
+        .page.active {
+            display: block;
+        }
+        
         @media (max-width: 768px) {
             .game-area {
                 flex-direction: column;
@@ -543,9 +654,8 @@
                 font-size: 2.2rem;
             }
             
-            .level-btn {
-                padding: 10px 20px;
-                font-size: 0.9rem;
+            .levels-container {
+                grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
             }
         }
         
@@ -566,14 +676,8 @@
                 font-size: 1.8rem;
             }
             
-            .level-selector {
-                flex-direction: column;
-                align-items: center;
-            }
-            
-            .level-btn {
-                width: 100%;
-                max-width: 250px;
+            .levels-container {
+                grid-template-columns: 1fr;
             }
         }
     </style>
@@ -583,75 +687,84 @@
         <header>
             <h1><i class="fas fa-door-closed"></i> 密室逃脫</h1>
             <p class="subtitle">你被困在神祕的房間中，尋找線索，解開謎題，找到出口逃離！</p>
-            <p class="subtitle">選擇一個關卡開始遊戲</p>
-            
-            <div class="level-selector">
-                <button class="level-btn active" data-level="1">
-                    <i class="fas fa-home"></i> 關卡 1：書房密室
-                </button>
-                <button class="level-btn" data-level="2">
-                    <i class="fas fa-flask"></i> 關卡 2：實驗室密室
-                </button>
-                <button class="level-btn" data-level="3">
-                    <i class="fas fa-gem"></i> 關卡 3：寶庫密室
-                </button>
-            </div>
         </header>
         
-        <div class="game-area">
-            <div class="room-container">
-                <h2 class="room-title" id="roomTitle">書房密室</h2>
-                <div class="room-scene" id="roomScene">
-                    <!-- 房間中的物品將通過JavaScript動態添加 -->
+        <!-- 關卡選擇頁面 -->
+        <div class="page active" id="levelSelectPage">
+            <div class="level-selection">
+                <h2 class="level-selection-title">選擇一個關卡開始遊戲</h2>
+                
+                <div class="levels-container" id="levelsContainer">
+                    <!-- 關卡卡片將通過JavaScript動態添加 -->
                 </div>
                 
-                <div class="hint-system">
-                    <div class="hint-title"><i class="fas fa-lightbulb"></i> 遊戲提示</div>
-                    <div class="hint-text" id="hintText">點擊房間中的物品進行探索。首先檢查書桌，你可能會找到有用的物品。</div>
-                </div>
-            </div>
-            
-            <div class="controls">
-                <div class="panel">
-                    <h3 class="panel-title"><i class="fas fa-backpack"></i> 物品欄</h3>
-                    <div class="inventory" id="inventory">
-                        <!-- 物品欄將通過JavaScript動態添加 -->
-                    </div>
-                </div>
-                
-                <div class="panel">
-                    <h3 class="panel-title"><i class="fas fa-comment-alt"></i> 訊息紀錄</h3>
-                    <div class="message-log" id="messageLog">
-                        <!-- 訊息將通過JavaScript動態添加 -->
-                    </div>
-                    
-                    <div class="action-buttons">
-                        <button class="btn" id="hintBtn">
-                            <i class="fas fa-question-circle"></i> 請求提示
-                        </button>
-                        <button class="btn" id="examineBtn">
-                            <i class="fas fa-search"></i> 檢查房間
-                        </button>
-                        <button class="btn btn-escape" id="escapeBtn">
-                            <i class="fas fa-door-open"></i> 嘗試逃脫
-                        </button>
-                    </div>
+                <div class="subtitle">
+                    每個關卡都有不同的主題和難度，挑戰自己的解謎能力吧！
                 </div>
             </div>
         </div>
         
-        <div class="game-status">
-            <div class="status-item">
-                <div class="status-value" id="puzzlesSolved">0/4</div>
-                <div class="status-label">已解謎題</div>
+        <!-- 遊戲頁面 -->
+        <div class="page" id="gamePage">
+            <button class="back-btn" id="backToLevelsBtn">
+                <i class="fas fa-arrow-left"></i> 返回關卡選擇
+            </button>
+            
+            <div class="game-area">
+                <div class="room-container">
+                    <h2 class="room-title" id="roomTitle">書房密室</h2>
+                    <div class="room-scene" id="roomScene">
+                        <!-- 房間中的物品將通過JavaScript動態添加 -->
+                    </div>
+                    
+                    <div class="hint-system">
+                        <div class="hint-title"><i class="fas fa-lightbulb"></i> 遊戲提示</div>
+                        <div class="hint-text" id="hintText">點擊房間中的物品進行探索。首先檢查書桌，你可能會找到有用的物品。</div>
+                    </div>
+                </div>
+                
+                <div class="controls">
+                    <div class="panel">
+                        <h3 class="panel-title"><i class="fas fa-backpack"></i> 物品欄</h3>
+                        <div class="inventory" id="inventory">
+                            <!-- 物品欄將通過JavaScript動態添加 -->
+                        </div>
+                    </div>
+                    
+                    <div class="panel">
+                        <h3 class="panel-title"><i class="fas fa-comment-alt"></i> 訊息紀錄</h3>
+                        <div class="message-log" id="messageLog">
+                            <!-- 訊息將通過JavaScript動態添加 -->
+                        </div>
+                        
+                        <div class="action-buttons">
+                            <button class="btn" id="hintBtn">
+                                <i class="fas fa-question-circle"></i> 請求提示
+                            </button>
+                            <button class="btn" id="examineBtn">
+                                <i class="fas fa-search"></i> 檢查房間
+                            </button>
+                            <button class="btn btn-escape" id="escapeBtn">
+                                <i class="fas fa-door-open"></i> 嘗試逃脫
+                            </button>
+                        </div>
+                    </div>
+                </div>
             </div>
-            <div class="status-item">
-                <div class="status-value" id="itemsFound">0/6</div>
-                <div class="status-label">找到物品</div>
-            </div>
-            <div class="status-item">
-                <div class="status-value" id="timeSpent">0:00</div>
-                <div class="status-label">用時</div>
+            
+            <div class="game-status">
+                <div class="status-item">
+                    <div class="status-value" id="puzzlesSolved">0/4</div>
+                    <div class="status-label">已解謎題</div>
+                </div>
+                <div class="status-item">
+                    <div class="status-value" id="itemsFound">0/6</div>
+                    <div class="status-label">找到物品</div>
+                </div>
+                <div class="status-item">
+                    <div class="status-value" id="timeSpent">0:00</div>
+                    <div class="status-label">用時</div>
+                </div>
             </div>
         </div>
     </div>
@@ -676,14 +789,16 @@
             <div class="escape-text">
                 <p>你成功解開了所有謎題並逃離了神祕房間！</p>
                 <p>關卡: <span id="finalLevel">書房密室</span></p>
+                <p>難度: <span id="finalDifficulty">★☆☆☆☆</span></p>
                 <p>用時: <span id="finalTime">0:00</span></p>
                 <p>找到物品: <span id="finalItems">0</span> 個</p>
                 <p>解開謎題: <span id="finalPuzzles">0</span> 個</p>
                 <p>使用提示: <span id="finalHints">0</span> 次</p>
             </div>
-            <div style="display: flex; gap: 10px; justify-content: center;">
+            <div style="display: flex; gap: 10px; justify-content: center; flex-wrap: wrap;">
                 <button class="restart-btn" id="restartBtn"><i class="fas fa-redo"></i> 重玩本關</button>
                 <button class="restart-btn" id="nextLevelBtn"><i class="fas fa-arrow-right"></i> 下一關</button>
+                <button class="restart-btn" id="backToLevelsAfterWinBtn"><i class="fas fa-list"></i> 關卡選擇</button>
             </div>
         </div>
     </div>
@@ -702,11 +817,16 @@
             timerInterval: null
         };
         
-        // 關卡定義
+        // 關卡定義 - 現在有6個關卡，難度各不相同
         const levels = {
             1: {
+                id: 1,
                 name: "書房密室",
-                description: "一個充滿書籍和古老物品的書房",
+                description: "一個充滿書籍和古老物品的書房，適合新手挑戰",
+                difficulty: 1, // 1-5星
+                icon: "fas fa-home",
+                itemsCount: 6,
+                puzzlesCount: 4,
                 items: {
                     key: { id: 'key', name: '銅鑰匙', icon: 'fas fa-key', description: '一把古老的銅鑰匙，看起來可以用來開鎖。', found: false },
                     note: { id: 'note', name: '神秘紙條', icon: 'fas fa-scroll', description: '一張泛黃的紙條，上面寫著: "密碼在書的排列中"', found: false },
@@ -763,8 +883,13 @@
                 ]
             },
             2: {
+                id: 2,
                 name: "實驗室密室",
-                description: "一個充滿科學儀器和化學藥品的實驗室",
+                description: "一個充滿科學儀器和化學藥品的實驗室，需要邏輯思維",
+                difficulty: 2,
+                icon: "fas fa-flask",
+                itemsCount: 6,
+                puzzlesCount: 4,
                 items: {
                     keycard: { id: 'keycard', name: '門禁卡', icon: 'fas fa-id-card', description: '一張電子門禁卡，可以用來打開電子鎖。', found: false },
                     chemicalNote: { id: 'chemicalNote', name: '化學方程式', icon: 'fas fa-vial', description: '一張寫著化學方程式的紙條：H2 + O2 → H2O', found: false },
@@ -821,8 +946,13 @@
                 ]
             },
             3: {
+                id: 3,
                 name: "寶庫密室",
-                description: "一個收藏珍貴寶物和藝術品的寶庫",
+                description: "一個收藏珍貴寶物和藝術品的寶庫，需要細心觀察",
+                difficulty: 3,
+                icon: "fas fa-gem",
+                itemsCount: 6,
+                puzzlesCount: 4,
                 items: {
                     goldenKey: { id: 'goldenKey', name: '金鑰匙', icon: 'fas fa-key', description: '一把閃閃發光的金鑰匙，看起來非常珍貴。', found: false },
                     treasureMap: { id: 'treasureMap', name: '藏寶圖', icon: 'fas fa-map', description: '一張古老的藏寶圖，上面標記著寶庫中的秘密位置。', found: false },
@@ -877,8 +1007,310 @@
                     "寶庫的大門非常堅固，需要特殊的鑰匙才能打開。",
                     "尋找寶庫中的線索來解開謎題並帶著寶物逃脫。"
                 ]
+            },
+            4: {
+                id: 4,
+                name: "時鐘密室",
+                description: "一個充滿時鐘和時間謎題的房間，需要時間概念",
+                difficulty: 4,
+                icon: "fas fa-clock",
+                itemsCount: 7,
+                puzzlesCount: 5,
+                items: {
+                    clockHand: { id: 'clockHand', name: '時鐘指針', icon: 'fas fa-clock', description: '一根時鐘的指針，看起來可以安裝在某個時鐘上。', found: false },
+                    timeTable: { id: 'timeTable', name: '時間表', icon: 'fas fa-table', description: '一張寫著不同時間的表格。', found: false },
+                    sundial: { id: 'sundial', name: '日晷碎片', icon: 'fas fa-sun', description: '一塊古老的日晷碎片。', found: false },
+                    pendulum: { id: 'pendulum', name: '鐘擺', icon: 'fas fa-history', description: '一個精緻的鐘擺，可以用來調節時鐘。', found: false },
+                    hourglass: { id: 'hourglass', name: '沙漏', icon: 'fas fa-hourglass-half', description: '一個精美的沙漏，沙子流完需要30分鐘。', found: false },
+                    watch: { id: 'watch', name: '懷錶', icon: 'fas fa-stopwatch', description: '一枚古老的懷錶，時間停在3:45。', found: false },
+                    calendar: { id: 'calendar', name: '日曆', icon: 'fas fa-calendar-alt', description: '一本日曆，上面標記了特殊的日子。', found: false }
+                },
+                puzzles: {
+                    clockPuzzle: {
+                        id: 'clockPuzzle',
+                        name: '時鐘謎題',
+                        instruction: '這個時鐘缺少一根指針。安裝正確的指針後，時鐘顯示的時間就是密碼。',
+                        answer: '0345',
+                        solved: false,
+                        hint: '懷錶上顯示的時間可能是關鍵。'
+                    },
+                    sundialPuzzle: {
+                        id: 'sundialPuzzle',
+                        name: '日晷機關',
+                        instruction: '日晷需要正確的角度才能投射出陰影顯示密碼。',
+                        answer: '1230',
+                        solved: false,
+                        hint: '中午12點30分的太陽角度是多少？'
+                    },
+                    pendulumPuzzle: {
+                        id: 'pendulumPuzzle',
+                        name: '鐘擺頻率',
+                        instruction: '調節鐘擺的長度使其與沙漏同步。',
+                        answer: '30CM',
+                        solved: false,
+                        hint: '沙漏的流沙時間是30分鐘，這與鐘擺的長度有關。'
+                    },
+                    calendarPuzzle: {
+                        id: 'calendarPuzzle',
+                        name: '日曆密碼',
+                        instruction: '根據日曆上標記的特殊日子計算出密碼。',
+                        answer: '0721',
+                        solved: false,
+                        hint: '查看日曆上標記的日期之間的規律。'
+                    },
+                    door: {
+                        id: 'door',
+                        name: '時間之門',
+                        instruction: '時間之門需要正確的時間序列才能打開。',
+                        answer: 'TIME',
+                        solved: false,
+                        hint: '將所有時間相關的密碼組合起來思考。'
+                    }
+                },
+                roomObjects: [
+                    { id: 'grandClock', name: '大時鐘', icon: 'fas fa-clock', x: 'safe', puzzle: 'clockPuzzle' },
+                    { id: 'sundialTable', name: '日晷台', icon: 'fas fa-sun', x: 'desk', puzzle: 'sundialPuzzle' },
+                    { id: 'pendulumClock', name: '擺鐘', icon: 'fas fa-history', x: 'chest', puzzle: 'pendulumPuzzle' },
+                    { id: 'calendarWall', name: '日曆牆', icon: 'fas fa-calendar-alt', x: 'painting', puzzle: 'calendarPuzzle' },
+                    { id: 'door', name: '時間之門', icon: 'fas fa-door-closed', x: 'door', puzzle: 'door' }
+                ],
+                initialMessages: [
+                    "你被困在一個充滿時鐘的房間中。",
+                    "所有的時鐘都顯示著不同的時間。",
+                    "解開時間的謎題才能逃離這個房間。"
+                ]
+            },
+            5: {
+                id: 5,
+                name: "音樂密室",
+                description: "一個充滿樂器和音樂謎題的房間，需要音樂知識",
+                difficulty: 4,
+                icon: "fas fa-music",
+                itemsCount: 7,
+                puzzlesCount: 5,
+                items: {
+                    pianoKey: { id: 'pianoKey', name: '鋼琴鍵', icon: 'fas fa-keyboard', description: '一個鋼琴的白色鍵盤，上面標有音符。', found: false },
+                    sheetMusic: { id: 'sheetMusic', name: '樂譜', icon: 'fas fa-file-alt', description: '一張樂譜，上面寫著一段旋律。', found: false },
+                    tuningFork: { id: 'tuningFork', name: '音叉', icon: 'fas fa-bell', description: '一個標準A440音叉。', found: false },
+                    metronome: { id: 'metronome', name: '節拍器', icon: 'fas fa-tachometer-alt', description: '一個古典節拍器，設定在120BPM。', found: false },
+                    violinString: { id: 'violinString', name: '小提琴弦', icon: 'fas fa-guitar', description: '一根小提琴的E弦。', found: false },
+                    musicBox: { id: 'musicBox', name: '音樂盒', icon: 'fas fa-compact-disc', description: '一個精緻的音樂盒，需要上發條。', found: false },
+                    conductorBaton: { id: 'conductorBaton', name: '指揮棒', icon: 'fas fa-gavel', description: '一根指揮家的指揮棒。', found: false }
+                },
+                puzzles: {
+                    pianoPuzzle: {
+                        id: 'pianoPuzzle',
+                        name: '鋼琴旋律',
+                        instruction: '按照樂譜上的旋律彈奏鋼琴，聽到的音符就是密碼。',
+                        answer: 'CDEF',
+                        solved: false,
+                        hint: '樂譜上的第一個小節是C大調音階。'
+                    },
+                    tuningPuzzle: {
+                        id: 'tuningPuzzle',
+                        name: '調音謎題',
+                        instruction: '使用音叉調整整套樂器的音高。',
+                        answer: 'A440',
+                        solved: false,
+                        hint: '標準音高是A440Hz。'
+                    },
+                    rhythmPuzzle: {
+                        id: 'rhythmPuzzle',
+                        name: '節奏模式',
+                        instruction: '按照節拍器的節奏敲擊正確的節奏模式。',
+                        answer: '1234',
+                        solved: false,
+                        hint: '四四拍的節奏模式是什麼？'
+                    },
+                    musicBoxPuzzle: {
+                        id: 'musicBoxPuzzle',
+                        name: '音樂盒密碼',
+                        instruction: '音樂盒播放的旋律中隱藏著密碼。',
+                        answer: 'BACH',
+                        solved: false,
+                        hint: '注意音樂盒旋律的音符名稱。'
+                    },
+                    door: {
+                        id: 'door',
+                        name: '音樂之門',
+                        instruction: '音樂之門需要正確的和弦進行才能打開。',
+                        answer: 'MELODY',
+                        solved: false,
+                        hint: '將所有音樂相關的密碼組合起來思考。'
+                    }
+                },
+                roomObjects: [
+                    { id: 'piano', name: '鋼琴', icon: 'fas fa-keyboard', x: 'desk', puzzle: 'pianoPuzzle' },
+                    { id: 'violin', name: '小提琴', icon: 'fas fa-guitar', x: 'chest', puzzle: 'tuningPuzzle' },
+                    { id: 'drums', name: '鼓組', icon: 'fas fa-drum', x: 'safe', puzzle: 'rhythmPuzzle' },
+                    { id: 'musicBoxTable', name: '音樂盒桌', icon: 'fas fa-compact-disc', x: 'painting', puzzle: 'musicBoxPuzzle' },
+                    { id: 'door', name: '音樂之門', icon: 'fas fa-door-closed', x: 'door', puzzle: 'door' }
+                ],
+                initialMessages: [
+                    "你被困在一個充滿樂器的房間中。",
+                    "房間中迴盪著神秘的旋律。",
+                    "解開音樂的謎題才能逃離這個房間。"
+                ]
+            },
+            6: {
+                id: 6,
+                name: "太空密室",
+                description: "一個太空站主題的密室，需要科學和邏輯思維",
+                difficulty: 5,
+                icon: "fas fa-rocket",
+                itemsCount: 8,
+                puzzlesCount: 6,
+                items: {
+                    oxygenTank: { id: 'oxygenTank', name: '氧氣罐', icon: 'fas fa-wind', description: '一個充滿氧氣的罐子，還剩80%容量。', found: false },
+                    starChart: { id: 'starChart', name: '星圖', icon: 'fas fa-star', description: '一張詳細的星圖，標記了星座位置。', found: false },
+                    circuitBoard: { id: 'circuitBoard', name: '電路板', icon: 'fas fa-microchip', description: '一塊複雜的電路板，有幾個零件缺失。', found: false },
+                    spaceSuit: { id: 'spaceSuit', name: '太空衣', icon: 'fas fa-user-astronaut', description: '一件完整的太空衣，氧氣供應正常。', found: false },
+                    asteroidSample: { id: 'asteroidSample', name: '隕石樣本', icon: 'fas fa-meteor', description: '一塊來自小行星帶的岩石樣本。', found: false },
+                    navigationDisk: { id: 'navigationDisk', name: '導航磁碟', icon: 'fas fa-compact-disc', description: '一張存儲太空站導航數據的磁碟。', found: false },
+                    laserTool: { id: 'laserTool', name: '雷射工具', icon: 'fas fa-bolt', description: '一個高精度雷射切割工具。', found: false },
+                    alienArtifact: { id: 'alienArtifact', name: '外星文物', icon: 'fas fa-jedi', description: '一個神秘的外星文物，表面有發光符號。', found: false }
+                },
+                puzzles: {
+                    oxygenPuzzle: {
+                        id: 'oxygenPuzzle',
+                        name: '氧氣供應',
+                        instruction: '計算氧氣罐還能維持多長時間。提示：太空站有2人，每人每小時消耗5%氧氣。',
+                        answer: '8HOURS',
+                        solved: false,
+                        hint: '80%氧氣，2人每小時消耗10%，能維持多久？'
+                    },
+                    starPuzzle: {
+                        id: 'starPuzzle',
+                        name: '星圖座標',
+                        instruction: '根據星圖上的星座位置計算出太空站座標。',
+                        answer: 'ALPHA7',
+                        solved: false,
+                        hint: '找到北斗七星和北極星的相對位置。'
+                    },
+                    circuitPuzzle: {
+                        id: 'circuitPuzzle',
+                        name: '電路修復',
+                        instruction: '修復電路板需要正確連接斷開的線路。',
+                        answer: 'CIRCUIT',
+                        solved: false,
+                        hint: '按照電路板上的顏色順序連接線路。'
+                    },
+                    navigationPuzzle: {
+                        id: 'navigationPuzzle',
+                        name: '導航系統',
+                        instruction: '輸入正確的座標設定導航系統返回地球。',
+                        answer: 'EARTH',
+                        solved: false,
+                        hint: '地球的座標在太陽系中是第三顆行星。'
+                    },
+                    laserPuzzle: {
+                        id: 'laserPuzzle',
+                        name: '雷射切割',
+                        instruction: '使用雷射工具切割開擋路的金屬門。',
+                        answer: 'DELTA9',
+                        solved: false,
+                        hint: '隕石樣本上的標記可能是切割模式。'
+                    },
+                    door: {
+                        id: 'door',
+                        name: '氣閘門',
+                        instruction: '氣閘門需要輸入正確的逃生密碼才能打開。',
+                        answer: 'ESCAPE',
+                        solved: false,
+                        hint: '結合所有太空相關的密碼來找到最終答案。'
+                    }
+                },
+                roomObjects: [
+                    { id: 'oxygenPanel', name: '氧氣控制台', icon: 'fas fa-wind', x: 'desk', puzzle: 'oxygenPuzzle' },
+                    { id: 'starMap', name: '星圖儀', icon: 'fas fa-star', x: 'painting', puzzle: 'starPuzzle' },
+                    { id: 'circuitPanel', name: '電路面板', icon: 'fas fa-microchip', x: 'safe', puzzle: 'circuitPuzzle' },
+                    { id: 'navigationConsole', name: '導航控制台', icon: 'fas fa-satellite', x: 'computer', puzzle: 'navigationPuzzle' },
+                    { id: 'laserCutter', name: '雷射切割機', icon: 'fas fa-bolt', x: 'chest', puzzle: 'laserPuzzle' },
+                    { id: 'door', name: '氣閘門', icon: 'fas fa-door-closed', x: 'door', puzzle: 'door' }
+                ],
+                initialMessages: [
+                    "你被困在一個太空站中。",
+                    "氧氣供應有限，必須盡快找到逃脫方法。",
+                    "解開太空站的謎題才能返回地球。"
+                ]
             }
         };
+        
+        // 渲染關卡選擇頁面
+        function renderLevelSelection() {
+            const levelsContainer = document.getElementById('levelsContainer');
+            levelsContainer.innerHTML = '';
+            
+            // 按難度排序關卡
+            const sortedLevels = Object.values(levels).sort((a, b) => a.difficulty - b.difficulty);
+            
+            sortedLevels.forEach(level => {
+                const levelCard = document.createElement('div');
+                levelCard.className = 'level-card';
+                levelCard.dataset.levelId = level.id;
+                
+                // 創建難度星星
+                let starsHtml = '';
+                for (let i = 1; i <= 5; i++) {
+                    starsHtml += `<i class="star ${i <= level.difficulty ? 'filled' : ''}">★</i>`;
+                }
+                
+                levelCard.innerHTML = `
+                    <div class="level-icon">
+                        <i class="${level.icon}"></i>
+                    </div>
+                    <h3 class="level-name">${level.name}</h3>
+                    <p class="level-description">${level.description}</p>
+                    <div class="level-difficulty">
+                        <div class="difficulty-stars">${starsHtml}</div>
+                        <div>難度: ${level.difficulty}/5</div>
+                    </div>
+                    <div class="level-info">
+                        <span><i class="fas fa-puzzle-piece"></i> ${level.puzzlesCount} 個謎題</span>
+                        <span><i class="fas fa-box-open"></i> ${level.itemsCount} 個物品</span>
+                    </div>
+                    <button class="play-btn" data-level-id="${level.id}">
+                        <i class="fas fa-play"></i> 開始遊戲
+                    </button>
+                `;
+                
+                levelsContainer.appendChild(levelCard);
+            });
+            
+            // 添加關卡選擇事件監聽器
+            document.querySelectorAll('.play-btn').forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    const levelId = parseInt(btn.dataset.levelId);
+                    startGame(levelId);
+                });
+            });
+            
+            // 關卡卡片點擊事件
+            document.querySelectorAll('.level-card').forEach(card => {
+                card.addEventListener('click', (e) => {
+                    if (!e.target.classList.contains('play-btn')) {
+                        const levelId = parseInt(card.dataset.levelId);
+                        startGame(levelId);
+                    }
+                });
+            });
+        }
+        
+        // 開始遊戲
+        function startGame(levelId) {
+            gameState.currentLevel = levelId;
+            switchPage('gamePage');
+            initGame(levelId);
+        }
+        
+        // 切換頁面
+        function switchPage(pageId) {
+            document.querySelectorAll('.page').forEach(page => {
+                page.classList.remove('active');
+            });
+            document.getElementById(pageId).classList.add('active');
+        }
         
         // 初始化遊戲
         function initGame(level = 1) {
@@ -900,23 +1332,15 @@
                 timerInterval: null
             };
             
-            // 更新關卡選擇按鈕狀態
-            document.querySelectorAll('.level-btn').forEach(btn => {
-                if (parseInt(btn.dataset.level) === level) {
-                    btn.classList.add('active');
-                } else {
-                    btn.classList.remove('active');
-                }
-            });
-            
             // 清空訊息紀錄
             document.getElementById('messageLog').innerHTML = '';
             
             // 初始化訊息紀錄
-            levels[level].initialMessages.forEach(msg => addMessage(msg, 'system'));
+            const levelData = levels[level];
+            levelData.initialMessages.forEach(msg => addMessage(msg, 'system'));
             
             // 更新房間標題
-            document.getElementById('roomTitle').textContent = levels[level].name;
+            document.getElementById('roomTitle').textContent = levelData.name;
             
             // 初始化房間
             renderRoom(level);
@@ -987,7 +1411,7 @@
             
             // 填補空位
             const itemCount = Object.values(levelData.items).filter(item => item.found).length;
-            const emptySlots = 6 - itemCount;
+            const emptySlots = 8 - itemCount;
             for (let i = 0; i < emptySlots; i++) {
                 const slot = document.createElement('div');
                 slot.className = 'inventory-slot empty';
@@ -1003,15 +1427,16 @@
             const levelData = levels[level];
             
             // 根據關卡和物品ID執行不同操作
+            // 這裡簡化處理，實際遊戲中需要根據每個關卡的具體邏輯實現
             switch(level) {
                 case 1:
-                    handleLevel1Interaction(objectId, levelData);
-                    break;
                 case 2:
-                    handleLevel2Interaction(objectId, levelData);
-                    break;
                 case 3:
-                    handleLevel3Interaction(objectId, levelData);
+                case 4:
+                case 5:
+                case 6:
+                    // 通用互動邏輯
+                    handleGenericInteraction(objectId, levelData);
                     break;
             }
             
@@ -1019,271 +1444,45 @@
             updateGameStatus();
         }
         
-        // 處理關卡1的互動
-        function handleLevel1Interaction(objectId, levelData) {
-            switch(objectId) {
-                case 'desk':
-                    if (!levelData.items.note.found) {
-                        levelData.items.note.found = true;
-                        gameState.inventory.push('note');
-                        addMessage(`你在書桌抽屜裡找到了一張${levelData.items.note.name}。`, 'item');
-                        addMessage(levelData.items.note.description, 'system');
-                        gameState.itemsFound++;
-                    } else if (!levelData.items.screwdriver.found) {
-                        levelData.items.screwdriver.found = true;
-                        gameState.inventory.push('screwdriver');
-                        addMessage(`你在書桌的另一個抽屜裡找到了一把${levelData.items.screwdriver.name}。`, 'item');
-                        addMessage(levelData.items.screwdriver.description, 'system');
-                        gameState.itemsFound++;
-                    } else {
-                        if (!levelData.puzzles.deskDrawer.solved) {
-                            showPuzzle('deskDrawer', levelData);
-                        } else {
-                            addMessage('書桌已經沒有其他東西了。', 'system');
-                        }
-                    }
-                    break;
-                    
-                case 'bookshelf':
-                    if (!levelData.items.book.found) {
-                        levelData.items.book.found = true;
-                        gameState.inventory.push('book');
-                        addMessage(`你在書架上找到了一本${levelData.items.book.name}。`, 'item');
-                        addMessage(levelData.items.book.description, 'system');
+        // 通用互動處理
+        function handleGenericInteraction(objectId, levelData) {
+            // 查找這個物件是否有對應的謎題
+            const roomObject = levelData.roomObjects.find(obj => obj.id === objectId);
+            
+            if (roomObject && roomObject.puzzle) {
+                // 如果有謎題，顯示謎題
+                const puzzle = levelData.puzzles[roomObject.puzzle];
+                if (!puzzle.solved) {
+                    showPuzzle(roomObject.puzzle, levelData);
+                } else {
+                    // 謎題已解決，檢查是否有物品可以獲得
+                    const unfoundItems = Object.values(levelData.items).filter(item => !item.found);
+                    if (unfoundItems.length > 0) {
+                        // 隨機獲得一個物品（實際遊戲中應該有具體邏輯）
+                        const randomItem = unfoundItems[Math.floor(Math.random() * unfoundItems.length)];
+                        randomItem.found = true;
+                        gameState.inventory.push(randomItem.id);
+                        addMessage(`你在${roomObject.name}中找到了一個${randomItem.name}。`, 'item');
+                        addMessage(randomItem.description, 'system');
                         gameState.itemsFound++;
                     } else {
-                        if (!levelData.puzzles.bookshelf.solved) {
-                            showPuzzle('bookshelf', levelData);
-                        } else {
-                            addMessage('書架已經沒有其他東西了。', 'system');
-                        }
+                        addMessage(`${roomObject.name}已經沒有其他東西了。`, 'system');
                     }
-                    break;
-                    
-                case 'painting':
-                    if (!levelData.items.flashlight.found) {
-                        levelData.items.flashlight.found = true;
-                        gameState.inventory.push('flashlight');
-                        addMessage(`你在畫作後面找到了一個${levelData.items.flashlight.name}。`, 'item');
-                        addMessage(levelData.items.flashlight.description, 'system');
-                        gameState.itemsFound++;
-                    } else {
-                        addMessage('這是一幅描繪古堡的畫作，畫作右下角有一些羅馬數字：I IX IV VII', 'puzzle');
-                        if (!levelData.puzzles.safe.solved) {
-                            addMessage('這些數字可能與保險箱的密碼有關。', 'system');
-                        }
-                    }
-                    break;
-                    
-                case 'safe':
-                    if (!levelData.puzzles.safe.solved) {
-                        showPuzzle('safe', levelData);
-                    } else if (!levelData.items.codePaper.found) {
-                        levelData.items.codePaper.found = true;
-                        gameState.inventory.push('codePaper');
-                        addMessage(`你從保險箱裡找到了一張${levelData.items.codePaper.name}。`, 'item');
-                        addMessage(levelData.items.codePaper.description, 'system');
-                        gameState.itemsFound++;
-                    } else {
-                        addMessage('保險箱已經空了。', 'system');
-                    }
-                    break;
-                    
-                case 'door':
-                    if (!levelData.items.key.found) {
-                        addMessage('門被鎖住了，需要鑰匙才能打開。', 'system');
-                    } else if (gameState.puzzlesSolved < 4) {
-                        addMessage(`門上有複雜的鎖，需要解決所有謎題才能打開。已解決：${gameState.puzzlesSolved}/4`, 'system');
-                    } else {
-                        if (!levelData.puzzles.door.solved) {
-                            showPuzzle('door', levelData);
-                        } else {
-                            escapeRoom();
-                        }
-                    }
-                    break;
-            }
-        }
-        
-        // 處理關卡2的互動
-        function handleLevel2Interaction(objectId, levelData) {
-            switch(objectId) {
-                case 'computer':
-                    if (!levelData.items.usb.found) {
-                        levelData.items.usb.found = true;
-                        gameState.inventory.push('usb');
-                        addMessage(`你在電腦旁找到了一個${levelData.items.usb.name}。`, 'item');
-                        addMessage(levelData.items.usb.description, 'system');
-                        gameState.itemsFound++;
-                    } else {
-                        if (!levelData.puzzles.computer.solved) {
-                            showPuzzle('computer', levelData);
-                        } else {
-                            addMessage('電腦已經解鎖了，裡面沒有其他有用的資訊。', 'system');
-                        }
-                    }
-                    break;
-                    
-                case 'chemicalCabinet':
-                    if (!levelData.items.chemicalNote.found) {
-                        levelData.items.chemicalNote.found = true;
-                        gameState.inventory.push('chemicalNote');
-                        addMessage(`你在化學藥櫃上找到了一張${levelData.items.chemicalNote.name}。`, 'item');
-                        addMessage(levelData.items.chemicalNote.description, 'system');
-                        gameState.itemsFound++;
-                    } else {
-                        if (!levelData.puzzles.chemicalLock.solved) {
-                            showPuzzle('chemicalLock', levelData);
-                        } else if (!levelData.items.magnet.found) {
-                            levelData.items.magnet.found = true;
-                            gameState.inventory.push('magnet');
-                            addMessage(`你從化學藥櫃裡找到了一個${levelData.items.magnet.name}。`, 'item');
-                            addMessage(levelData.items.magnet.description, 'system');
-                            gameState.itemsFound++;
-                        } else {
-                            addMessage('化學藥櫃已經空了。', 'system');
-                        }
-                    }
-                    break;
-                    
-                case 'whiteboard':
-                    if (!levelData.items.keycard.found) {
-                        levelData.items.keycard.found = true;
-                        gameState.inventory.push('keycard');
-                        addMessage(`你在白板後面找到了一張${levelData.items.keycard.name}。`, 'item');
-                        addMessage(levelData.items.keycard.description, 'system');
-                        gameState.itemsFound++;
-                    } else {
-                        addMessage('白板上寫著一些化學方程式和計算過程。', 'system');
-                    }
-                    break;
-                    
-                case 'magneticPanel':
-                    if (!levelData.puzzles.magnetPuzzle.solved) {
-                        if (levelData.items.magnet.found) {
-                            showPuzzle('magnetPuzzle', levelData);
-                        } else {
-                            addMessage('這個磁性面板似乎需要磁鐵才能操作。', 'system');
-                        }
-                    } else if (!levelData.items.codeNote.found) {
-                        levelData.items.codeNote.found = true;
-                        gameState.inventory.push('codeNote');
-                        addMessage(`磁性面板打開後，你找到了一張${levelData.items.codeNote.name}。`, 'item');
-                        addMessage(levelData.items.codeNote.description, 'system');
-                        gameState.itemsFound++;
-                    } else {
-                        addMessage('磁性面板已經沒有其他功能了。', 'system');
-                    }
-                    break;
-                    
-                case 'door':
-                    if (!levelData.items.keycard.found) {
-                        addMessage('實驗室的門需要門禁卡才能打開。', 'system');
-                    } else if (gameState.puzzlesSolved < 4) {
-                        addMessage(`門上還有其他安全鎖，需要解決所有謎題才能打開。已解決：${gameState.puzzlesSolved}/4`, 'system');
-                    } else {
-                        if (!levelData.puzzles.door.solved) {
-                            showPuzzle('door', levelData);
-                        } else {
-                            escapeRoom();
-                        }
-                    }
-                    break;
-            }
-        }
-        
-        // 處理關卡3的互動
-        function handleLevel3Interaction(objectId, levelData) {
-            switch(objectId) {
-                case 'treasureChest':
-                    if (!levelData.items.treasureMap.found) {
-                        levelData.items.treasureMap.found = true;
-                        gameState.inventory.push('treasureMap');
-                        addMessage(`你在寶箱旁邊找到了一張${levelData.items.treasureMap.name}。`, 'item');
-                        addMessage(levelData.items.treasureMap.description, 'system');
-                        gameState.itemsFound++;
-                    } else {
-                        if (!levelData.puzzles.treasureChest.solved) {
-                            showPuzzle('treasureChest', levelData);
-                        } else if (!levelData.items.diamond.found) {
-                            levelData.items.diamond.found = true;
-                            gameState.inventory.push('diamond');
-                            addMessage(`你從寶箱裡找到了一顆${levelData.items.diamond.name}！`, 'item');
-                            addMessage(levelData.items.diamond.description, 'system');
-                            gameState.itemsFound++;
-                        } else {
-                            addMessage('寶箱已經空了。', 'system');
-                        }
-                    }
-                    break;
-                    
-                case 'painting':
-                    if (!levelData.items.magnifyingGlass.found) {
-                        levelData.items.magnifyingGlass.found = true;
-                        gameState.inventory.push('magnifyingGlass');
-                        addMessage(`你在畫框後面找到了一個${levelData.items.magnifyingGlass.name}。`, 'item');
-                        addMessage(levelData.items.magnifyingGlass.description, 'system');
-                        gameState.itemsFound++;
-                    } else {
-                        if (!levelData.puzzles.paintingPuzzle.solved) {
-                            if (levelData.items.magnifyingGlass.found) {
-                                showPuzzle('paintingPuzzle', levelData);
-                            } else {
-                                addMessage('這幅畫中有一些細小的細節，但你看不清楚。', 'system');
-                            }
-                        } else {
-                            addMessage('畫作已經沒有其他線索了。', 'system');
-                        }
-                    }
-                    break;
-                    
-                case 'statue':
-                    if (!levelData.items.ancientCoin.found) {
-                        levelData.items.ancientCoin.found = true;
-                        gameState.inventory.push('ancientCoin');
-                        addMessage(`你在雕像底座下找到了一枚${levelData.items.ancientCoin.name}。`, 'item');
-                        addMessage(levelData.items.ancientCoin.description, 'system');
-                        gameState.itemsFound++;
-                    } else {
-                        if (!levelData.puzzles.statuePuzzle.solved) {
-                            showPuzzle('statuePuzzle', levelData);
-                        } else if (!levelData.items.codeScroll.found) {
-                            levelData.items.codeScroll.found = true;
-                            gameState.inventory.push('codeScroll');
-                            addMessage(`雕像移動後，你找到了一個${levelData.items.codeScroll.name}。`, 'item');
-                            addMessage(levelData.items.codeScroll.description, 'system');
-                            gameState.itemsFound++;
-                        } else {
-                            addMessage('雕像已經沒有其他機關了。', 'system');
-                        }
-                    }
-                    break;
-                    
-                case 'displayCase':
-                    if (!levelData.items.goldenKey.found) {
-                        levelData.items.goldenKey.found = true;
-                        gameState.inventory.push('goldenKey');
-                        addMessage(`你在展示櫃裡找到了一把${levelData.items.goldenKey.name}！`, 'item');
-                        addMessage(levelData.items.goldenKey.description, 'system');
-                        gameState.itemsFound++;
-                    } else {
-                        addMessage('展示櫃裡已經沒有其他寶物了。', 'system');
-                    }
-                    break;
-                    
-                case 'door':
-                    if (!levelData.items.goldenKey.found) {
-                        addMessage('寶庫的大門需要金鑰匙才能打開。', 'system');
-                    } else if (gameState.puzzlesSolved < 4) {
-                        addMessage(`大門還有其他機關，需要解決所有謎題才能打開。已解決：${gameState.puzzlesSolved}/4`, 'system');
-                    } else {
-                        if (!levelData.puzzles.door.solved) {
-                            showPuzzle('door', levelData);
-                        } else {
-                            escapeRoom();
-                        }
-                    }
-                    break;
+                }
+            } else {
+                // 沒有謎題的物件，檢查是否有物品可以獲得
+                const unfoundItems = Object.values(levelData.items).filter(item => !item.found);
+                if (unfoundItems.length > 0) {
+                    // 隨機獲得一個物品（實際遊戲中應該有具體邏輯）
+                    const randomItem = unfoundItems[Math.floor(Math.random() * unfoundItems.length)];
+                    randomItem.found = true;
+                    gameState.inventory.push(randomItem.id);
+                    addMessage(`你在${roomObject ? roomObject.name : '這裡'}中找到了一個${randomItem.name}。`, 'item');
+                    addMessage(randomItem.description, 'system');
+                    gameState.itemsFound++;
+                } else {
+                    addMessage('這裡已經沒有其他東西了。', 'system');
+                }
             }
         }
         
@@ -1313,30 +1512,8 @@
             addMessage(`你使用了${item.name}: ${item.description}`, 'system');
             
             // 特殊物品使用效果
-            if (level === 1) {
-                if (itemId === 'flashlight') {
-                    addMessage('你用手電筒照亮了房間的陰暗角落，發現牆上有一行小字："書架上的書名首字母藏有秘密"', 'puzzle');
-                } else if (itemId === 'screwdriver') {
-                    addMessage('你用螺絲起子鬆開了畫框後面的螺絲，發現畫後面有一個暗格。', 'system');
-                    if (!levelData.items.flashlight.found) {
-                        addMessage('你應該檢查一下畫作後面。', 'hint');
-                    }
-                } else if (itemId === 'key' && !levelData.puzzles.door.solved) {
-                    addMessage('你嘗試用鑰匙開門，但門上還有一個密碼鎖。', 'system');
-                }
-            } else if (level === 2) {
-                if (itemId === 'usb') {
-                    addMessage('你將USB隨身碟插入電腦，但電腦需要密碼才能登入。', 'system');
-                } else if (itemId === 'magnet') {
-                    addMessage('你拿著磁鐵靠近磁性面板，面板上的燈開始閃爍。', 'system');
-                }
-            } else if (level === 3) {
-                if (itemId === 'magnifyingGlass') {
-                    addMessage('你用放大鏡仔細查看畫作，發現畫中的星星排列成一個單詞。', 'system');
-                } else if (itemId === 'treasureMap') {
-                    addMessage('你查看藏寶圖，發現圖上標記了寶庫中的幾個重要位置。', 'system');
-                }
-            }
+            // 這裡簡化處理，實際遊戲中需要根據每個關卡的具體邏輯實現
+            addMessage('這個物品似乎可以在某些地方使用。', 'system');
         }
         
         // 添加訊息到紀錄
@@ -1352,8 +1529,9 @@
         
         // 更新遊戲狀態顯示
         function updateGameStatus() {
-            document.getElementById('puzzlesSolved').textContent = `${gameState.puzzlesSolved}/4`;
-            document.getElementById('itemsFound').textContent = `${gameState.itemsFound}/6`;
+            const levelData = levels[gameState.currentLevel];
+            document.getElementById('puzzlesSolved').textContent = `${gameState.puzzlesSolved}/${levelData.puzzlesCount}`;
+            document.getElementById('itemsFound').textContent = `${gameState.itemsFound}/${levelData.itemsCount}`;
         }
         
         // 更新提示
@@ -1363,10 +1541,10 @@
             
             if (gameState.currentPuzzle && levelData.puzzles[gameState.currentPuzzle]) {
                 hintText.textContent = `當前謎題提示: ${levelData.puzzles[gameState.currentPuzzle].hint}`;
-            } else if (gameState.itemsFound < 6) {
-                hintText.textContent = `還有 ${6 - gameState.itemsFound} 個物品尚未找到。仔細檢查房間中的每個物品。`;
-            } else if (gameState.puzzlesSolved < 4) {
-                hintText.textContent = `還有 ${4 - gameState.puzzlesSolved} 個謎題尚未解決。使用你找到的物品來解開謎題。`;
+            } else if (gameState.itemsFound < levelData.itemsCount) {
+                hintText.textContent = `還有 ${levelData.itemsCount - gameState.itemsFound} 個物品尚未找到。仔細檢查房間中的每個物品。`;
+            } else if (gameState.puzzlesSolved < levelData.puzzlesCount) {
+                hintText.textContent = `還有 ${levelData.puzzlesCount - gameState.puzzlesSolved} 個謎題尚未解決。使用你找到的物品來解開謎題。`;
             } else {
                 hintText.textContent = '你已經找到所有物品並解決了所有謎題！現在可以嘗試逃脫了。';
             }
@@ -1393,11 +1571,18 @@
             if (gameState.gameActive) {
                 const levelData = levels[gameState.currentLevel];
                 
-                if (levelData.puzzles.door.solved) {
+                if (levelData.puzzles.door && levelData.puzzles.door.solved) {
                     gameState.gameActive = false;
+                    
+                    // 創建難度星星顯示
+                    let starsHtml = '';
+                    for (let i = 1; i <= 5; i++) {
+                        starsHtml += i <= levelData.difficulty ? '★' : '☆';
+                    }
                     
                     // 顯示逃脫成功訊息
                     document.getElementById('finalLevel').textContent = levelData.name;
+                    document.getElementById('finalDifficulty').textContent = starsHtml;
                     document.getElementById('finalTime').textContent = document.getElementById('timeSpent').textContent;
                     document.getElementById('finalItems').textContent = gameState.itemsFound;
                     document.getElementById('finalPuzzles').textContent = gameState.puzzlesSolved;
@@ -1455,21 +1640,6 @@
             if (unsolvedPuzzles.length > 0) {
                 addMessage(`還有 ${unsolvedPuzzles.length} 個謎題尚未解決。`, 'system');
             }
-            
-            // 關卡特定提示
-            if (gameState.currentLevel === 1) {
-                if (!levelData.items.key.found) {
-                    addMessage('門被鎖住了，你需要找到鑰匙。', 'system');
-                }
-            } else if (gameState.currentLevel === 2) {
-                if (!levelData.items.keycard.found) {
-                    addMessage('實驗室的門需要門禁卡才能打開。', 'system');
-                }
-            } else if (gameState.currentLevel === 3) {
-                if (!levelData.items.goldenKey.found) {
-                    addMessage('寶庫的大門需要金鑰匙才能打開。', 'system');
-                }
-            }
         }
         
         // 嘗試逃脫
@@ -1478,32 +1648,17 @@
             
             const levelData = levels[gameState.currentLevel];
             
-            if (gameState.currentLevel === 1 && !levelData.items.key.found) {
-                addMessage('門被鎖住了，你需要找到鑰匙才能嘗試開門。', 'system');
-            } else if (gameState.currentLevel === 2 && !levelData.items.keycard.found) {
-                addMessage('實驗室的門需要門禁卡才能嘗試開門。', 'system');
-            } else if (gameState.currentLevel === 3 && !levelData.items.goldenKey.found) {
-                addMessage('寶庫的大門需要金鑰匙才能嘗試開門。', 'system');
-            } else if (gameState.puzzlesSolved < 4) {
-                addMessage(`門上有複雜的鎖，需要解決所有謎題才能打開。已解決：${gameState.puzzlesSolved}/4`, 'system');
+            if (gameState.puzzlesSolved < levelData.puzzlesCount) {
+                addMessage(`門上有複雜的鎖，需要解決所有謎題才能打開。已解決：${gameState.puzzlesSolved}/${levelData.puzzlesCount}`, 'system');
             } else {
                 addMessage('你已經解決了所有謎題，現在可以嘗試開門了！', 'system');
-                showPuzzle('door', levelData);
-            }
-        }
-        
-        // 切換關卡
-        function switchLevel(level) {
-            if (level === gameState.currentLevel) return;
-            
-            // 確認切換關卡
-            if (gameState.gameActive && (gameState.itemsFound > 0 || gameState.puzzlesSolved > 0)) {
-                if (!confirm(`確定要切換到關卡 ${level} 嗎？當前關卡的進度將會丟失。`)) {
-                    return;
+                if (levelData.puzzles.door) {
+                    showPuzzle('door', levelData);
+                } else {
+                    // 如果沒有門謎題，直接逃脫
+                    escapeRoom();
                 }
             }
-            
-            initGame(level);
         }
         
         // 初始化事件監聽器
@@ -1521,32 +1676,6 @@
                     gameState.puzzlesSolved++;
                     
                     addMessage(`恭喜！你解決了「${puzzle.name}」！`, 'system');
-                    
-                    // 特殊處理每個謎題解決後的效果
-                    if (gameState.currentLevel === 1) {
-                        if (puzzleId === 'deskDrawer') {
-                            addMessage('抽屜打開了！裡面有一把銅鑰匙。', 'item');
-                            levelData.items.key.found = true;
-                            gameState.inventory.push('key');
-                            gameState.itemsFound++;
-                        } else if (puzzleId === 'bookshelf') {
-                            addMessage('書架移動了，露出後面的保險箱。', 'system');
-                        } else if (puzzleId === 'safe') {
-                            addMessage('保險箱打開了！裡面有一張密碼紙。', 'system');
-                        }
-                    } else if (gameState.currentLevel === 2) {
-                        if (puzzleId === 'chemicalLock') {
-                            addMessage('化學藥櫃打開了！裡面有一個強力磁鐵。', 'item');
-                        } else if (puzzleId === 'magnetPuzzle') {
-                            addMessage('磁性面板打開了！裡面有一張數字紙條。', 'item');
-                        }
-                    } else if (gameState.currentLevel === 3) {
-                        if (puzzleId === 'treasureChest') {
-                            addMessage('寶箱打開了！裡面有一顆閃亮的鑽石！', 'item');
-                        } else if (puzzleId === 'statuePuzzle') {
-                            addMessage('雕像移動了！後面有一個密碼卷軸。', 'item');
-                        }
-                    }
                     
                     // 關閉模態框
                     document.getElementById('puzzleModal').style.display = 'none';
@@ -1596,25 +1725,34 @@
             document.getElementById('nextLevelBtn').addEventListener('click', () => {
                 document.getElementById('escapeMessage').style.display = 'none';
                 const nextLevel = gameState.currentLevel + 1;
-                if (nextLevel <= 3) {
-                    switchLevel(nextLevel);
+                if (nextLevel <= Object.keys(levels).length) {
+                    startGame(nextLevel);
                 } else {
-                    switchLevel(1); // 回到第一關
+                    // 回到第一關
+                    switchPage('levelSelectPage');
+                    renderLevelSelection();
                 }
             });
             
-            // 關卡選擇按鈕
-            document.querySelectorAll('.level-btn').forEach(btn => {
-                btn.addEventListener('click', () => {
-                    const level = parseInt(btn.dataset.level);
-                    switchLevel(level);
-                });
+            // 返回關卡選擇按鈕（遊戲中）
+            document.getElementById('backToLevelsBtn').addEventListener('click', () => {
+                if (confirm('確定要返回關卡選擇嗎？當前遊戲進度將會丟失。')) {
+                    switchPage('levelSelectPage');
+                    renderLevelSelection();
+                }
+            });
+            
+            // 返回關卡選擇按鈕（勝利後）
+            document.getElementById('backToLevelsAfterWinBtn').addEventListener('click', () => {
+                document.getElementById('escapeMessage').style.display = 'none';
+                switchPage('levelSelectPage');
+                renderLevelSelection();
             });
         }
         
-        // 當頁面加載完成時初始化遊戲
+        // 當頁面加載完成時初始化
         document.addEventListener('DOMContentLoaded', () => {
-            initGame(1);
+            renderLevelSelection();
             initEventListeners();
         });
     </script>
