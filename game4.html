@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>極速賽車 - 選關卡</title>
     <style>
+        /* 樣式保持不變，與原代碼相同 */
         * {
             margin: 0;
             padding: 0;
@@ -668,6 +669,10 @@
                 trackColor: "#555577",
                 borderColor: "#FFFFFF",
                 innerTrackColor: "#666688",
+                trackWidth: 600, // 增加賽道寬度
+                trackHeight: 400,
+                trackX: 100, // 賽道起始X位置
+                trackY: 100, // 賽道起始Y位置
                 startLine: {x1: 150, y1: 550, x2: 250, y2: 550},
                 checkpoints: [
                     {x: 200, y: 550, radius: 40},
@@ -700,6 +705,10 @@
                 trackColor: "#666677",
                 borderColor: "#FFFFFF",
                 innerTrackColor: "#777788",
+                trackWidth: 650, // 增加賽道寬度
+                trackHeight: 450,
+                trackX: 75, // 賽道起始X位置
+                trackY: 75, // 賽道起始Y位置
                 startLine: {x1: 100, y1: 550, x2: 200, y2: 550},
                 checkpoints: [
                     {x: 150, y: 550, radius: 35},
@@ -735,6 +744,10 @@
                 trackColor: "#336633",
                 borderColor: "#8B4513",
                 innerTrackColor: "#447744",
+                trackWidth: 650, // 增加賽道寬度
+                trackHeight: 450,
+                trackX: 75, // 賽道起始X位置
+                trackY: 75, // 賽道起始Y位置
                 startLine: {x1: 100, y1: 550, x2: 200, y2: 550},
                 checkpoints: [
                     {x: 150, y: 550, radius: 35},
@@ -769,6 +782,10 @@
                 trackColor: "#D2691E",
                 borderColor: "#8B4513",
                 innerTrackColor: "#DEB887",
+                trackWidth: 650, // 增加賽道寬度
+                trackHeight: 450,
+                trackX: 75, // 賽道起始X位置
+                trackY: 75, // 賽道起始Y位置
                 startLine: {x1: 200, y1: 550, x2: 300, y2: 550},
                 checkpoints: [
                     {x: 250, y: 550, radius: 30},
@@ -804,6 +821,10 @@
                 trackColor: "#333355",
                 borderColor: "#8888AA",
                 innerTrackColor: "#444466",
+                trackWidth: 650, // 增加賽道寬度
+                trackHeight: 450,
+                trackX: 75, // 賽道起始X位置
+                trackY: 75, // 賽道起始Y位置
                 startLine: {x1: 200, y1: 550, x2: 300, y2: 550},
                 checkpoints: [
                     {x: 250, y: 550, radius: 40},
@@ -843,6 +864,10 @@
                 trackColor: "#444466",
                 borderColor: "#FFD700",
                 innerTrackColor: "#666688",
+                trackWidth: 650, // 增加賽道寬度
+                trackHeight: 450,
+                trackX: 75, // 賽道起始X位置
+                trackY: 75, // 賽道起始Y位置
                 startLine: {x1: 150, y1: 550, x2: 250, y2: 550},
                 checkpoints: [
                     {x: 200, y: 550, radius: 25},
@@ -1043,27 +1068,29 @@
         let lastTime = 0;
         let currentTrackData = null;
         
-        // 賽車參數
+        // 賽車參數 - 根據需求修改
         const car = {
             x: 400,
             y: 500,
             width: 25,
             height: 40,
             speed: 0,
-            maxSpeed: 3.5,
-            acceleration: 0.08,
-            deceleration: 0.15,
-            brakeDeceleration: 0.5,
-            reverseSpeed: 1.5,
+            maxSpeed: 0.28, // 降低最大速度 (約10km/h)
+            acceleration: 0.015, // 降低加速度
+            deceleration: 0.12, // 降低減速度
+            brakeDeceleration: 0.4, // 降低剎車減速度
+            reverseSpeed: 0.05, // 降低倒車速度
             angle: 0,
-            steerAngle: 0.05,
+            steerAngle: 0.045, // 降低轉向角度
             friction: 0.97,
             color: '#FF8C00',
             currentCheckpoint: 0,
             lap: 0,
             lapTimes: [],
             bestLapTime: null,
-            currentLapStartTime: 0
+            currentLapStartTime: 0,
+            offTrack: false, // 是否在賽道外
+            offTrackSlowdown: 0.8 // 賽道外減速係數
         };
         
         // 對手車輛
@@ -1081,12 +1108,50 @@
             raceFinished: false
         };
         
+        // 檢查賽車是否在賽道上
+        function isCarOnTrack(carObj) {
+            if (!currentTrackData) return true;
+            
+            // 賽道邊界
+            const trackLeft = currentTrackData.trackX;
+            const trackRight = currentTrackData.trackX + currentTrackData.trackWidth;
+            const trackTop = currentTrackData.trackY;
+            const trackBottom = currentTrackData.trackY + currentTrackData.trackHeight;
+            
+            // 賽車的四個角點
+            const cos = Math.cos(carObj.angle);
+            const sin = Math.sin(carObj.angle);
+            const halfWidth = carObj.width / 2;
+            const halfHeight = carObj.height / 2;
+            
+            // 計算旋轉後的角點
+            const corners = [
+                {x: -halfWidth, y: -halfHeight},
+                {x: halfWidth, y: -halfHeight},
+                {x: halfWidth, y: halfHeight},
+                {x: -halfWidth, y: halfHeight}
+            ].map(corner => ({
+                x: carObj.x + (corner.x * cos - corner.y * sin),
+                y: carObj.y + (corner.x * sin + corner.y * cos)
+            }));
+            
+            // 檢查所有角點是否都在賽道內
+            for (const corner of corners) {
+                if (corner.x < trackLeft || corner.x > trackRight || 
+                    corner.y < trackTop || corner.y > trackBottom) {
+                    return false;
+                }
+            }
+            
+            return true;
+        }
+        
         // 根據賽道難度初始化對手
         function initializeOpponentsForGame(difficulty) {
             opponents = [];
             
             // 基礎AI參數
-            const baseSpeed = 2.0;
+            const baseSpeed = 0.18; // 降低對手速度
             const baseSkill = 0.7;
             
             // 根據難度調整對手數量和能力
@@ -1095,27 +1160,27 @@
             switch(difficulty) {
                 case 1:
                     numOpponents = 2;
-                    speedMultiplier = 0.8;
+                    speedMultiplier = 0.7;
                     skillMultiplier = 0.7;
                     break;
                 case 2:
                     numOpponents = 2;
-                    speedMultiplier = 0.9;
+                    speedMultiplier = 0.8;
                     skillMultiplier = 0.8;
                     break;
                 case 3:
                     numOpponents = 3;
-                    speedMultiplier = 1.0;
+                    speedMultiplier = 0.9;
                     skillMultiplier = 0.9;
                     break;
                 case 4:
                     numOpponents = 3;
-                    speedMultiplier = 1.1;
+                    speedMultiplier = 1.0;
                     skillMultiplier = 1.0;
                     break;
                 case 5:
                     numOpponents = 4;
-                    speedMultiplier = 1.2;
+                    speedMultiplier = 1.1;
                     skillMultiplier = 1.1;
                     break;
                 default:
@@ -1167,19 +1232,35 @@
             // 繪製賽道主體
             ctx.fillStyle = currentTrackData.trackColor;
             
-            // 簡單的矩形賽道
-            ctx.fillRect(100, 100, 600, 400);
+            // 使用新的賽道參數繪製賽道
+            ctx.fillRect(
+                currentTrackData.trackX, 
+                currentTrackData.trackY, 
+                currentTrackData.trackWidth, 
+                currentTrackData.trackHeight
+            );
             
             // 賽道邊界
             ctx.strokeStyle = currentTrackData.borderColor;
             ctx.lineWidth = 10;
-            ctx.strokeRect(100, 100, 600, 400);
+            ctx.strokeRect(
+                currentTrackData.trackX, 
+                currentTrackData.trackY, 
+                currentTrackData.trackWidth, 
+                currentTrackData.trackHeight
+            );
             
             // 內線
             ctx.strokeStyle = currentTrackData.innerTrackColor;
             ctx.lineWidth = 3;
             ctx.setLineDash([20, 15]);
-            ctx.strokeRect(150, 150, 500, 300);
+            const innerMargin = 50;
+            ctx.strokeRect(
+                currentTrackData.trackX + innerMargin, 
+                currentTrackData.trackY + innerMargin, 
+                currentTrackData.trackWidth - innerMargin * 2, 
+                currentTrackData.trackHeight - innerMargin * 2
+            );
             ctx.setLineDash([]);
             
             // 繪製起點/終點線
@@ -1337,8 +1418,14 @@
             ctx.translate(carObj.x, carObj.y);
             ctx.rotate(carObj.angle);
             
+            // 如果不在賽道上，改變車身顏色
+            let carColor = carObj.color;
+            if (carObj === car && car.offTrack) {
+                carColor = '#FF4444'; // 紅色表示在賽道外
+            }
+            
             // 車身
-            ctx.fillStyle = carObj.color;
+            ctx.fillStyle = carColor;
             ctx.fillRect(-carObj.width/2, -carObj.height/2, carObj.width, carObj.height);
             
             // 車窗
@@ -1441,13 +1528,13 @@
             opponent.angle += Math.sign(angleDiff) * Math.min(Math.abs(angleDiff), turnSpeed);
             
             // AI速度控制 - 根據距離調整速度
-            const maxSpeed = 2.5 + aggression * 1.0;
-            const minSpeed = 1.0;
+            const maxSpeed = 0.18 + aggression * 0.1; // 降低對手最大速度
+            const minSpeed = 0.05;
             
             if (distanceToTarget > 80) {
-                opponent.speed += 0.05 * aggression * deltaTime;
+                opponent.speed += 0.008 * aggression * deltaTime; // 降低加速度
             } else if (distanceToTarget < 30) {
-                opponent.speed -= 0.1 * deltaTime;
+                opponent.speed -= 0.015 * deltaTime; // 降低減速度
             }
             
             // 限制速度
@@ -1460,25 +1547,6 @@
             // 更新位置
             opponent.x += Math.sin(opponent.angle) * opponent.speed * deltaTime * 30;
             opponent.y -= Math.cos(opponent.angle) * opponent.speed * deltaTime * 30;
-            
-            // 邊界檢查
-            const trackMargin = 80;
-            if (opponent.x < trackMargin) {
-                opponent.x = trackMargin;
-                opponent.angle += 0.1;
-            }
-            if (opponent.x > canvas.width - trackMargin) {
-                opponent.x = canvas.width - trackMargin;
-                opponent.angle -= 0.1;
-            }
-            if (opponent.y < trackMargin) {
-                opponent.y = trackMargin;
-                opponent.angle += 0.1;
-            }
-            if (opponent.y > canvas.height - trackMargin) {
-                opponent.y = canvas.height - trackMargin;
-                opponent.angle -= 0.1;
-            }
             
             // AI檢查點檢測
             const checkpoint = currentTrackData.checkpoints[opponent.currentCheckpoint];
@@ -1543,7 +1611,9 @@
         
         // 更新統計顯示
         function updateStatsDisplay() {
-            document.getElementById('speedValue').textContent = Math.abs(Math.round(car.speed * 10)) + " km/h";
+            // 將速度從遊戲單位轉換為km/h (乘以約36倍)
+            const speedInKmh = Math.abs(car.speed * 36);
+            document.getElementById('speedValue').textContent = Math.round(speedInKmh) + " km/h";
             document.getElementById('lapValue').textContent = car.lap + "/" + gameState.maxLaps;
             document.getElementById('bestLapValue').textContent = car.bestLapTime ? formatLapTime(car.bestLapTime) : "--:--.---";
             
@@ -1611,6 +1681,9 @@
             // 更新遊戲時間
             gameState.raceTime = (currentTime - gameState.raceStartTime) / 1000;
             
+            // 檢查賽車是否在賽道上
+            car.offTrack = !isCarOnTrack(car);
+            
             // 更新玩家賽車
             updateCarPhysics(deltaTime, currentTime);
             
@@ -1635,17 +1708,27 @@
             ctx.font = '16px Arial';
             ctx.textAlign = 'left';
             ctx.fillText(`圈數: ${car.lap + 1}/${gameState.maxLaps}`, 20, 35);
-            ctx.fillText(`速度: ${Math.abs(Math.round(car.speed * 10))} km/h`, 20, 60);
+            
+            // 將速度從遊戲單位轉換為km/h
+            const speedInKmh = Math.abs(car.speed * 36);
+            ctx.fillText(`速度: ${Math.round(speedInKmh)} km/h`, 20, 60);
+            
+            // 如果不在賽道上，顯示警告
+            if (car.offTrack) {
+                ctx.fillStyle = '#FF5555';
+                ctx.fillText('警告：離開賽道！', 20, 85);
+                ctx.fillStyle = '#FFF';
+            }
             
             // 計算當前圈速
             if (car.currentLapStartTime > 0) {
                 const currentLapTime = gameState.raceTime - car.currentLapStartTime;
-                ctx.fillText(`當前圈速: ${formatLapTime(currentLapTime)}`, 20, 85);
+                ctx.fillText(`當前圈速: ${formatLapTime(currentLapTime)}`, 20, car.offTrack ? 110 : 85);
             } else {
-                ctx.fillText(`當前圈速: --:--.---`, 20, 85);
+                ctx.fillText(`當前圈速: --:--.---`, 20, car.offTrack ? 110 : 85);
             }
             
-            ctx.fillText(`最快圈速: ${car.bestLapTime ? formatLapTime(car.bestLapTime) : "--:--.---"}`, 20, 110);
+            ctx.fillText(`最快圈速: ${car.bestLapTime ? formatLapTime(car.bestLapTime) : "--:--.---"}`, 20, car.offTrack ? 135 : 110);
             
             // 更新統計顯示
             updateStatsDisplay();
@@ -1690,6 +1773,11 @@
                 car.speed *= 0.92;
             }
             
+            // 如果在賽道外，減速更多
+            if (car.offTrack) {
+                car.speed *= car.offTrackSlowdown;
+            }
+            
             // 摩擦力 - 根據賽道類型調整
             car.speed *= currentTrackData.trackFriction || car.friction;
             
@@ -1704,26 +1792,21 @@
             }
             
             // 更新位置
+            const oldX = car.x;
+            const oldY = car.y;
+            
             car.x += Math.sin(car.angle) * car.speed * deltaTime * 30;
             car.y -= Math.cos(car.angle) * car.speed * deltaTime * 30;
             
-            // 邊界檢查 - 確保賽車在賽道內
-            const trackMargin = 80;
-            if (car.x < trackMargin) {
-                car.x = trackMargin;
-                car.speed *= 0.7; // 撞牆減速
-            }
-            if (car.x > canvas.width - trackMargin) {
-                car.x = canvas.width - trackMargin;
-                car.speed *= 0.7;
-            }
-            if (car.y < trackMargin) {
-                car.y = trackMargin;
-                car.speed *= 0.7;
-            }
-            if (car.y > canvas.height - trackMargin) {
-                car.y = canvas.height - trackMargin;
-                car.speed *= 0.7;
+            // 如果移動後不在賽道上，嘗試推回賽道
+            if (!isCarOnTrack(car)) {
+                // 嘗試將車推回賽道
+                const pushBackFactor = 0.5;
+                car.x = oldX * (1 - pushBackFactor) + car.x * pushBackFactor;
+                car.y = oldY * (1 - pushBackFactor) + car.y * pushBackFactor;
+                
+                // 進一步減速
+                car.speed *= 0.8;
             }
             
             // 檢查點檢測
@@ -1820,13 +1903,14 @@
             car.lapTimes = [];
             car.bestLapTime = null;
             car.currentLapStartTime = 0;
+            car.offTrack = false;
             
             // 重置對手
             opponents.forEach((opponent, index) => {
                 opponent.x = car.x + (index - 1) * 60;
                 opponent.y = car.y + 50;
                 opponent.angle = 0;
-                opponent.speed = 2.0 + index * 0.2;
+                opponent.speed = 0.1 + index * 0.02; // 降低初始速度
                 opponent.currentCheckpoint = 0;
                 opponent.lap = 0;
                 opponent.lapTimes = [];
@@ -1992,6 +2076,7 @@
                     car.y = currentTrackData.startLine.y1;
                     car.speed = 0;
                     car.angle = 0;
+                    car.offTrack = false;
                 }
             }
         });
