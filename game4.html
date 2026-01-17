@@ -420,12 +420,14 @@
             color: '#FF8C00'
         };
         
-        // 賽道數據
+        // 賽道數據 - 修正版
         const tracks = {
             1: { // 城市賽道
                 name: "城市賽道",
-                color: "#555",
-                borderColor: "#FFF",
+                bgColor: "#333344",
+                trackColor: "#555577",
+                borderColor: "#FFFFFF",
+                startLine: {x1: 150, y1: 550, x2: 250, y2: 550},
                 checkpoints: [
                     {x: 200, y: 550, radius: 30},
                     {x: 200, y: 200, radius: 30},
@@ -441,13 +443,15 @@
             },
             2: { // 山區賽道
                 name: "山區賽道",
-                color: "#663300",
+                bgColor: "#224422",
+                trackColor: "#336633",
                 borderColor: "#8B4513",
+                startLine: {x1: 100, y1: 550, x2: 200, y2: 550},
                 checkpoints: [
-                    {x: 150, y: 500, radius: 30},
+                    {x: 150, y: 550, radius: 30},
                     {x: 150, y: 150, radius: 30},
                     {x: 650, y: 150, radius: 30},
-                    {x: 650, y: 500, radius: 30}
+                    {x: 650, y: 550, radius: 30}
                 ],
                 obstacles: [
                     {x: 300, y: 300, width: 50, height: 30},
@@ -458,13 +462,15 @@
             },
             3: { // 沙漠賽道
                 name: "沙漠賽道",
-                color: "#D2691E",
+                bgColor: "#8B7355",
+                trackColor: "#D2691E",
                 borderColor: "#8B4513",
+                startLine: {x1: 200, y1: 550, x2: 300, y2: 550},
                 checkpoints: [
-                    {x: 250, y: 500, radius: 30},
+                    {x: 250, y: 550, radius: 30},
                     {x: 250, y: 100, radius: 30},
                     {x: 550, y: 100, radius: 30},
-                    {x: 550, y: 500, radius: 30}
+                    {x: 550, y: 550, radius: 30}
                 ],
                 obstacles: [
                     {x: 400, y: 300, width: 60, height: 60},
@@ -502,6 +508,121 @@
             handbrake: false,
             ranking: []
         };
+        
+        // 繪製賽道 - 修正版
+        function drawTrack() {
+            // 繪製賽道背景
+            ctx.fillStyle = trackData.bgColor;
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            
+            // 繪製賽道主體
+            ctx.fillStyle = trackData.trackColor;
+            ctx.fillRect(50, 50, canvas.width - 100, canvas.height - 100);
+            
+            // 繪製賽道邊線
+            ctx.strokeStyle = trackData.borderColor;
+            ctx.lineWidth = 8;
+            ctx.strokeRect(50, 50, canvas.width - 100, canvas.height - 100);
+            
+            // 繪製賽道內線
+            ctx.strokeStyle = "#FFFFFF";
+            ctx.lineWidth = 2;
+            ctx.setLineDash([15, 10]);
+            ctx.strokeRect(70, 70, canvas.width - 140, canvas.height - 140);
+            ctx.setLineDash([]);
+            
+            // 繪製起點/終點線
+            ctx.strokeStyle = '#FFFFFF';
+            ctx.lineWidth = 4;
+            ctx.setLineDash([10, 10]);
+            ctx.beginPath();
+            ctx.moveTo(trackData.startLine.x1, trackData.startLine.y1);
+            ctx.lineTo(trackData.startLine.x2, trackData.startLine.y2);
+            ctx.stroke();
+            ctx.setLineDash([]);
+            
+            // 繪製檢查點
+            trackData.checkpoints.forEach((checkpoint, index) => {
+                ctx.beginPath();
+                ctx.arc(checkpoint.x, checkpoint.y, checkpoint.radius, 0, Math.PI * 2);
+                ctx.fillStyle = index === gameState.currentCheckpoint ? '#00FF00' : '#FFFF00';
+                ctx.globalAlpha = 0.6;
+                ctx.fill();
+                ctx.globalAlpha = 1.0;
+                
+                // 檢查點編號
+                ctx.fillStyle = '#FFF';
+                ctx.font = 'bold 16px Arial';
+                ctx.textAlign = 'center';
+                ctx.textBaseline = 'middle';
+                ctx.fillText(index + 1, checkpoint.x, checkpoint.y);
+            });
+            
+            // 繪製障礙物
+            ctx.fillStyle = '#8B0000';
+            trackData.obstacles.forEach(obstacle => {
+                ctx.fillRect(obstacle.x - obstacle.width/2, obstacle.y - obstacle.height/2, obstacle.width, obstacle.height);
+                // 障礙物邊框
+                ctx.strokeStyle = '#660000';
+                ctx.lineWidth = 2;
+                ctx.strokeRect(obstacle.x - obstacle.width/2, obstacle.y - obstacle.height/2, obstacle.width, obstacle.height);
+            });
+            
+            // 繪製賽道名稱
+            ctx.fillStyle = '#FFF';
+            ctx.font = 'bold 24px Arial';
+            ctx.textAlign = 'left';
+            ctx.fillText(trackData.name, 60, 90);
+            
+            // 繪製賽道邊界標記
+            ctx.fillStyle = '#FFD700';
+            for(let i = 0; i < 4; i++) {
+                const x = i % 2 === 0 ? 50 : canvas.width - 60;
+                const y = i < 2 ? 50 : canvas.height - 60;
+                ctx.fillRect(x, y, 10, 10);
+            }
+        }
+        
+        // 繪製賽車
+        function drawCar(carObj) {
+            ctx.save();
+            ctx.translate(carObj.x, carObj.y);
+            ctx.rotate(carObj.angle);
+            
+            // 車身
+            ctx.fillStyle = carObj.color;
+            ctx.fillRect(-carObj.width/2, -carObj.height/2, carObj.width, carObj.height);
+            
+            // 車窗
+            ctx.fillStyle = '#87CEEB';
+            ctx.fillRect(-carObj.width/4, -carObj.height/3, carObj.width/2, carObj.height/3);
+            
+            // 車輪
+            ctx.fillStyle = '#333';
+            ctx.fillRect(-carObj.width/2 - 5, -carObj.height/2, 5, carObj.height);
+            ctx.fillRect(carObj.width/2, -carObj.height/2, 5, carObj.height);
+            
+            // 車頭燈
+            ctx.fillStyle = '#FFFF00';
+            ctx.fillRect(-carObj.width/4, -carObj.height/2 + 5, carObj.width/4, 5);
+            
+            // 如果正在剎車，繪製剎車燈
+            if (carObj === car && gameState.keys['ArrowDown'] && car.speed > 0) {
+                ctx.fillStyle = '#FF0000';
+                ctx.fillRect(carObj.width/4, -carObj.height/2 + 5, carObj.width/4, 5);
+            }
+            
+            // 賽車編號（如果是玩家賽車）
+            if (carObj === car) {
+                ctx.fillStyle = '#FFFFFF';
+                ctx.font = 'bold 14px Arial';
+                ctx.textAlign = 'center';
+                ctx.textBaseline = 'middle';
+                ctx.fillText('01', 0, 0);
+            }
+            
+            ctx.restore();
+        }
         
         // 初始化排名
         function initRanking() {
@@ -591,89 +712,6 @@
             return `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}.${milliseconds.toString().padStart(3, '0')}`;
         }
         
-        // 繪製賽道
-        function drawTrack() {
-            // 繪製賽道邊界
-            ctx.fillStyle = trackData.color;
-            ctx.fillRect(50, 50, canvas.width - 100, canvas.height - 100);
-            
-            // 繪製賽道邊線
-            ctx.strokeStyle = trackData.borderColor;
-            ctx.lineWidth = 5;
-            ctx.strokeRect(50, 50, canvas.width - 100, canvas.height - 100);
-            
-            // 繪製檢查點
-            trackData.checkpoints.forEach((checkpoint, index) => {
-                ctx.beginPath();
-                ctx.arc(checkpoint.x, checkpoint.y, checkpoint.radius, 0, Math.PI * 2);
-                ctx.fillStyle = index === gameState.currentCheckpoint ? '#00FF00' : '#FFFF00';
-                ctx.globalAlpha = 0.5;
-                ctx.fill();
-                ctx.globalAlpha = 1.0;
-                
-                // 檢查點編號
-                ctx.fillStyle = '#FFF';
-                ctx.font = 'bold 16px Arial';
-                ctx.textAlign = 'center';
-                ctx.textBaseline = 'middle';
-                ctx.fillText(index + 1, checkpoint.x, checkpoint.y);
-            });
-            
-            // 繪製障礙物
-            ctx.fillStyle = '#8B0000';
-            trackData.obstacles.forEach(obstacle => {
-                ctx.fillRect(obstacle.x - obstacle.width/2, obstacle.y - obstacle.height/2, obstacle.width, obstacle.height);
-            });
-            
-            // 繪製起點/終點線
-            ctx.strokeStyle = '#FFFFFF';
-            ctx.lineWidth = 3;
-            ctx.setLineDash([10, 10]);
-            ctx.beginPath();
-            ctx.moveTo(200, 550);
-            ctx.lineTo(200, 500);
-            ctx.stroke();
-            ctx.setLineDash([]);
-            
-            // 繪製賽道名稱
-            ctx.fillStyle = '#FFF';
-            ctx.font = 'bold 24px Arial';
-            ctx.textAlign = 'left';
-            ctx.fillText(trackData.name, 60, 90);
-        }
-        
-        // 繪製賽車
-        function drawCar(carObj) {
-            ctx.save();
-            ctx.translate(carObj.x, carObj.y);
-            ctx.rotate(carObj.angle);
-            
-            // 車身
-            ctx.fillStyle = carObj.color;
-            ctx.fillRect(-carObj.width/2, -carObj.height/2, carObj.width, carObj.height);
-            
-            // 車窗
-            ctx.fillStyle = '#87CEEB';
-            ctx.fillRect(-carObj.width/4, -carObj.height/3, carObj.width/2, carObj.height/3);
-            
-            // 車輪
-            ctx.fillStyle = '#333';
-            ctx.fillRect(-carObj.width/2 - 5, -carObj.height/2, 5, carObj.height);
-            ctx.fillRect(carObj.width/2, -carObj.height/2, 5, carObj.height);
-            
-            // 車頭燈
-            ctx.fillStyle = '#FFFF00';
-            ctx.fillRect(-carObj.width/4, -carObj.height/2 + 5, carObj.width/4, 5);
-            
-            // 如果正在剎車，繪製剎車燈
-            if (carObj === car && gameState.keys['ArrowDown'] && car.speed > 0) {
-                ctx.fillStyle = '#FF0000';
-                ctx.fillRect(carObj.width/4, -carObj.height/2 + 5, carObj.width/4, 5);
-            }
-            
-            ctx.restore();
-        }
-        
         // 更新賽車位置
         function updateCar(deltaTime) {
             // 處理加速
@@ -721,11 +759,28 @@
             car.x += Math.sin(car.angle) * car.speed * deltaTime * 30;
             car.y -= Math.cos(car.angle) * car.speed * deltaTime * 30;
             
-            // 邊界檢查
-            if (car.x < 60) car.x = 60;
-            if (car.x > canvas.width - 60) car.x = canvas.width - 60;
-            if (car.y < 60) car.y = 60;
-            if (car.y > canvas.height - 60) car.y = canvas.height - 60;
+            // 邊界檢查 - 確保賽車在賽道內
+            const trackLeft = 60;
+            const trackRight = canvas.width - 60;
+            const trackTop = 60;
+            const trackBottom = canvas.height - 60;
+            
+            if (car.x < trackLeft) {
+                car.x = trackLeft;
+                car.speed *= 0.8; // 撞牆減速
+            }
+            if (car.x > trackRight) {
+                car.x = trackRight;
+                car.speed *= 0.8;
+            }
+            if (car.y < trackTop) {
+                car.y = trackTop;
+                car.speed *= 0.8;
+            }
+            if (car.y > trackBottom) {
+                car.y = trackBottom;
+                car.speed *= 0.8;
+            }
             
             // 檢查點檢測
             const checkpoint = trackData.checkpoints[gameState.currentCheckpoint];
@@ -765,24 +820,20 @@
             
             // 障礙物碰撞檢測
             trackData.obstacles.forEach(obstacle => {
-                const rect1 = {
-                    x: car.x - car.width/2,
-                    y: car.y - car.height/2,
-                    width: car.width,
-                    height: car.height
-                };
+                const carLeft = car.x - car.width/2;
+                const carRight = car.x + car.width/2;
+                const carTop = car.y - car.height/2;
+                const carBottom = car.y + car.height/2;
                 
-                const rect2 = {
-                    x: obstacle.x - obstacle.width/2,
-                    y: obstacle.y - obstacle.height/2,
-                    width: obstacle.width,
-                    height: obstacle.height
-                };
+                const obstacleLeft = obstacle.x - obstacle.width/2;
+                const obstacleRight = obstacle.x + obstacle.width/2;
+                const obstacleTop = obstacle.y - obstacle.height/2;
+                const obstacleBottom = obstacle.y + obstacle.height/2;
                 
-                if (rect1.x < rect2.x + rect2.width &&
-                    rect1.x + rect1.width > rect2.x &&
-                    rect1.y < rect2.y + rect2.height &&
-                    rect1.y + rect1.height > rect2.y) {
+                if (carRight > obstacleLeft && 
+                    carLeft < obstacleRight && 
+                    carBottom > obstacleTop && 
+                    carTop < obstacleBottom) {
                     // 碰撞發生，減速並稍微後退
                     car.speed *= -0.5;
                 }
@@ -791,9 +842,9 @@
         
         // 更新對手
         function updateOpponents(deltaTime) {
-            opponents.forEach(opponent => {
+            opponents.forEach((opponent, index) => {
                 // 簡單的AI：跟隨檢查點
-                const targetCheckpoint = trackData.checkpoints[0];
+                const targetCheckpoint = trackData.checkpoints[gameState.currentCheckpoint];
                 const dx = targetCheckpoint.x - opponent.x;
                 const dy = targetCheckpoint.y - opponent.y;
                 const targetAngle = Math.atan2(dx, -dy);
@@ -815,15 +866,19 @@
                 if (opponent.speed > 7) opponent.speed = 7;
                 
                 // 邊界檢查
-                if (opponent.x < 60) opponent.x = 60;
-                if (opponent.x > canvas.width - 60) opponent.x = canvas.width - 60;
-                if (opponent.y < 60) opponent.y = 60;
-                if (opponent.y > canvas.height - 60) opponent.y = canvas.height - 60;
+                const trackLeft = 60;
+                const trackRight = canvas.width - 60;
+                const trackTop = 60;
+                const trackBottom = canvas.height - 60;
+                
+                if (opponent.x < trackLeft) opponent.x = trackLeft;
+                if (opponent.x > trackRight) opponent.x = trackRight;
+                if (opponent.y < trackTop) opponent.y = trackTop;
+                if (opponent.y > trackBottom) opponent.y = trackBottom;
                 
                 // 更新對手的比賽時間（簡單模擬）
-                const opponentIndex = opponents.indexOf(opponent);
-                if (gameState.ranking[opponentIndex + 1]) {
-                    gameState.ranking[opponentIndex + 1].time = gameState.raceTime + opponentIndex * 2;
+                if (gameState.ranking[index + 1]) {
+                    gameState.ranking[index + 1].time = gameState.raceTime + index * 2;
                 }
             });
             
@@ -839,6 +894,8 @@
         
         // 開始比賽
         function startRace() {
+            if (gameRunning) return;
+            
             gameRunning = true;
             gamePaused = false;
             gameState.raceStartTime = performance.now();
@@ -849,15 +906,15 @@
             gameState.bestLapTime = null;
             
             // 重置賽車位置
-            car.x = 400;
-            car.y = 500;
+            car.x = trackData.startLine.x1 + (trackData.startLine.x2 - trackData.startLine.x1) / 2;
+            car.y = trackData.startLine.y1;
             car.speed = 0;
             car.angle = 0;
             
             // 重置對手位置
             opponents.forEach((opponent, index) => {
-                opponent.x = 400 + (index - 1) * 50;
-                opponent.y = 500;
+                opponent.x = car.x + (index - 1) * 50;
+                opponent.y = car.y + 50;
                 opponent.angle = 0;
                 opponent.speed = 5 + index * 0.5;
             });
@@ -870,7 +927,8 @@
             updateStatsDisplay();
             
             // 開始遊戲循環
-            gameLoop();
+            lastTime = performance.now();
+            requestAnimationFrame(gameLoop);
             
             // 更新按鈕文字
             document.getElementById('startBtn').textContent = "比賽進行中";
@@ -882,7 +940,9 @@
             gameRunning = false;
             
             // 顯示比賽結果
-            alert(`比賽結束！\n最快圈速：${formatTime(gameState.bestLapTime)}\n總時間：${formatTime(gameState.raceTime)}`);
+            setTimeout(() => {
+                alert(`比賽結束！\n最快圈速：${formatTime(gameState.bestLapTime)}\n總時間：${formatTime(gameState.raceTime)}`);
+            }, 500);
             
             // 重置按鈕
             document.getElementById('startBtn').textContent = "開始比賽";
@@ -904,6 +964,7 @@
             document.getElementById('pauseBtn').textContent = gamePaused ? "繼續遊戲" : "暫停遊戲";
             
             if (!gamePaused) {
+                lastTime = performance.now();
                 gameLoop();
             }
         }
@@ -923,11 +984,18 @@
             
             // 如果遊戲正在進行，重置賽車位置
             if (gameRunning) {
-                car.x = 400;
-                car.y = 500;
+                car.x = trackData.startLine.x1 + (trackData.startLine.x2 - trackData.startLine.x1) / 2;
+                car.y = trackData.startLine.y1;
                 car.speed = 0;
                 car.angle = 0;
             }
+            
+            // 重新繪製賽道
+            drawTrack();
+            if (gameRunning) {
+                opponents.forEach(opponent => drawCar(opponent));
+            }
+            drawCar(car);
         }
         
         // 遊戲主循環
@@ -935,7 +1003,7 @@
             if (!gameRunning || gamePaused) return;
             
             // 計算時間增量
-            const deltaTime = (currentTime - lastTime) / 16.67; // 標準化到60fps
+            const deltaTime = Math.min((currentTime - lastTime) / 16.67, 2); // 標準化到60fps，限制最大值
             lastTime = currentTime;
             
             // 清除畫布
@@ -963,7 +1031,7 @@
             
             // 繪製遊戲資訊
             ctx.fillStyle = 'rgba(0, 0, 0, 0.7)';
-            ctx.fillRect(10, 10, 200, 100);
+            ctx.fillRect(10, 10, 220, 120);
             
             ctx.fillStyle = '#FFF';
             ctx.font = '16px Arial';
@@ -972,6 +1040,9 @@
             ctx.fillText(`速度: ${Math.abs(Math.round(car.speed * 30))} km/h`, 20, 60);
             ctx.fillText(`當前圈速: ${formatTime(gameState.currentLapTime)}`, 20, 85);
             ctx.fillText(`最快圈速: ${gameState.bestLapTime ? formatTime(gameState.bestLapTime) : "--:--.---"}`, 20, 110);
+            
+            // 顯示當前檢查點
+            ctx.fillText(`檢查點: ${gameState.currentCheckpoint + 1}/${trackData.checkpoints.length}`, 20, 135);
             
             // 更新統計顯示
             updateStatsDisplay();
@@ -990,10 +1061,15 @@
             
             if (e.key === 'r' || e.key === 'R') {
                 // 重置賽車位置
-                car.x = 400;
-                car.y = 500;
+                car.x = trackData.startLine.x1 + (trackData.startLine.x2 - trackData.startLine.x1) / 2;
+                car.y = trackData.startLine.y1;
                 car.speed = 0;
                 car.angle = 0;
+            }
+            
+            // 防止空格鍵滾動頁面
+            if (e.key === ' ') {
+                e.preventDefault();
             }
         });
         
@@ -1019,15 +1095,36 @@
         
         // 初始化遊戲
         function initGame() {
+            // 繪製初始賽道
             drawTrack();
-            drawCar(car);
+            
+            // 繪製初始賽車
             opponents.forEach(opponent => drawCar(opponent));
+            drawCar(car);
+            
+            // 初始化排名
             initRanking();
+            
+            // 更新統計顯示
             updateStatsDisplay();
+            
+            // 顯示初始訊息
+            ctx.fillStyle = 'rgba(0, 0, 0, 0.8)';
+            ctx.fillRect(canvas.width/2 - 150, canvas.height/2 - 50, 300, 100);
+            
+            ctx.fillStyle = '#FFD700';
+            ctx.font = 'bold 24px Arial';
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'middle';
+            ctx.fillText('極速賽車', canvas.width/2, canvas.height/2 - 20);
+            
+            ctx.fillStyle = '#FFFFFF';
+            ctx.font = '18px Arial';
+            ctx.fillText('點擊"開始比賽"按鈕開始遊戲', canvas.width/2, canvas.height/2 + 20);
         }
         
         // 開始初始化遊戲
-        initGame();
+        window.onload = initGame;
     </script>
 </body>
 </html>
