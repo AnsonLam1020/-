@@ -656,7 +656,7 @@
             return false;
         }
         
-        // 賽道數據
+        // 賽道數據 - 已修改：增寬賽道、正確放置檢查點、移除障礙物
         const tracks = {
             1: {
                 name: "新手訓練場",
@@ -664,72 +664,67 @@
                 description: "簡單的矩形賽道，適合新手練習基本駕駛技巧。",
                 requirements: "無",
                 laps: 2,
-                obstacles: 3,
+                obstacles: 0, // 移除障礙物
                 bgColor: "#333344",
                 trackColor: "#555577",
                 borderColor: "#FFFFFF",
                 innerTrackColor: "#666688",
-                trackWidth: 600, // 增加賽道寬度
-                trackHeight: 400,
-                trackX: 100, // 賽道起始X位置
-                trackY: 100, // 賽道起始Y位置
-                startLine: {x1: 150, y1: 550, x2: 250, y2: 550},
+                trackWidth: 650, // 增加賽道寬度
+                trackHeight: 450,
+                trackX: 75, // 賽道起始X位置
+                trackY: 75, // 賽道起始Y位置
+                startLine: {x1: 125, y1: 525, x2: 225, y2: 525},
                 checkpoints: [
-                    {x: 200, y: 550, radius: 40},
-                    {x: 200, y: 200, radius: 40},
-                    {x: 600, y: 200, radius: 40},
-                    {x: 600, y: 550, radius: 40}
+                    {x: 175, y: 525, radius: 40}, // 起點線
+                    {x: 175, y: 150, radius: 40}, // 左上角
+                    {x: 625, y: 150, radius: 40}, // 右上角
+                    {x: 625, y: 525, radius: 40}  // 右下角
                 ],
-                obstacles: [
-                    {x: 400, y: 300, width: 60, height: 60},
-                    {x: 300, y: 400, width: 40, height: 40},
-                    {x: 500, y: 400, width: 40, height: 40}
-                ],
+                obstacles: [], // 空陣列，無障礙物
                 decorative: [
                     {type: 'building', x: 50, y: 50, width: 30, height: 100},
                     {type: 'building', x: 50, y: 200, width: 30, height: 150},
                     {type: 'building', x: 750, y: 100, width: 30, height: 120},
                     {type: 'tree', x: 100, y: 80, size: 15},
-                    {type: 'tree', x: 700, y: 80, size: 15}
+                    {type: 'tree', x: 700, y: 80, size: 15},
+                    {type: 'tree', x: 100, y: 520, size: 15},
+                    {type: 'tree', x: 700, y: 520, size: 15}
                 ],
                 trackFriction: 0.97
             },
             2: {
                 name: "城市街道賽",
                 difficulty: 2,
-                description: "城市街道賽道，有更多彎道和障礙物。",
+                description: "城市街道賽道，有更多彎道。",
                 requirements: "完成關卡1",
                 laps: 2,
-                obstacles: 4,
+                obstacles: 0, // 移除障礙物
                 bgColor: "#444455",
                 trackColor: "#666677",
                 borderColor: "#FFFFFF",
                 innerTrackColor: "#777788",
-                trackWidth: 650, // 增加賽道寬度
-                trackHeight: 450,
-                trackX: 75, // 賽道起始X位置
-                trackY: 75, // 賽道起始Y位置
+                trackWidth: 700, // 增加賽道寬度
+                trackHeight: 500,
+                trackX: 50, // 賽道起始X位置
+                trackY: 50, // 賽道起始Y位置
                 startLine: {x1: 100, y1: 550, x2: 200, y2: 550},
                 checkpoints: [
-                    {x: 150, y: 550, radius: 35},
-                    {x: 150, y: 150, radius: 35},
-                    {x: 650, y: 150, radius: 35},
-                    {x: 650, y: 400, radius: 35},
-                    {x: 400, y: 400, radius: 35}
+                    {x: 150, y: 550, radius: 35}, // 起點線
+                    {x: 150, y: 100, radius: 35}, // 左上角
+                    {x: 700, y: 100, radius: 35}, // 右上角
+                    {x: 700, y: 400, radius: 35}, // 右下角中間
+                    {x: 400, y: 400, radius: 35}  // 左下角中間
                 ],
-                obstacles: [
-                    {x: 300, y: 250, width: 50, height: 50},
-                    {x: 500, y: 250, width: 50, height: 50},
-                    {x: 400, y: 350, width: 60, height: 40},
-                    {x: 300, y: 450, width: 40, height: 40}
-                ],
+                obstacles: [], // 空陣列，無障礙物
                 decorative: [
                     {type: 'building', x: 50, y: 50, width: 40, height: 120},
                     {type: 'building', x: 50, y: 250, width: 40, height: 150},
                     {type: 'building', x: 750, y: 80, width: 40, height: 140},
                     {type: 'building', x: 750, y: 300, width: 40, height: 100},
                     {type: 'light', x: 200, y: 100, size: 8},
-                    {type: 'light', x: 600, y: 100, size: 8}
+                    {type: 'light', x: 600, y: 100, size: 8},
+                    {type: 'light', x: 200, y: 550, size: 8},
+                    {type: 'light', x: 600, y: 550, size: 8}
                 ],
                 trackFriction: 0.96
             },
@@ -739,35 +734,31 @@
                 description: "曲折的山路賽道，需要良好的轉向控制。",
                 requirements: "完成關卡2",
                 laps: 3,
-                obstacles: 5,
+                obstacles: 0, // 移除障礙物
                 bgColor: "#224422",
                 trackColor: "#336633",
                 borderColor: "#8B4513",
                 innerTrackColor: "#447744",
-                trackWidth: 650, // 增加賽道寬度
-                trackHeight: 450,
-                trackX: 75, // 賽道起始X位置
-                trackY: 75, // 賽道起始Y位置
+                trackWidth: 700, // 增加賽道寬度
+                trackHeight: 500,
+                trackX: 50, // 賽道起始X位置
+                trackY: 50, // 賽道起始Y位置
                 startLine: {x1: 100, y1: 550, x2: 200, y2: 550},
                 checkpoints: [
-                    {x: 150, y: 550, radius: 35},
-                    {x: 300, y: 150, radius: 35},
-                    {x: 650, y: 150, radius: 35},
-                    {x: 500, y: 500, radius: 35}
+                    {x: 150, y: 550, radius: 35}, // 起點線
+                    {x: 300, y: 100, radius: 35}, // 中間偏左上方
+                    {x: 700, y: 150, radius: 35}, // 右上角
+                    {x: 550, y: 500, radius: 35}  // 右下角
                 ],
-                obstacles: [
-                    {x: 400, y: 300, width: 50, height: 30, type: 'rock'},
-                    {x: 500, y: 400, width: 50, height: 30, type: 'rock'},
-                    {x: 300, y: 400, width: 40, height: 40, type: 'rock'},
-                    {x: 450, y: 250, width: 40, height: 40, type: 'rock'},
-                    {x: 350, y: 350, width: 40, height: 40, type: 'rock'}
-                ],
+                obstacles: [], // 空陣列，無障礙物
                 decorative: [
                     {type: 'mountain', x: 50, y: 50, width: 100, height: 80},
                     {type: 'mountain', x: 700, y: 50, width: 100, height: 60},
                     {type: 'tree', x: 200, y: 200, size: 20},
                     {type: 'tree', x: 600, y: 200, size: 20},
-                    {type: 'tree', x: 400, y: 350, size: 18}
+                    {type: 'tree', x: 400, y: 350, size: 18},
+                    {type: 'tree', x: 200, y: 500, size: 15},
+                    {type: 'tree', x: 600, y: 500, size: 15}
                 ],
                 trackFriction: 0.96
             },
@@ -777,36 +768,32 @@
                 description: "沙地賽道，摩擦力低，需要精準控制。",
                 requirements: "完成關卡3",
                 laps: 3,
-                obstacles: 6,
+                obstacles: 0, // 移除障礙物
                 bgColor: "#8B7355",
                 trackColor: "#D2691E",
                 borderColor: "#8B4513",
                 innerTrackColor: "#DEB887",
-                trackWidth: 650, // 增加賽道寬度
-                trackHeight: 450,
-                trackX: 75, // 賽道起始X位置
-                trackY: 75, // 賽道起始Y位置
+                trackWidth: 700, // 增加賽道寬度
+                trackHeight: 500,
+                trackX: 50, // 賽道起始X位置
+                trackY: 50, // 賽道起始Y位置
                 startLine: {x1: 200, y1: 550, x2: 300, y2: 550},
                 checkpoints: [
-                    {x: 250, y: 550, radius: 30},
-                    {x: 250, y: 150, radius: 30},
-                    {x: 550, y: 150, radius: 30},
-                    {x: 550, y: 550, radius: 30}
+                    {x: 250, y: 550, radius: 30}, // 起點線
+                    {x: 250, y: 100, radius: 30}, // 左上角
+                    {x: 650, y: 100, radius: 30}, // 右上角
+                    {x: 650, y: 550, radius: 30}  // 右下角
                 ],
-                obstacles: [
-                    {x: 400, y: 350, width: 70, height: 70, type: 'sand'},
-                    {x: 300, y: 250, width: 50, height: 50, type: 'sand'},
-                    {x: 500, y: 450, width: 50, height: 50, type: 'sand'},
-                    {x: 300, y: 450, width: 50, height: 50, type: 'sand'},
-                    {x: 500, y: 250, width: 50, height: 50, type: 'sand'},
-                    {x: 400, y: 250, width: 40, height: 40, type: 'sand'}
-                ],
+                obstacles: [], // 空陣列，無障礙物
                 decorative: [
                     {type: 'cactus', x: 100, y: 100, size: 30},
                     {type: 'cactus', x: 700, y: 100, size: 25},
                     {type: 'cactus', x: 100, y: 500, size: 35},
                     {type: 'cactus', x: 700, y: 500, size: 28},
-                    {type: 'rock', x: 200, y: 300, size: 20}
+                    {type: 'rock', x: 200, y: 300, size: 20},
+                    {type: 'rock', x: 600, y: 300, size: 20},
+                    {type: 'rock', x: 400, y: 100, size: 15},
+                    {type: 'rock', x: 400, y: 500, size: 15}
                 ],
                 trackFriction: 0.94
             },
@@ -816,31 +803,24 @@
                 description: "夜間賽道，視野受限，需要依靠車燈照明。",
                 requirements: "完成關卡4",
                 laps: 3,
-                obstacles: 6,
+                obstacles: 0, // 移除障礙物
                 bgColor: "#000022",
                 trackColor: "#333355",
                 borderColor: "#8888AA",
                 innerTrackColor: "#444466",
-                trackWidth: 650, // 增加賽道寬度
-                trackHeight: 450,
-                trackX: 75, // 賽道起始X位置
-                trackY: 75, // 賽道起始Y位置
+                trackWidth: 700, // 增加賽道寬度
+                trackHeight: 500,
+                trackX: 50, // 賽道起始X位置
+                trackY: 50, // 賽道起始Y位置
                 startLine: {x1: 200, y1: 550, x2: 300, y2: 550},
                 checkpoints: [
-                    {x: 250, y: 550, radius: 40},
-                    {x: 250, y: 150, radius: 40},
-                    {x: 550, y: 150, radius: 40},
-                    {x: 550, y: 400, radius: 40},
-                    {x: 400, y: 400, radius: 40}
+                    {x: 250, y: 550, radius: 40}, // 起點線
+                    {x: 250, y: 100, radius: 40}, // 左上角
+                    {x: 650, y: 100, radius: 40}, // 右上角
+                    {x: 650, y: 400, radius: 40}, // 右下角中間
+                    {x: 400, y: 400, radius: 40}  // 左下角中間
                 ],
-                obstacles: [
-                    {x: 400, y: 300, width: 60, height: 60},
-                    {x: 300, y: 250, width: 50, height: 50},
-                    {x: 500, y: 350, width: 50, height: 50},
-                    {x: 350, y: 450, width: 40, height: 40},
-                    {x: 450, y: 250, width: 40, height: 40},
-                    {x: 300, y: 350, width: 40, height: 40}
-                ],
+                obstacles: [], // 空陣列，無障礙物
                 decorative: [
                     {type: 'light', x: 100, y: 100, size: 10},
                     {type: 'light', x: 700, y: 100, size: 10},
@@ -849,7 +829,10 @@
                     {type: 'moon', x: 50, y: 50, size: 30},
                     {type: 'star', x: 100, y: 80, size: 5},
                     {type: 'star', x: 150, y: 60, size: 3},
-                    {type: 'star', x: 200, y: 90, size: 4}
+                    {type: 'star', x: 200, y: 90, size: 4},
+                    {type: 'star', x: 600, y: 80, size: 4},
+                    {type: 'star', x: 650, y: 60, size: 3},
+                    {type: 'star', x: 700, y: 90, size: 5}
                 ],
                 trackFriction: 0.95
             },
@@ -859,39 +842,34 @@
                 description: "專業級賽道，複雜的彎道組合，挑戰賽車手的極限。",
                 requirements: "完成所有關卡",
                 laps: 4,
-                obstacles: 8,
+                obstacles: 0, // 移除障礙物
                 bgColor: "#222244",
                 trackColor: "#444466",
                 borderColor: "#FFD700",
                 innerTrackColor: "#666688",
-                trackWidth: 650, // 增加賽道寬度
-                trackHeight: 450,
-                trackX: 75, // 賽道起始X位置
-                trackY: 75, // 賽道起始Y位置
+                trackWidth: 700, // 增加賽道寬度
+                trackHeight: 500,
+                trackX: 50, // 賽道起始X位置
+                trackY: 50, // 賽道起始Y位置
                 startLine: {x1: 150, y1: 550, x2: 250, y2: 550},
                 checkpoints: [
-                    {x: 200, y: 550, radius: 25},
-                    {x: 200, y: 100, radius: 25},
-                    {x: 600, y: 100, radius: 25},
-                    {x: 600, y: 300, radius: 25},
-                    {x: 400, y: 300, radius: 25},
-                    {x: 400, y: 500, radius: 25}
+                    {x: 200, y: 550, radius: 25}, // 起點線
+                    {x: 200, y: 100, radius: 25}, // 左上角
+                    {x: 700, y: 100, radius: 25}, // 右上角
+                    {x: 700, y: 350, radius: 25}, // 右邊中間
+                    {x: 450, y: 350, radius: 25}, // 中間
+                    {x: 450, y: 550, radius: 25}  // 右下角
                 ],
-                obstacles: [
-                    {x: 300, y: 200, width: 40, height: 40},
-                    {x: 500, y: 200, width: 40, height: 40},
-                    {x: 300, y: 400, width: 40, height: 40},
-                    {x: 500, y: 400, width: 40, height: 40},
-                    {x: 400, y: 150, width: 30, height: 30},
-                    {x: 400, y: 450, width: 30, height: 30},
-                    {x: 250, y: 300, width: 40, height: 40},
-                    {x: 550, y: 300, width: 40, height: 40}
-                ],
+                obstacles: [], // 空陣列，無障礙物
                 decorative: [
                     {type: 'grandstand', x: 50, y: 50, width: 40, height: 100},
                     {type: 'grandstand', x: 750, y: 50, width: 40, height: 100},
+                    {type: 'grandstand', x: 50, y: 450, width: 40, height: 100},
+                    {type: 'grandstand', x: 750, y: 450, width: 40, height: 100},
                     {type: 'flag', x: 200, y: 80, size: 20},
-                    {type: 'flag', x: 600, y: 80, size: 20},
+                    {type: 'flag', x: 700, y: 80, size: 20},
+                    {type: 'flag', x: 200, y: 520, size: 20},
+                    {type: 'flag', x: 700, y: 520, size: 20},
                     {type: 'podium', x: 350, y: 550, width: 100, height: 20}
                 ],
                 trackFriction: 0.96
@@ -1068,20 +1046,20 @@
         let lastTime = 0;
         let currentTrackData = null;
         
-        // 賽車參數 - 根據需求修改
+        // 賽車參數
         const car = {
             x: 400,
             y: 500,
             width: 25,
             height: 40,
             speed: 0,
-            maxSpeed: 0.28, // 降低最大速度 (約10km/h)
-            acceleration: 0.015, // 降低加速度
-            deceleration: 0.12, // 降低減速度
-            brakeDeceleration: 0.4, // 降低剎車減速度
-            reverseSpeed: 0.05, // 降低倒車速度
+            maxSpeed: 0.28,
+            acceleration: 0.015,
+            deceleration: 0.12,
+            brakeDeceleration: 0.4,
+            reverseSpeed: 0.05,
             angle: 0,
-            steerAngle: 0.045, // 降低轉向角度
+            steerAngle: 0.045,
             friction: 0.97,
             color: '#FF8C00',
             currentCheckpoint: 0,
@@ -1089,11 +1067,11 @@
             lapTimes: [],
             bestLapTime: null,
             currentLapStartTime: 0,
-            offTrack: false, // 是否在賽道外
-            offTrackSlowdown: 0.8 // 賽道外減速係數
+            offTrack: false,
+            offTrackSlowdown: 0.8
         };
         
-        // 對手車輛
+        // 對手車輛 - 添加更多擬人化屬性
         let opponents = [];
         
         // 遊戲狀態
@@ -1146,77 +1124,111 @@
             return true;
         }
         
-        // 根據賽道難度初始化對手
+        // 根據賽道難度初始化對手 - 改進為更像真人
         function initializeOpponentsForGame(difficulty) {
             opponents = [];
             
-            // 基礎AI參數
-            const baseSpeed = 0.18; // 降低對手速度
-            const baseSkill = 0.7;
+            // 更擬人化的對手設定
+            const opponentNames = ['閃電麥克', '極速艾倫', '旋風傑克', '飛馳莉莎', '賽道王者', '彎道專家'];
+            const opponentColors = ['#0055AA', '#FF0000', '#00AA00', '#FFD700', '#FF69B4', '#800080'];
+            
+            // 更真實的駕駛風格
+            const drivingStyles = [
+                {type: 'aggressive', name: '攻擊型', maxSpeedMult: 1.05, skill: 0.9, consistency: 0.8},
+                {type: 'defensive', name: '防守型', maxSpeedMult: 0.95, skill: 0.95, consistency: 0.9},
+                {type: 'balanced', name: '均衡型', maxSpeedMult: 1.0, skill: 0.85, consistency: 0.85},
+                {type: 'risky', name: '冒險型', maxSpeedMult: 1.1, skill: 0.8, consistency: 0.7},
+                {type: 'technical', name: '技術型', maxSpeedMult: 0.98, skill: 1.0, consistency: 0.95},
+                {type: 'rookie', name: '新手型', maxSpeedMult: 0.9, skill: 0.75, consistency: 0.6}
+            ];
             
             // 根據難度調整對手數量和能力
-            let numOpponents, speedMultiplier, skillMultiplier;
-            
+            let numOpponents;
             switch(difficulty) {
-                case 1:
-                    numOpponents = 2;
-                    speedMultiplier = 0.7;
-                    skillMultiplier = 0.7;
-                    break;
-                case 2:
-                    numOpponents = 2;
-                    speedMultiplier = 0.8;
-                    skillMultiplier = 0.8;
-                    break;
-                case 3:
-                    numOpponents = 3;
-                    speedMultiplier = 0.9;
-                    skillMultiplier = 0.9;
-                    break;
-                case 4:
-                    numOpponents = 3;
-                    speedMultiplier = 1.0;
-                    skillMultiplier = 1.0;
-                    break;
-                case 5:
-                    numOpponents = 4;
-                    speedMultiplier = 1.1;
-                    skillMultiplier = 1.1;
-                    break;
-                default:
-                    numOpponents = 2;
-                    speedMultiplier = 1.0;
-                    skillMultiplier = 0.9;
+                case 1: numOpponents = 2; break;
+                case 2: numOpponents = 3; break;
+                case 3: numOpponents = 4; break;
+                case 4: numOpponents = 4; break;
+                case 5: numOpponents = 5; break;
+                default: numOpponents = 3;
             }
             
-            // 對手名稱和顏色
-            const opponentNames = ['藍色閃電', '紅色旋風', '綠色獵鷹', '黃色飛彈'];
-            const opponentColors = ['#0055AA', '#FF0000', '#00AA00', '#FFD700'];
-            
             for (let i = 0; i < numOpponents; i++) {
-                const aggression = 0.7 + (difficulty / 10);
-                const consistency = 0.8 + (difficulty / 20);
+                // 隨機選擇駕駛風格
+                const styleIndex = Math.floor(Math.random() * drivingStyles.length);
+                const style = drivingStyles[styleIndex];
+                
+                // 根據難度調整基礎能力
+                const difficultyFactor = 0.7 + (difficulty * 0.1);
+                
+                // 個性化AI特性
+                const personality = {
+                    aggression: 0.5 + Math.random() * 0.5, // 攻擊性 0.5-1.0
+                    caution: 0.3 + Math.random() * 0.4,    // 謹慎度 0.3-0.7
+                    impatience: 0.4 + Math.random() * 0.6, // 不耐煩程度 0.4-1.0
+                    adaptability: 0.6 + Math.random() * 0.4, // 適應能力
+                    competitiveness: 0.7 + Math.random() * 0.3, // 競爭意識
+                    errorProne: 0.1 + Math.random() * 0.3, // 失誤機率
+                    recoveryTime: 1000 + Math.random() * 2000 // 失誤後恢復時間(ms)
+                };
+                
+                // 擬人化行為計時器
+                const behaviorTimers = {
+                    lastMistake: 0,
+                    lastOvertakeAttempt: 0,
+                    currentBehavior: 'normal',
+                    behaviorChangeTime: 0
+                };
+                
+                // 賽車性能變異
+                const carPerformance = {
+                    maxSpeed: (0.18 + (difficultyFactor * 0.1)) * style.maxSpeedMult,
+                    acceleration: 0.015 + (Math.random() * 0.005),
+                    braking: 0.35 + (Math.random() * 0.1),
+                    handling: 0.04 + (Math.random() * 0.01)
+                };
                 
                 opponents.push({
                     x: 450 + (i - 1) * 60,
                     y: 500,
                     width: 25,
                     height: 40,
-                    speed: baseSpeed * speedMultiplier * (1 + i * 0.1),
+                    speed: carPerformance.maxSpeed * 0.5,
                     angle: 0,
                     color: opponentColors[i],
                     name: opponentNames[i],
+                    drivingStyle: style.name,
+                    
+                    // 擬人化AI系統
                     ai: {
-                        aggression: aggression,
-                        skill: baseSkill * skillMultiplier,
-                        consistency: consistency
+                        personality: personality,
+                        skill: style.skill * difficultyFactor,
+                        consistency: style.consistency * difficultyFactor,
+                        behaviorTimers: behaviorTimers,
+                        targetSpeed: carPerformance.maxSpeed,
+                        currentTarget: null,
+                        overtaking: false,
+                        defensive: false,
+                        lastPathUpdate: 0,
+                        preferredLine: Math.random() > 0.5 ? 'inside' : 'outside',
+                        reactionTime: 100 + Math.random() * 200, // 反應時間(ms)
+                        currentFocus: 'racing_line' // 當前專注點
                     },
+                    
+                    carPerformance: carPerformance,
+                    
                     currentCheckpoint: 0,
                     lap: 0,
                     lapTimes: [],
                     bestLapTime: null,
                     currentLapStartTime: 0,
-                    finished: false
+                    finished: false,
+                    mistakes: 0,
+                    lastCheckpointTime: 0,
+                    
+                    // 賽車軌跡記錄
+                    racingLine: [],
+                    lineIndex: 0
                 });
             }
         }
@@ -1288,28 +1300,6 @@
                 ctx.textAlign = 'center';
                 ctx.textBaseline = 'middle';
                 ctx.fillText(index + 1, checkpoint.x, checkpoint.y);
-            });
-            
-            // 繪製障礙物
-            currentTrackData.obstacles.forEach(obstacle => {
-                if (obstacle.type === 'sand') {
-                    // 沙丘
-                    ctx.fillStyle = '#F4A460';
-                    ctx.beginPath();
-                    ctx.ellipse(obstacle.x, obstacle.y, obstacle.width/2, obstacle.height/2, 0, 0, Math.PI * 2);
-                    ctx.fill();
-                    ctx.strokeStyle = '#8B4513';
-                    ctx.lineWidth = 2;
-                    ctx.stroke();
-                } else {
-                    // 一般障礙物
-                    ctx.fillStyle = obstacle.type === 'rock' ? '#696969' : '#8B0000';
-                    ctx.fillRect(obstacle.x - obstacle.width/2, obstacle.y - obstacle.height/2, obstacle.width, obstacle.height);
-                    // 障礙物邊框
-                    ctx.strokeStyle = obstacle.type === 'rock' ? '#2F4F4F' : '#660000';
-                    ctx.lineWidth = 2;
-                    ctx.strokeRect(obstacle.x - obstacle.width/2, obstacle.y - obstacle.height/2, obstacle.width, obstacle.height);
-                }
             });
             
             // 繪製裝飾物
@@ -1501,63 +1491,195 @@
             });
         }
         
-        // 改進的AI對手邏輯
+        // 計算兩點之間的距離
+        function distance(x1, y1, x2, y2) {
+            return Math.sqrt(Math.pow(x2 - x1, 2) + Math.pow(y2 - y1, 2));
+        }
+        
+        // 檢查是否在對手後面
+        function isBehindOpponent(opponent, target) {
+            const dx = target.x - opponent.x;
+            const dy = target.y - opponent.y;
+            const angleToTarget = Math.atan2(dx, -dy);
+            const angleDiff = Math.abs(angleToTarget - opponent.angle);
+            return angleDiff < Math.PI / 4; // 如果在45度範圍內視為在後面
+        }
+        
+        // 高級擬人化AI對手邏輯
         function updateOpponentAI(opponent, deltaTime, currentTime) {
             if (opponent.finished) return;
             
+            // 檢查是否在賽道外
+            const isOffTrack = !isCarOnTrack(opponent);
+            if (isOffTrack) {
+                // 如果在賽道外，減速並嘗試返回賽道
+                opponent.speed *= 0.85;
+                opponent.ai.currentFocus = 'recovery';
+                opponent.ai.behaviorTimers.lastMistake = currentTime;
+                opponent.mistakes++;
+            }
+            
+            // 處理失誤後恢復
+            if (currentTime - opponent.ai.behaviorTimers.lastMistake < opponent.ai.personality.recoveryTime) {
+                opponent.speed *= 0.95; // 失誤後更加謹慎
+            }
+            
             // 目標檢查點
             const targetCheckpoint = currentTrackData.checkpoints[opponent.currentCheckpoint];
-            const dx = targetCheckpoint.x - opponent.x;
-            const dy = targetCheckpoint.y - opponent.y;
-            const distanceToTarget = Math.sqrt(dx * dx + dy * dy);
+            let targetX = targetCheckpoint.x;
+            let targetY = targetCheckpoint.y;
+            
+            // 根據偏好路線調整目標點
+            if (opponent.ai.preferredLine === 'inside' && opponent.currentCheckpoint > 0) {
+                // 內線路線
+                const margin = 60;
+                if (targetY < opponent.y) targetY += margin; // 上彎內側
+                if (targetX > opponent.x) targetX -= margin; // 右彎內側
+                if (targetX < opponent.x) targetX += margin; // 左彎內側
+            } else if (opponent.ai.preferredLine === 'outside') {
+                // 外線路線
+                const margin = 60;
+                if (targetY < opponent.y) targetY -= margin; // 上彎外側
+                if (targetX > opponent.x) targetX += margin; // 右彎外側
+                if (targetX < opponent.x) targetX -= margin; // 左彎外側
+            }
+            
+            // 檢查前方是否有其他賽車
+            let frontCar = null;
+            let minDistance = Infinity;
+            
+            // 檢查玩家
+            if (opponent.lap === car.lap && distance(opponent.x, opponent.y, car.x, car.y) < 200) {
+                const dist = distance(opponent.x, opponent.y, car.x, car.y);
+                if (dist < minDistance && isBehindOpponent(opponent, car)) {
+                    minDistance = dist;
+                    frontCar = {type: 'player', x: car.x, y: car.y, speed: car.speed};
+                }
+            }
+            
+            // 檢查其他對手
+            opponents.forEach(other => {
+                if (other !== opponent && opponent.lap === other.lap) {
+                    const dist = distance(opponent.x, opponent.y, other.x, other.y);
+                    if (dist < 200 && dist < minDistance && isBehindOpponent(opponent, other)) {
+                        minDistance = dist;
+                        frontCar = {type: 'opponent', x: other.x, y: other.y, speed: other.speed};
+                    }
+                }
+            });
+            
+            // 如果有前車，調整行為
+            if (frontCar && minDistance < 100) {
+                opponent.ai.currentTarget = frontCar;
+                opponent.ai.overtaking = true;
+                
+                // 根據個性決定超車時機
+                if (minDistance < 50 && opponent.ai.personality.aggression > 0.7) {
+                    // 攻擊性駕駛員嘗試超車
+                    opponent.ai.currentFocus = 'overtaking';
+                    targetX = frontCar.x + (Math.random() > 0.5 ? 40 : -40);
+                    targetY = frontCar.y - 30;
+                } else if (minDistance < 30) {
+                    // 太近了，減速
+                    opponent.ai.targetSpeed = frontCar.speed * 0.9;
+                    opponent.ai.currentFocus = 'following';
+                } else {
+                    // 保持安全距離跟隨
+                    opponent.ai.targetSpeed = Math.min(frontCar.speed * 1.1, opponent.carPerformance.maxSpeed);
+                }
+            } else {
+                opponent.ai.currentTarget = null;
+                opponent.ai.overtaking = false;
+                opponent.ai.targetSpeed = opponent.carPerformance.maxSpeed;
+                
+                // 隨機變換行為模擬真人
+                if (Math.random() < 0.01) { // 1%機率改變行為
+                    opponent.ai.currentFocus = Math.random() > 0.5 ? 'aggressive' : 'conservative';
+                    opponent.ai.behaviorChangeTime = currentTime + 1000 + Math.random() * 3000;
+                }
+                
+                if (currentTime < opponent.ai.behaviorChangeTime) {
+                    if (opponent.ai.currentFocus === 'aggressive') {
+                        opponent.ai.targetSpeed = opponent.carPerformance.maxSpeed * 1.05;
+                    } else if (opponent.ai.currentFocus === 'conservative') {
+                        opponent.ai.targetSpeed = opponent.carPerformance.maxSpeed * 0.9;
+                    }
+                }
+            }
             
             // 計算目標角度
-            let targetAngle = Math.atan2(dx, -dy);
-            
-            // 根據AI技能調整轉向
-            const skillFactor = opponent.ai.skill;
-            const aggression = opponent.ai.aggression;
+            let targetAngle = Math.atan2(targetX - opponent.x, -(targetY - opponent.y));
             
             // 平滑轉向
             let angleDiff = targetAngle - opponent.angle;
             if (angleDiff > Math.PI) angleDiff -= Math.PI * 2;
             if (angleDiff < -Math.PI) angleDiff += Math.PI * 2;
             
-            // AI轉向邏輯
-            const turnSpeed = 0.025 * skillFactor * deltaTime;
-            opponent.angle += Math.sign(angleDiff) * Math.min(Math.abs(angleDiff), turnSpeed);
+            // 擬人化轉向 - 添加反應時間和技能影響
+            const reactionDelay = opponent.ai.reactionTime / 1000; // 轉換為秒
+            const effectiveDeltaTime = deltaTime * (1 - reactionDelay);
             
-            // AI速度控制 - 根據距離調整速度
-            const maxSpeed = 0.18 + aggression * 0.1; // 降低對手最大速度
-            const minSpeed = 0.05;
+            // 根據技能水平調整轉向精度
+            const turnPrecision = opponent.ai.skill * 0.8 + 0.2;
+            const maxTurnAngle = opponent.carPerformance.handling * turnPrecision * effectiveDeltaTime;
             
-            if (distanceToTarget > 80) {
-                opponent.speed += 0.008 * aggression * deltaTime; // 降低加速度
-            } else if (distanceToTarget < 30) {
-                opponent.speed -= 0.015 * deltaTime; // 降低減速度
+            // 速度越高轉向越困難
+            const speedFactor = 1 - (Math.abs(opponent.speed) / opponent.carPerformance.maxSpeed) * 0.5;
+            
+            // 應用轉向
+            opponent.angle += Math.sign(angleDiff) * Math.min(Math.abs(angleDiff), maxTurnAngle * speedFactor);
+            
+            // 擬人化速度控制
+            const distanceToTarget = distance(opponent.x, opponent.y, targetX, targetY);
+            
+            // 彎道速度調整
+            const isSharpTurn = Math.abs(angleDiff) > Math.PI / 6; // 30度以上視為急彎
+            if (isSharpTurn) {
+                opponent.ai.targetSpeed *= 0.7; // 彎道減速
+            }
+            
+            // 根據距離調整速度
+            if (distanceToTarget > 100) {
+                // 距離遠，加速
+                opponent.speed += opponent.carPerformance.acceleration * effectiveDeltaTime;
+            } else if (distanceToTarget < 40) {
+                // 距離近，準備減速
+                opponent.speed -= opponent.carPerformance.braking * 0.5 * effectiveDeltaTime;
+            } else if (Math.abs(angleDiff) > Math.PI / 12) { // 15度以上彎道
+                // 彎道適當減速
+                opponent.speed -= opponent.carPerformance.braking * 0.2 * effectiveDeltaTime;
+            }
+            
+            // 擬人化錯誤 - 根據失誤機率隨機犯錯
+            if (Math.random() < opponent.ai.personality.errorProne * 0.01) {
+                opponent.speed *= 0.8; // 突然減速
+                opponent.ai.behaviorTimers.lastMistake = currentTime;
+                opponent.mistakes++;
             }
             
             // 限制速度
-            if (opponent.speed > maxSpeed) opponent.speed = maxSpeed;
-            if (opponent.speed < minSpeed) opponent.speed = minSpeed;
+            opponent.speed = Math.max(0.01, Math.min(opponent.speed, opponent.ai.targetSpeed));
             
-            // 摩擦力 - 根據賽道類型調整
+            // 擬人化速度波動 - 模擬真人油門控制
+            const speedVariation = 0.02 * (1 - opponent.ai.consistency);
+            opponent.speed *= (1 + (Math.random() * speedVariation - speedVariation/2));
+            
+            // 摩擦力
             opponent.speed *= currentTrackData.trackFriction || 0.98;
             
             // 更新位置
             opponent.x += Math.sin(opponent.angle) * opponent.speed * deltaTime * 30;
             opponent.y -= Math.cos(opponent.angle) * opponent.speed * deltaTime * 30;
             
-            // AI檢查點檢測
+            // 檢查點檢測
             const checkpoint = currentTrackData.checkpoints[opponent.currentCheckpoint];
-            const cdx = opponent.x - checkpoint.x;
-            const cdy = opponent.y - checkpoint.y;
-            const checkpointDistance = Math.sqrt(cdx * cdx + cdy * cdy);
+            const checkpointDistance = distance(opponent.x, opponent.y, checkpoint.x, checkpoint.y);
             
             if (checkpointDistance < checkpoint.radius) {
                 opponent.currentCheckpoint++;
+                opponent.lastCheckpointTime = currentTime;
                 
-                // AI完成一圈
+                // 完成一圈
                 if (opponent.currentCheckpoint >= currentTrackData.checkpoints.length) {
                     opponent.currentCheckpoint = 0;
                     opponent.lap++;
@@ -1567,9 +1689,13 @@
                     const lapTime = currentTimeSec - opponent.currentLapStartTime;
                     opponent.lapTimes.push(lapTime);
                     
+                    // 擬人化圈速波動
+                    const lapTimeVariation = 0.05 * (1 - opponent.ai.consistency);
+                    const adjustedLapTime = lapTime * (1 + (Math.random() * lapTimeVariation - lapTimeVariation/2));
+                    
                     // 更新最快圈速
-                    if (!opponent.bestLapTime || lapTime < opponent.bestLapTime) {
-                        opponent.bestLapTime = lapTime;
+                    if (!opponent.bestLapTime || adjustedLapTime < opponent.bestLapTime) {
+                        opponent.bestLapTime = adjustedLapTime;
                     }
                     
                     // 重置當前圈計時
@@ -1851,30 +1977,6 @@
                     }
                 }
             }
-            
-            // 障礙物碰撞檢測
-            currentTrackData.obstacles.forEach(obstacle => {
-                const carLeft = car.x - car.width/2;
-                const carRight = car.x + car.width/2;
-                const carTop = car.y - car.height/2;
-                const carBottom = car.y + car.height/2;
-                
-                const obstacleLeft = obstacle.x - obstacle.width/2;
-                const obstacleRight = obstacle.x + obstacle.width/2;
-                const obstacleTop = obstacle.y - obstacle.height/2;
-                const obstacleBottom = obstacle.y + obstacle.height/2;
-                
-                if (carRight > obstacleLeft && 
-                    carLeft < obstacleRight && 
-                    carBottom > obstacleTop && 
-                    carTop < obstacleBottom) {
-                    // 碰撞發生，減速並稍微後退
-                    car.speed *= -0.4;
-                }
-            });
-            
-            // 更新排名中的時間
-            gameState.ranking[0].time = gameState.raceTime;
         }
         
         // 防止頁面滾動的函數
@@ -1910,13 +2012,17 @@
                 opponent.x = car.x + (index - 1) * 60;
                 opponent.y = car.y + 50;
                 opponent.angle = 0;
-                opponent.speed = 0.1 + index * 0.02; // 降低初始速度
+                opponent.speed = 0.1 + index * 0.02;
                 opponent.currentCheckpoint = 0;
                 opponent.lap = 0;
                 opponent.lapTimes = [];
                 opponent.bestLapTime = null;
                 opponent.currentLapStartTime = 0;
                 opponent.finished = false;
+                opponent.mistakes = 0;
+                opponent.ai.behaviorTimers.lastMistake = 0;
+                opponent.ai.behaviorTimers.lastOvertakeAttempt = 0;
+                opponent.ai.currentFocus = 'racing_line';
             });
             
             // 初始化排名
@@ -1988,6 +2094,12 @@
                 
                 finalRanking.forEach((racer, index) => {
                     resultMessage += `${index + 1}. ${racer.name} ${racer.finished ? formatTime(racer.time) : "未完賽"}\n`;
+                });
+                
+                // 顯示對手駕駛風格
+                resultMessage += `\n對手駕駛風格：\n`;
+                opponents.forEach((opponent, index) => {
+                    resultMessage += `${opponent.name}: ${opponent.drivingStyle} (${opponent.mistakes}次失誤)\n`;
                 });
                 
                 alert(resultMessage);
