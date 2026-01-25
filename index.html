@@ -338,7 +338,8 @@
             padding-bottom: 10px;
             border-bottom: 1px solid rgba(255, 107, 107, 0.3);
         }
-    </style>
+         </style>
+         <link rel="stylesheet" href="shared.css">
 </head>
 <body>
     <div class="container">
@@ -357,6 +358,9 @@
                 <button class="category-tab" data-category="arcade-games">街機遊戲</button>
             </div>
         </header>
+        <div class="hub-search" aria-label="搜尋遊戲區域">
+            <input id="hubSearch" type="text" placeholder="搜尋遊戲…" aria-label="搜尋遊戲輸入框">
+        </div>
         
         <!-- 所有遊戲類別 -->
         <section class="category-section" id="all-games">
@@ -911,6 +915,32 @@
             document.body.style.opacity = 0;
             document.body.style.transition = 'opacity 0.5s ease';
         });
-    </script>
+</script>
+<script>
+// Simple hub search/filter for pure HTML hub
+document.addEventListener('DOMContentLoaded', function() {
+  const search = document.getElementById('hubSearch');
+  if (!search) return;
+  const cards = Array.from(document.querySelectorAll('.game-card'));
+  // set aria-label for play buttons
+  cards.forEach(card => {
+    const title = card.querySelector('.game-title')?.textContent?.trim() ?? '';
+    const btn = card.querySelector('.play-btn');
+    if (btn && !btn.hasAttribute('aria-label')) {
+      btn.setAttribute('aria-label', '開始遊戲：' + title);
+    }
+  });
+  search.addEventListener('input', function() {
+    const q = this.value.toLowerCase();
+    cards.forEach(card => {
+      const text = (card.querySelector('.game-title')?.textContent ?? '') + ' ' +
+                   (card.querySelector('.game-description')?.textContent ?? '') +
+                   Array.from(card.querySelectorAll('.game-tag')).map(t => t.textContent).join(' ');
+      const show = text.toLowerCase().includes(q);
+      card.style.display = show ? '' : 'none';
+    });
+  });
+});
+</script>
 </body>
 </html> 

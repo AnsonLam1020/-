@@ -1,0 +1,32 @@
+:root {
+  --bg: #1a1a2e;
+  --bg2: #16213e;
+  --fg: #fff;
+  --muted: #a9b7c6;
+  --primary: #4ecdc4;
+  --secondary: #45b7d1;
+  --accent: #ff6b6b;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  font-family: 'Segoe UI', 'Microsoft JhengHei', sans-serif;
+  background: linear-gradient(135deg, var(--bg) 0%, var(--bg2) 100%);
+  color: var(--fg);
+}
+.hub-header { text-align: center; padding: 16px 0 8px; }
+.hub-search { display:flex; justify-content:center; padding: 8px 0 16px; }
+.hub-search input { width: min(640px, 90%); padding: 12px 14px; border-radius: 8px; border:1px solid rgba(255,255,255,.25); background: rgba(255,255,255,.08); color: #fff; outline: none; }
+.hub-search input:focus { border-color: #fff; box-shadow: 0 0 0 3px rgba(255,255,255,.15); }
+.category-tabs { display:flex; justify-content:center; flex-wrap: wrap; gap: 12px; margin: 12px 0 8px; }
+.category-tab { background: rgba(45,45,68,.7); border: none; color: #fff; padding: 10px 18px; border-radius: 999px; font-weight: 600; cursor: pointer; transition: all .25s; }
+.category-tab:hover { transform: translateY(-1px); background: rgba(61,61,92,.9); }
+.category-tab.active { background: linear-gradient(90deg, var(--primary), var(--secondary)); box-shadow: 0 5px 15px rgba(69,183,209,.4); }
+.game-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 20px; padding: 12px; }
+.game-card { background: rgba(45,45,68,.8); border-radius: 12px; padding: 18px; text-decoration: none; color: #fff; display:flex; flex-direction: column; align-items: center; box-shadow: 0 6px 14px rgba(0,0,0,.25); border: 1px solid rgba(255,255,255,.05); }
+.game-card:hover { transform: translateY(-4px); background: rgba(61,61,92,.9); }
+.game-icon { font-size: 2.4rem; margin-bottom: 8px; }
+.game-title { font-size: 1.15rem; font-weight: 700; text-align: center; margin-bottom: 6px; }
+.game-description { font-size: .92rem; color: var(--muted); text-align:center; min-height: 2.4em; }
+.play-btn { background: linear-gradient(90deg, var(--primary), var(--secondary)); color: white; border: none; padding: 10px 18px; border-radius: 999px; font-weight: 700; cursor: pointer; width: 100%; max-width: 180px; }
+.play-btn:hover { transform: scale(1.02); }
+.game-tag { background: rgba(78,205,196,.2); color: #4ecdc4; padding: 4px 8px; border-radius: 999px; font-size: .78rem; margin: 0 4px; }
