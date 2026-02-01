@@ -338,6 +338,225 @@
             padding-bottom: 10px;
             border-bottom: 1px solid rgba(255, 107, 107, 0.3);
         }
+        
+        /* 搜尋功能改進樣式 */
+        .hub-search {
+            margin-bottom: 40px;
+            background: rgba(45, 45, 68, 0.8);
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+        
+        .search-container {
+            position: relative;
+            display: flex;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+        
+        .search-icon {
+            position: absolute;
+            left: 20px;
+            font-size: 1.2rem;
+            color: #a9b7c6;
+            z-index: 1;
+        }
+        
+        #hubSearch {
+            width: 100%;
+            padding: 15px 20px 15px 50px;
+            background: rgba(26, 26, 46, 0.9);
+            border: 2px solid rgba(78, 205, 196, 0.3);
+            border-radius: 50px;
+            color: white;
+            font-size: 1rem;
+            font-family: 'Segoe UI', 'Microsoft JhengHei', sans-serif;
+            transition: all 0.3s;
+        }
+        
+        #hubSearch:focus {
+            outline: none;
+            border-color: #4ecdc4;
+            box-shadow: 0 0 0 3px rgba(78, 205, 196, 0.2);
+        }
+        
+        #hubSearch::placeholder {
+            color: #a9b7c6;
+        }
+        
+        .clear-search-btn {
+            position: absolute;
+            right: 20px;
+            background: rgba(255, 107, 107, 0.2);
+            color: #ff6b6b;
+            border: none;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            font-size: 0.9rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s;
+        }
+        
+        .clear-search-btn:hover {
+            background: rgba(255, 107, 107, 0.4);
+            transform: scale(1.1);
+        }
+        
+        .search-info {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+        
+        .results-count {
+            color: #a9b7c6;
+            font-size: 0.95rem;
+        }
+        
+        .count-number {
+            color: #4ecdc4;
+            font-weight: 600;
+            font-size: 1.1rem;
+        }
+        
+        .search-shortcuts {
+            display: flex;
+            gap: 15px;
+        }
+        
+        .shortcut-hint {
+            color: #a9b7c6;
+            font-size: 0.85rem;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        
+        kbd {
+            background: rgba(26, 26, 46, 0.9);
+            border: 1px solid rgba(78, 205, 196, 0.3);
+            border-radius: 4px;
+            padding: 2px 6px;
+            font-size: 0.8rem;
+            font-family: monospace;
+            color: #4ecdc4;
+        }
+        
+        .no-results-message {
+            text-align: center;
+            padding: 40px 20px;
+            background: rgba(26, 26, 46, 0.5);
+            border-radius: 10px;
+            border: 2px dashed rgba(255, 107, 107, 0.3);
+            margin-top: 20px;
+        }
+        
+        .no-results-icon {
+            font-size: 3rem;
+            margin-bottom: 20px;
+            color: #ff6b6b;
+            opacity: 0.7;
+        }
+        
+        .no-results-message h3 {
+            color: #ff6b6b;
+            margin-bottom: 10px;
+            font-size: 1.5rem;
+        }
+        
+        .no-results-message p {
+            color: #a9b7c6;
+            font-size: 1rem;
+        }
+        
+        /* 搜尋結果動畫 */
+        .game-card {
+            transition: all 0.3s ease;
+        }
+        
+        .game-card.search-match {
+            animation: searchHighlight 0.5s ease;
+        }
+        
+        @keyframes searchHighlight {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.02); }
+            100% { transform: scale(1); }
+        }
+        
+        /* 響應式設計 - 搜尋功能 */
+        @media (max-width: 768px) {
+            .hub-search {
+                padding: 20px;
+            }
+            
+            .search-info {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 10px;
+            }
+            
+            .search-shortcuts {
+                flex-direction: column;
+                gap: 8px;
+            }
+            
+            #hubSearch {
+                padding: 12px 20px 12px 45px;
+                font-size: 0.95rem;
+            }
+            
+            .search-icon {
+                left: 15px;
+                font-size: 1.1rem;
+            }
+            
+            .clear-search-btn {
+                right: 15px;
+                width: 28px;
+                height: 28px;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .hub-search {
+                padding: 15px;
+            }
+            
+            #hubSearch {
+                padding: 10px 15px 10px 40px;
+                font-size: 0.9rem;
+            }
+            
+            .search-icon {
+                left: 12px;
+                font-size: 1rem;
+            }
+            
+            .clear-search-btn {
+                right: 12px;
+                width: 26px;
+                height: 26px;
+                font-size: 0.8rem;
+            }
+            
+            .no-results-message {
+                padding: 30px 15px;
+            }
+            
+            .no-results-icon {
+                font-size: 2.5rem;
+            }
+        }
          </style>
          <link rel="stylesheet" href="shared.css">
 </head>
@@ -359,7 +578,23 @@
             </div>
         </header>
         <div class="hub-search" aria-label="搜尋遊戲區域">
-            <input id="hubSearch" type="text" placeholder="搜尋遊戲…" aria-label="搜尋遊戲輸入框">
+            <div class="search-container">
+                <div class="search-icon">🔍</div>
+                <input id="hubSearch" type="text" placeholder="搜尋遊戲名稱、描述或標籤…" aria-label="搜尋遊戲輸入框">
+                <button id="clearSearch" class="clear-search-btn" aria-label="清除搜尋" style="display: none;">✕</button>
+            </div>
+            <div class="search-info">
+                <span id="searchResultsCount" class="results-count">找到 <span class="count-number">20</span> 個遊戲</span>
+                <div class="search-shortcuts">
+                    <span class="shortcut-hint">按 <kbd>Esc</kbd> 清除搜尋</span>
+                    <span class="shortcut-hint">按 <kbd>/</kbd> 聚焦搜尋框</span>
+                </div>
+            </div>
+            <div id="noResultsMessage" class="no-results-message" style="display: none;">
+                <div class="no-results-icon">🔍</div>
+                <h3>找不到符合的遊戲</h3>
+                <p>請嘗試不同的關鍵字或瀏覽遊戲分類</p>
+            </div>
         </div>
         
         <!-- 所有遊戲類別 -->

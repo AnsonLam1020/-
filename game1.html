@@ -412,6 +412,7 @@ footer {
         <h2>遊戲說明</h2>
         <ul>
             <li>使用鍵盤<span class="highlight">方向鍵</span>或<span class="highlight">WASD</span>控制蛇的移動方向</li>
+            <li><span class="highlight">觸控設備</span>：在遊戲畫面上<span class="highlight">滑動手指</span>來控制方向</li>
             <li>蛇需要吃掉<span class="highlight">水果</span>才能變長並增加分數</li>
             <li>每吃掉一個水果得<span class="highlight">10分</span></li>
             <li><span class="highlight">每吃掉5個水果：</span>
@@ -425,7 +426,8 @@ footer {
             <li><span class="highlight">計時器</span>記錄你的遊戲時間，挑戰最佳記錄！</li>
             <li>遊戲開始速度為<span class="highlight">慢速</span>，隨著<span class="highlight">分數增加</span>速度會<span class="highlight">逐漸加快</span>（每100分加速一次）</li>
             <li>蛇撞到<span class="highlight">牆壁</span>或<span class="highlight">自己的身體</span>遊戲結束</li>
-            <li>點擊<span class="highlight">暫停/繼續</span>按鈕可以暫停遊戲</li>
+            <li>點擊<span class="highlight">暫停/繼續</span>按鈕可以暫停遊戲，或按<span class="highlight">P鍵/空格鍵</span></li>
+            <li><span class="highlight">觸控反饋</span>：滑動時會顯示方向箭頭提示</li>
         </ul>
     </div>
     
@@ -1090,6 +1092,200 @@ rightBtn.addEventListener('click', () => {
         btn.click();
     });
 });
+
+// ==================== 觸控滑動手勢控制 ====================
+let touchStartX = 0;
+let touchStartY = 0;
+let touchEndX = 0;
+let touchEndY = 0;
+let minSwipeDistance = 30; // 最小滑動距離（像素）
+
+// 添加觸控事件監聽器到Canvas
+canvas.addEventListener('touchstart', handleTouchStart, { passive: false });
+canvas.addEventListener('touchmove', handleTouchMove, { passive: false });
+canvas.addEventListener('touchend', handleTouchEnd, { passive: false });
+
+function handleTouchStart(e) {
+    e.preventDefault();
+    const touch = e.touches[0];
+    touchStartX = touch.clientX;
+    touchStartY = touch.clientY;
+    touchEndX = touchStartX;
+    touchEndY = touchStartY;
+}
+
+function handleTouchMove(e) {
+    e.preventDefault();
+    const touch = e.touches[0];
+    touchEndX = touch.clientX;
+    touchEndY = touch.clientY;
+}
+
+function handleTouchEnd(e) {
+    e.preventDefault();
+    
+    // 計算滑動距離
+    const dx = touchEndX - touchStartX;
+    const dy = touchEndY - touchStartY;
+    
+    // 計算絕對距離
+    const absDx = Math.abs(dx);
+    const absDy = Math.abs(dy);
+    
+    // 檢查是否達到最小滑動距離
+    if (Math.max(absDx, absDy) < minSwipeDistance) {
+        return; // 滑動距離太小，忽略
+    }
+    
+    // 只有在遊戲運行中且未暫停時才處理方向改變
+    if (!gameRunning || gamePaused) return;
+    
+    // 判斷主要滑動方向
+    if (absDx > absDy) {
+        // 水平滑動
+        if (dx > 0 && direction !== 'left') {
+            nextDirection = 'right';
+            showSwipeFeedback('→', touchEndX, touchEndY);
+        } else if (dx < 0 && direction !== 'right') {
+            nextDirection = 'left';
+            showSwipeFeedback('←', touchEndX, touchEndY);
+        }
+    } else {
+        // 垂直滑動
+        if (dy > 0 && direction !== 'up') {
+            nextDirection = 'down';
+            showSwipeFeedback('↓', touchEndX, touchEndY);
+        } else if (dy < 0 && direction !== 'down') {
+            nextDirection = 'up';
+            showSwipeFeedback('↑', touchEndX, touchEndY);
+        }
+    }
+    
+    // 重置觸控點
+    touchStartX = 0;
+    touchStartY = 0;
+    touchEndX = 0;
+    touchEndY = 0;
+}
+
+// 顯示滑動反饋
+function showSwipeFeedback(directionSymbol, x, y) {
+    // 創建反饋元素
+    const feedback = document.createElement('div');
+    feedback.textContent = directionSymbol;
+    feedback.style.position = 'fixed';
+    feedback.style.left = (x - 20) + 'px';
+    feedback.style.top = (y - 20) + 'px';
+    feedback.style.fontSize = '40px';
+    feedback.style.color = '#4CAF50';
+    feedback.style.fontWeight = 'bold';
+    feedback.style.opacity = '0.8';
+    feedback.style.pointerEvents = 'none';
+    feedback.style.zIndex = '1000';
+    feedback.style.transition = 'all 0.3s ease';
+    
+    document.body.appendChild(feedback);
+    
+    // 動畫效果
+    setTimeout(() => {
+        feedback.style.transform = 'translateY(-20px)';
+        feedback.style.opacity = '0';
+    }, 10);
+    
+    // 移除元素
+    setTimeout(() => {
+        if (feedback.parentNode) {
+            feedback.parentNode.removeChild(feedback);
+        }
+    }, 300);
+}
+
+// ==================== 遊戲暫停功能 (P鍵) ====================
+document.addEventListener('keydown', (e) => {
+    // 檢查是否按下P鍵暫停遊戲
+    if (e.key === 'p' || e.key === 'P') {
+        e.preventDefault();
+        togglePause();
+    }
+    
+    // 檢查是否按下空格鍵開始/暫停遊戲
+    if (e.key === ' ' && gameRunning) {
+        e.preventDefault();
+        togglePause();
+    }
+});
+
+// ==================== 觸控設備檢測和優化 ====================
+function setupTouchOptimizations() {
+    // 檢測是否為觸控設備
+    if ('ontouchstart' in window || navigator.maxTouchPoints > 0) {
+        // 添加觸控設備提示
+        const touchHint = document.createElement('div');
+        touchHint.className = 'touch-hint';
+        touchHint.innerHTML = `
+            <div style="
+                background: rgba(0, 0, 0, 0.8);
+                color: white;
+                padding: 10px 15px;
+                border-radius: 10px;
+                margin-top: 10px;
+                text-align: center;
+                font-size: 14px;
+                border: 1px solid #4CAF50;
+            ">
+                <strong>觸控控制提示：</strong>
+                在遊戲畫面上滑動手指來控制蛇的移動方向
+            </div>
+        `;
+        
+        const gameContainer = document.querySelector('.game-container');
+        if (gameContainer) {
+            gameContainer.appendChild(touchHint);
+            
+            // 5秒後自動隱藏提示
+            setTimeout(() => {
+                touchHint.style.opacity = '0';
+                touchHint.style.transition = 'opacity 0.5s ease';
+                setTimeout(() => {
+                    if (touchHint.parentNode) {
+                        touchHint.parentNode.removeChild(touchHint);
+                    }
+                }, 500);
+            }, 5000);
+        }
+        
+        // 優化移動按鈕顯示
+        const mobileControls = document.querySelector('.mobile-controls');
+        if (mobileControls) {
+            mobileControls.style.display = 'block';
+        }
+    }
+}
+
+// ==================== 錯誤處理和性能監控 ====================
+function setupErrorHandling() {
+    // 捕獲遊戲錯誤
+    window.addEventListener('error', function(e) {
+        console.error('遊戲錯誤:', e.error);
+        gameStatusElement.textContent = '遊戲發生錯誤，請重新開始';
+        
+        // 嘗試恢復遊戲
+        if (gameRunning) {
+            gameRunning = false;
+            clearInterval(gameInterval);
+            stopTimer();
+        }
+    });
+    
+    // 捕獲未處理的Promise錯誤
+    window.addEventListener('unhandledrejection', function(e) {
+        console.error('未處理的Promise錯誤:', e.reason);
+    });
+}
+
+// 初始化觸控優化和錯誤處理
+setupTouchOptimizations();
+setupErrorHandling();
 
 // 初始化遊戲
 initGame();
