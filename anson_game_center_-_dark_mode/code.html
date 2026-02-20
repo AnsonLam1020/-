@@ -1,0 +1,405 @@
+<!DOCTYPE html>
+<html class="dark" lang="zh-HK"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Anson Game Center</title>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&amp;family=Noto+Sans+TC:wght@300;400;500;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#4ecdc4",
+                        "secondary": "#ff6b6b",
+                        "background-dark": "#1a1a2e",
+                        "background-darker": "#16213e",
+                        "card-bg": "rgba(45, 45, 68, 0.8)",
+                    },
+                    fontFamily: {
+                        "display": ["Space Grotesk", "Noto Sans TC", "sans-serif"],
+                        "body": ["Noto Sans TC", "sans-serif"],
+                    },
+                },
+            },
+        }
+    </script>
+<style>
+        body {
+            font-family: 'Noto Sans TC', sans-serif;
+        }
+        h1, h2, h3, h4, h5, h6, .font-display {
+            font-family: 'Space Grotesk', 'Noto Sans TC', sans-serif;
+        }
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #1a1a2e; 
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #2b3635; 
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #4ecdc4; 
+        }
+        .neon-glow:hover {
+            box-shadow: 0 0 15px rgba(78, 205, 196, 0.4);
+            border-color: #4ecdc4;
+        }
+        .text-glow {
+            text-shadow: 0 0 10px rgba(78, 205, 196, 0.5);
+        }
+    </style>
+</head>
+<body class="bg-gradient-to-br from-[#1a1a2e] to-[#16213e] text-white transition-colors duration-300 min-h-screen flex flex-col font-body">
+<header class="sticky top-0 z-50 w-full border-b border-white/10 bg-[#1a1a2e]/90 backdrop-blur-md">
+<div class="px-6 md:px-10 py-4 max-w-[1440px] mx-auto flex flex-col md:flex-row items-center justify-between gap-4">
+<div class="flex items-center gap-3">
+<div class="size-10 rounded-lg bg-gradient-to-br from-primary to-blue-600 flex items-center justify-center text-[#1a1a2e] shadow-lg shadow-primary/20">
+<span class="material-symbols-outlined text-[28px]">stadia_controller</span>
+</div>
+<h1 class="text-2xl font-bold font-display tracking-tight text-white">Anson Game</h1>
+</div>
+<nav class="flex items-center gap-2 overflow-x-auto w-full md:w-auto pb-2 md:pb-0 scrollbar-hide mask-fade">
+<a class="px-4 py-2 rounded-full bg-primary/20 text-primary font-bold text-sm whitespace-nowrap border border-primary/30 transition-all hover:bg-primary/30" href="#">全部</a>
+<a class="px-4 py-2 rounded-full bg-white/5 text-gray-300 font-medium text-sm whitespace-nowrap hover:bg-white/10 hover:text-white transition-colors" href="#">迷你</a>
+<a class="px-4 py-2 rounded-full bg-white/5 text-gray-300 font-medium text-sm whitespace-nowrap hover:bg-white/10 hover:text-white transition-colors" href="#">互動</a>
+<a class="px-4 py-2 rounded-full bg-white/5 text-gray-300 font-medium text-sm whitespace-nowrap hover:bg-white/10 hover:text-white transition-colors" href="#">益智</a>
+<a class="px-4 py-2 rounded-full bg-white/5 text-gray-300 font-medium text-sm whitespace-nowrap hover:bg-white/10 hover:text-white transition-colors" href="#">街機</a>
+</nav>
+<div class="flex items-center gap-4 w-full md:w-auto">
+<div class="relative flex-1 md:w-64">
+<div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-gray-400">
+<span class="material-symbols-outlined text-[20px]">search</span>
+</div>
+<input class="block w-full pl-10 pr-3 py-2 border border-white/10 rounded-lg leading-5 bg-[#0f1520] text-gray-300 placeholder-gray-500 focus:outline-none focus:bg-[#16213e] focus:border-primary focus:ring-1 focus:ring-primary sm:text-sm transition-colors" placeholder="搜尋遊戲..." type="text"/>
+</div>
+<button class="flex items-center justify-center p-2 rounded-lg bg-[#0f1520] border border-white/10 text-gray-400 hover:text-white hover:border-white/30 transition-all">
+<span class="material-symbols-outlined">dark_mode</span>
+</button>
+<div class="size-9 rounded-full bg-gradient-to-r from-purple-500 to-pink-500 p-[2px]">
+<img alt="User Profile" class="rounded-full w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCj9adGlwqMbj5fRTN_1UmehjstL4picyrHXJXMYnQBxSYnIRr1csB6r_hGv0wIxNJXun-0vW3SCdFUjaaKOHcPRP1MNl1WeWVuOYuv7Shm_fDCLafL2uL7aXkyGd5-HmWPoHMlwgQTRdccUpY_h9h_4_E4UuOVAo9shOdNLkXKYe89pLWjVJ_gcMpxcTbZ7HTgClsBOF3LfkWlInMuW_TxW-OsBvQ3IPJuoEB-v5-TgJmd4o3eElrY06fRx1wosLVKs_-8N0fajOd1"/>
+</div>
+</div>
+</div>
+</header>
+<main class="flex-grow px-6 md:px-10 py-8 relative overflow-hidden">
+<div class="absolute top-0 left-1/4 w-96 h-96 bg-primary/5 rounded-full blur-[100px] pointer-events-none"></div>
+<div class="absolute bottom-0 right-1/4 w-96 h-96 bg-purple-600/5 rounded-full blur-[100px] pointer-events-none"></div>
+<div class="max-w-[1440px] mx-auto relative z-10">
+<div class="mb-12 rounded-2xl overflow-hidden relative group">
+<div class="absolute inset-0 bg-gradient-to-r from-black/80 via-black/50 to-transparent z-10"></div>
+<img alt="Featured Game Background" class="w-full h-[300px] md:h-[400px] object-cover transition-transform duration-700 group-hover:scale-105" data-alt="Futuristic retro arcade game room with neon lights" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCT0ey3LxEg3B9G7cQNmGS-S2WrdE5lpwl8mQayTPDZgNMrXE60jZH_5Ic_0sF1-0_0eVmhUdA-9rzWkcKap0pPDixHgp0Gn3i_UZUTw8-FJyjDzu-al3tTffnom-zoifYsWFsh1dMeRD2CSo-bIQwlETjt4xQwpKsWp9JV-N1l4RX13SesUmzzkUNI8J9h81RRzdtCsXW5bVH6VRcbc-fl87J6CRqFiW8OvoPsyWsTlHblAZpAyjpTbVjv3J_HQa6WBr2VIJ2rQtoj"/>
+<div class="absolute bottom-0 left-0 p-8 md:p-12 z-20 max-w-2xl">
+<div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-primary/20 border border-primary/30 text-primary text-xs font-bold mb-4 backdrop-blur-sm">
+<span class="w-2 h-2 rounded-full bg-primary animate-pulse"></span>
+                        本週精選
+                    </div>
+<h2 class="text-4xl md:text-5xl font-bold text-white mb-2 font-display text-glow">Cyber Racing 2077</h2>
+<p class="text-gray-300 text-lg mb-6 max-w-lg line-clamp-2">體驗極速快感，在霓虹閃爍的未來都市中穿梭。挑戰極限，成為賽道上的傳奇車手！</p>
+<div class="flex gap-4">
+<button class="px-6 py-3 rounded-lg bg-primary hover:bg-primary/90 text-[#1a1a2e] font-bold text-base transition-all transform hover:scale-105 flex items-center gap-2">
+<span class="material-symbols-outlined">play_arrow</span>
+                            立即開始
+                        </button>
+<button class="px-6 py-3 rounded-lg bg-white/10 hover:bg-white/20 text-white font-medium text-base backdrop-blur-sm transition-all flex items-center gap-2">
+<span class="material-symbols-outlined">info</span>
+                            更多資訊
+                        </button>
+</div>
+</div>
+</div>
+<div class="flex items-center justify-between mb-6">
+<h3 class="text-2xl font-bold text-white font-display flex items-center gap-2">
+<span class="material-symbols-outlined text-primary">grid_view</span>
+                    熱門遊戲
+                </h3>
+<div class="flex gap-2">
+<button class="p-2 rounded hover:bg-white/10 text-gray-400 hover:text-white transition-colors">
+<span class="material-symbols-outlined">view_module</span>
+</button>
+<button class="p-2 rounded hover:bg-white/10 text-gray-400 hover:text-white transition-colors">
+<span class="material-symbols-outlined">list</span>
+</button>
+</div>
+</div>
+<div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6">
+<div class="group bg-card-bg rounded-xl border border-white/5 p-5 flex flex-col gap-4 transition-all duration-300 neon-glow hover:-translate-y-1 relative overflow-hidden backdrop-blur-sm">
+<div class="absolute top-0 right-0 w-16 h-16 bg-primary/10 rounded-bl-full -mr-8 -mt-8 transition-transform group-hover:scale-150"></div>
+<div class="h-32 w-full rounded-lg bg-gradient-to-br from-green-900/40 to-black flex items-center justify-center text-6xl shadow-inner border border-white/5">
+                        🐍
+                    </div>
+<div class="flex flex-col flex-1">
+<div class="flex justify-between items-start mb-1">
+<h4 class="text-lg font-bold text-white font-display group-hover:text-primary transition-colors">貪食蛇</h4>
+<span class="px-2 py-0.5 rounded text-[10px] bg-green-500/20 text-green-400 border border-green-500/30">經典</span>
+</div>
+<p class="text-gray-400 text-sm mb-4 line-clamp-2">控制蛇吃掉蘋果，小心不要撞到牆壁。</p>
+<button class="mt-auto w-full py-2 rounded-lg bg-primary hover:bg-primary/90 text-[#1a1a2e] font-bold text-sm transition-colors flex items-center justify-center gap-1">
+<span class="material-symbols-outlined text-sm">play_circle</span> 開始遊戲
+                        </button>
+</div>
+</div>
+<div class="group bg-card-bg rounded-xl border border-white/5 p-5 flex flex-col gap-4 transition-all duration-300 neon-glow hover:-translate-y-1 relative overflow-hidden backdrop-blur-sm">
+<div class="absolute top-2 right-2 z-10">
+<span class="flex h-3 w-3">
+<span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-secondary opacity-75"></span>
+<span class="relative inline-flex rounded-full h-3 w-3 bg-secondary"></span>
+</span>
+</div>
+<div class="h-32 w-full rounded-lg bg-gradient-to-br from-red-900/40 to-black flex items-center justify-center text-6xl shadow-inner border border-white/5">
+                        🏎️
+                    </div>
+<div class="flex flex-col flex-1">
+<div class="flex justify-between items-start mb-1">
+<h4 class="text-lg font-bold text-white font-display group-hover:text-primary transition-colors">極速賽車</h4>
+<span class="px-2 py-0.5 rounded text-[10px] bg-red-500/20 text-red-400 border border-red-500/30">競速</span>
+</div>
+<p class="text-gray-400 text-sm mb-4 line-clamp-2">挑戰速度極限，躲避障礙物，成為賽道王者。</p>
+<button class="mt-auto w-full py-2 rounded-lg bg-secondary hover:bg-secondary/90 text-white font-bold text-sm transition-colors flex items-center justify-center gap-1">
+<span class="material-symbols-outlined text-sm">play_circle</span> 開始遊戲
+                        </button>
+</div>
+</div>
+<div class="group bg-card-bg rounded-xl border border-white/5 p-5 flex flex-col gap-4 transition-all duration-300 neon-glow hover:-translate-y-1 relative overflow-hidden backdrop-blur-sm">
+<div class="h-32 w-full rounded-lg bg-gradient-to-br from-yellow-900/40 to-black flex items-center justify-center text-6xl shadow-inner border border-white/5">
+                        🧱
+                    </div>
+<div class="flex flex-col flex-1">
+<div class="flex justify-between items-start mb-1">
+<h4 class="text-lg font-bold text-white font-display group-hover:text-primary transition-colors">俄羅斯方塊</h4>
+<span class="px-2 py-0.5 rounded text-[10px] bg-yellow-500/20 text-yellow-400 border border-yellow-500/30">益智</span>
+</div>
+<p class="text-gray-400 text-sm mb-4 line-clamp-2">堆疊方塊，消除行數，挑戰最高分數。</p>
+<button class="mt-auto w-full py-2 rounded-lg bg-white/5 text-gray-500 font-bold text-sm cursor-not-allowed border border-white/5 flex items-center justify-center gap-1" disabled="">
+<span class="material-symbols-outlined text-sm">schedule</span> 即將推出
+                        </button>
+</div>
+</div>
+<div class="group bg-card-bg rounded-xl border border-white/5 p-5 flex flex-col gap-4 transition-all duration-300 neon-glow hover:-translate-y-1 relative overflow-hidden backdrop-blur-sm">
+<div class="h-32 w-full rounded-lg bg-gradient-to-br from-purple-900/40 to-black flex items-center justify-center text-6xl shadow-inner border border-white/5">
+                        👾
+                    </div>
+<div class="flex flex-col flex-1">
+<div class="flex justify-between items-start mb-1">
+<h4 class="text-lg font-bold text-white font-display group-hover:text-primary transition-colors">太空侵略者</h4>
+<span class="px-2 py-0.5 rounded text-[10px] bg-purple-500/20 text-purple-400 border border-purple-500/30">射擊</span>
+</div>
+<p class="text-gray-400 text-sm mb-4 line-clamp-2">保護地球免受外星人入侵，經典街機射擊。</p>
+<button class="mt-auto w-full py-2 rounded-lg bg-primary hover:bg-primary/90 text-[#1a1a2e] font-bold text-sm transition-colors flex items-center justify-center gap-1">
+<span class="material-symbols-outlined text-sm">play_circle</span> 開始遊戲
+                        </button>
+</div>
+</div>
+<div class="group bg-card-bg rounded-xl border border-white/5 p-5 flex flex-col gap-4 transition-all duration-300 neon-glow hover:-translate-y-1 relative overflow-hidden backdrop-blur-sm">
+<div class="h-32 w-full rounded-lg bg-gradient-to-br from-blue-900/40 to-black flex items-center justify-center text-6xl shadow-inner border border-white/5">
+                        🏓
+                    </div>
+<div class="flex flex-col flex-1">
+<div class="flex justify-between items-start mb-1">
+<h4 class="text-lg font-bold text-white font-display group-hover:text-primary transition-colors">打磚塊</h4>
+<span class="px-2 py-0.5 rounded text-[10px] bg-blue-500/20 text-blue-400 border border-blue-500/30">街機</span>
+</div>
+<p class="text-gray-400 text-sm mb-4 line-clamp-2">控制擋板反彈球，擊碎所有磚塊。</p>
+<button class="mt-auto w-full py-2 rounded-lg bg-primary hover:bg-primary/90 text-[#1a1a2e] font-bold text-sm transition-colors flex items-center justify-center gap-1">
+<span class="material-symbols-outlined text-sm">play_circle</span> 開始遊戲
+                        </button>
+</div>
+</div>
+<div class="group bg-card-bg rounded-xl border border-white/5 p-5 flex flex-col gap-4 transition-all duration-300 neon-glow hover:-translate-y-1 relative overflow-hidden backdrop-blur-sm">
+<div class="h-32 w-full rounded-lg bg-gradient-to-br from-yellow-600/40 to-black flex items-center justify-center text-6xl shadow-inner border border-white/5">
+                        👻
+                    </div>
+<div class="flex flex-col flex-1">
+<div class="flex justify-between items-start mb-1">
+<h4 class="text-lg font-bold text-white font-display group-hover:text-primary transition-colors">食鬼</h4>
+<span class="px-2 py-0.5 rounded text-[10px] bg-yellow-500/20 text-yellow-400 border border-yellow-500/30">經典</span>
+</div>
+<p class="text-gray-400 text-sm mb-4 line-clamp-2">在迷宮中吃掉豆子，避開幽靈的追捕。</p>
+<button class="mt-auto w-full py-2 rounded-lg bg-primary hover:bg-primary/90 text-[#1a1a2e] font-bold text-sm transition-colors flex items-center justify-center gap-1">
+<span class="material-symbols-outlined text-sm">play_circle</span> 開始遊戲
+                        </button>
+</div>
+</div>
+<div class="group bg-card-bg rounded-xl border border-white/5 p-5 flex flex-col gap-4 transition-all duration-300 neon-glow hover:-translate-y-1 relative overflow-hidden backdrop-blur-sm">
+<div class="h-32 w-full rounded-lg bg-gradient-to-br from-green-700/40 to-black flex items-center justify-center text-6xl shadow-inner border border-white/5">
+                        🐸
+                    </div>
+<div class="flex flex-col flex-1">
+<div class="flex justify-between items-start mb-1">
+<h4 class="text-lg font-bold text-white font-display group-hover:text-primary transition-colors">青蛙過河</h4>
+<span class="px-2 py-0.5 rounded text-[10px] bg-green-500/20 text-green-400 border border-green-500/30">過關</span>
+</div>
+<p class="text-gray-400 text-sm mb-4 line-clamp-2">幫助青蛙安全穿過繁忙的馬路和河流。</p>
+<button class="mt-auto w-full py-2 rounded-lg bg-white/5 text-gray-500 font-bold text-sm cursor-not-allowed border border-white/5 flex items-center justify-center gap-1" disabled="">
+<span class="material-symbols-outlined text-sm">schedule</span> 即將推出
+                        </button>
+</div>
+</div>
+<div class="group bg-card-bg rounded-xl border border-white/5 p-5 flex flex-col gap-4 transition-all duration-300 neon-glow hover:-translate-y-1 relative overflow-hidden backdrop-blur-sm">
+<div class="h-32 w-full rounded-lg bg-gradient-to-br from-orange-800/40 to-black flex items-center justify-center text-6xl shadow-inner border border-white/5">
+                        🦍
+                    </div>
+<div class="flex flex-col flex-1">
+<div class="flex justify-between items-start mb-1">
+<h4 class="text-lg font-bold text-white font-display group-hover:text-primary transition-colors">大金剛</h4>
+<span class="px-2 py-0.5 rounded text-[10px] bg-orange-500/20 text-orange-400 border border-orange-500/30">冒險</span>
+</div>
+<p class="text-gray-400 text-sm mb-4 line-clamp-2">爬上梯子，避開滾動的桶子，拯救公主。</p>
+<button class="mt-auto w-full py-2 rounded-lg bg-primary hover:bg-primary/90 text-[#1a1a2e] font-bold text-sm transition-colors flex items-center justify-center gap-1">
+<span class="material-symbols-outlined text-sm">play_circle</span> 開始遊戲
+                        </button>
+</div>
+</div>
+<div class="group bg-card-bg rounded-xl border border-white/5 p-5 flex flex-col gap-4 transition-all duration-300 neon-glow hover:-translate-y-1 relative overflow-hidden backdrop-blur-sm">
+<div class="h-32 w-full rounded-lg bg-gradient-to-br from-cyan-900/40 to-black flex items-center justify-center text-6xl shadow-inner border border-white/5">
+                        🫧
+                    </div>
+<div class="flex flex-col flex-1">
+<div class="flex justify-between items-start mb-1">
+<h4 class="text-lg font-bold text-white font-display group-hover:text-primary transition-colors">泡泡龍</h4>
+<span class="px-2 py-0.5 rounded text-[10px] bg-cyan-500/20 text-cyan-400 border border-cyan-500/30">休閒</span>
+</div>
+<p class="text-gray-400 text-sm mb-4 line-clamp-2">射擊並匹配相同顏色的泡泡來消除它們。</p>
+<button class="mt-auto w-full py-2 rounded-lg bg-primary hover:bg-primary/90 text-[#1a1a2e] font-bold text-sm transition-colors flex items-center justify-center gap-1">
+<span class="material-symbols-outlined text-sm">play_circle</span> 開始遊戲
+                        </button>
+</div>
+</div>
+<div class="group bg-card-bg rounded-xl border border-white/5 p-5 flex flex-col gap-4 transition-all duration-300 neon-glow hover:-translate-y-1 relative overflow-hidden backdrop-blur-sm">
+<div class="h-32 w-full rounded-lg bg-gradient-to-br from-gray-700/40 to-black flex items-center justify-center text-6xl shadow-inner border border-white/5">
+                        💣
+                    </div>
+<div class="flex flex-col flex-1">
+<div class="flex justify-between items-start mb-1">
+<h4 class="text-lg font-bold text-white font-display group-hover:text-primary transition-colors">踩地雷</h4>
+<span class="px-2 py-0.5 rounded text-[10px] bg-gray-500/20 text-gray-400 border border-gray-500/30">策略</span>
+</div>
+<p class="text-gray-400 text-sm mb-4 line-clamp-2">運用邏輯找出所有地雷，別踩到了！</p>
+<button class="mt-auto w-full py-2 rounded-lg bg-primary hover:bg-primary/90 text-[#1a1a2e] font-bold text-sm transition-colors flex items-center justify-center gap-1">
+<span class="material-symbols-outlined text-sm">play_circle</span> 開始遊戲
+                        </button>
+</div>
+</div>
+<div class="group bg-card-bg rounded-xl border border-white/5 p-5 flex flex-col gap-4 transition-all duration-300 neon-glow hover:-translate-y-1 relative overflow-hidden backdrop-blur-sm">
+<div class="h-32 w-full rounded-lg bg-gradient-to-br from-indigo-800/40 to-black flex items-center justify-center text-6xl shadow-inner border border-white/5">
+                        🃏
+                    </div>
+<div class="flex flex-col flex-1">
+<div class="flex justify-between items-start mb-1">
+<h4 class="text-lg font-bold text-white font-display group-hover:text-primary transition-colors">接龍</h4>
+<span class="px-2 py-0.5 rounded text-[10px] bg-indigo-500/20 text-indigo-400 border border-indigo-500/30">卡牌</span>
+</div>
+<p class="text-gray-400 text-sm mb-4 line-clamp-2">經典單人紙牌遊戲，考驗耐心與策略。</p>
+<button class="mt-auto w-full py-2 rounded-lg bg-primary hover:bg-primary/90 text-[#1a1a2e] font-bold text-sm transition-colors flex items-center justify-center gap-1">
+<span class="material-symbols-outlined text-sm">play_circle</span> 開始遊戲
+                        </button>
+</div>
+</div>
+<div class="group bg-card-bg rounded-xl border border-white/5 p-5 flex flex-col gap-4 transition-all duration-300 neon-glow hover:-translate-y-1 relative overflow-hidden backdrop-blur-sm">
+<div class="h-32 w-full rounded-lg bg-gradient-to-br from-yellow-500/40 to-black flex items-center justify-center text-6xl shadow-inner border border-white/5">
+                        🔢
+                    </div>
+<div class="flex flex-col flex-1">
+<div class="flex justify-between items-start mb-1">
+<h4 class="text-lg font-bold text-white font-display group-hover:text-primary transition-colors">2048</h4>
+<span class="px-2 py-0.5 rounded text-[10px] bg-yellow-500/20 text-yellow-400 border border-yellow-500/30">益智</span>
+</div>
+<p class="text-gray-400 text-sm mb-4 line-clamp-2">滑動合併數字，目標是拼湊出2048方塊。</p>
+<button class="mt-auto w-full py-2 rounded-lg bg-primary hover:bg-primary/90 text-[#1a1a2e] font-bold text-sm transition-colors flex items-center justify-center gap-1">
+<span class="material-symbols-outlined text-sm">play_circle</span> 開始遊戲
+                        </button>
+</div>
+</div>
+<div class="group bg-card-bg rounded-xl border border-white/5 p-5 flex flex-col gap-4 transition-all duration-300 neon-glow hover:-translate-y-1 relative overflow-hidden backdrop-blur-sm">
+<div class="h-32 w-full rounded-lg bg-gradient-to-br from-green-600/40 to-black flex items-center justify-center text-6xl shadow-inner border border-white/5">
+                        🐦
+                    </div>
+<div class="flex flex-col flex-1">
+<div class="flex justify-between items-start mb-1">
+<h4 class="text-lg font-bold text-white font-display group-hover:text-primary transition-colors">飛翔鳥</h4>
+<span class="px-2 py-0.5 rounded text-[10px] bg-green-500/20 text-green-400 border border-green-500/30">技巧</span>
+</div>
+<p class="text-gray-400 text-sm mb-4 line-clamp-2">點擊螢幕讓鳥兒飛行，避開水管障礙。</p>
+<button class="mt-auto w-full py-2 rounded-lg bg-secondary hover:bg-secondary/90 text-white font-bold text-sm transition-colors flex items-center justify-center gap-1">
+<span class="material-symbols-outlined text-sm">play_circle</span> 開始遊戲
+                        </button>
+</div>
+</div>
+<div class="group bg-card-bg rounded-xl border border-white/5 p-5 flex flex-col gap-4 transition-all duration-300 neon-glow hover:-translate-y-1 relative overflow-hidden backdrop-blur-sm">
+<div class="h-32 w-full rounded-lg bg-gradient-to-br from-gray-600/40 to-black flex items-center justify-center text-6xl shadow-inner border border-white/5">
+                        ♟️
+                    </div>
+<div class="flex flex-col flex-1">
+<div class="flex justify-between items-start mb-1">
+<h4 class="text-lg font-bold text-white font-display group-hover:text-primary transition-colors">西洋棋</h4>
+<span class="px-2 py-0.5 rounded text-[10px] bg-gray-500/20 text-gray-400 border border-gray-500/30">策略</span>
+</div>
+<p class="text-gray-400 text-sm mb-4 line-clamp-2">深思熟慮，佈局策略，將死對手的國王。</p>
+<button class="mt-auto w-full py-2 rounded-lg bg-white/5 text-gray-500 font-bold text-sm cursor-not-allowed border border-white/5 flex items-center justify-center gap-1" disabled="">
+<span class="material-symbols-outlined text-sm">schedule</span> 即將推出
+                        </button>
+</div>
+</div>
+<div class="group bg-card-bg rounded-xl border border-white/5 p-5 flex flex-col gap-4 transition-all duration-300 neon-glow hover:-translate-y-1 relative overflow-hidden backdrop-blur-sm">
+<div class="h-32 w-full rounded-lg bg-gradient-to-br from-blue-700/40 to-black flex items-center justify-center text-6xl shadow-inner border border-white/5">
+                        🏓
+                    </div>
+<div class="flex flex-col flex-1">
+<div class="flex justify-between items-start mb-1">
+<h4 class="text-lg font-bold text-white font-display group-hover:text-primary transition-colors">乒乓球</h4>
+<span class="px-2 py-0.5 rounded text-[10px] bg-blue-500/20 text-blue-400 border border-blue-500/30">街機</span>
+</div>
+<p class="text-gray-400 text-sm mb-4 line-clamp-2">最早期的電子遊戲之一，雙人對戰乒乓。</p>
+<button class="mt-auto w-full py-2 rounded-lg bg-primary hover:bg-primary/90 text-[#1a1a2e] font-bold text-sm transition-colors flex items-center justify-center gap-1">
+<span class="material-symbols-outlined text-sm">play_circle</span> 開始遊戲
+                        </button>
+</div>
+</div>
+<div class="group bg-card-bg rounded-xl border border-white/5 p-5 flex flex-col gap-4 transition-all duration-300 neon-glow hover:-translate-y-1 relative overflow-hidden backdrop-blur-sm">
+<div class="h-32 w-full rounded-lg bg-gradient-to-br from-pink-800/40 to-black flex items-center justify-center text-6xl shadow-inner border border-white/5">
+                        🎰
+                    </div>
+<div class="flex flex-col flex-1">
+<div class="flex justify-between items-start mb-1">
+<h4 class="text-lg font-bold text-white font-display group-hover:text-primary transition-colors">彈珠台</h4>
+<span class="px-2 py-0.5 rounded text-[10px] bg-pink-500/20 text-pink-400 border border-pink-500/30">經典</span>
+</div>
+<p class="text-gray-400 text-sm mb-4 line-clamp-2">拉動拉桿，看彈珠在機台內彈跳得分。</p>
+<button class="mt-auto w-full py-2 rounded-lg bg-secondary hover:bg-secondary/90 text-white font-bold text-sm transition-colors flex items-center justify-center gap-1">
+<span class="material-symbols-outlined text-sm">play_circle</span> 開始遊戲
+                        </button>
+</div>
+</div>
+</div>
+<div class="flex justify-center mt-12 mb-8">
+<button class="px-8 py-3 rounded-full bg-[#1e2524] border border-[#2b3635] text-white font-medium hover:border-primary hover:text-primary transition-all flex items-center gap-2 group">
+                    載入更多遊戲
+                    <span class="material-symbols-outlined group-hover:translate-y-1 transition-transform">expand_more</span>
+</button>
+</div>
+</div>
+</main>
+<footer class="bg-[#131a26] border-t border-white/5 py-8">
+<div class="max-w-[1440px] mx-auto px-6 md:px-10 flex flex-col md:flex-row justify-between items-center gap-4">
+<div class="flex items-center gap-2 text-gray-400">
+<span class="material-symbols-outlined">stadia_controller</span>
+<span class="font-display font-medium text-white">Anson Game Center</span>
+</div>
+<div class="flex gap-6 text-sm text-gray-500">
+<a class="hover:text-primary transition-colors" href="#">關於我們</a>
+<a class="hover:text-primary transition-colors" href="#">隱私權政策</a>
+<a class="hover:text-primary transition-colors" href="#">服務條款</a>
+<a class="hover:text-primary transition-colors" href="#">聯繫客服</a>
+</div>
+<p class="text-xs text-gray-600">© 2023 Anson Game Center. All rights reserved.</p>
+</div>
+</footer>
+
+</body></html>

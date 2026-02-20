@@ -1,0 +1,350 @@
+<!DOCTYPE html>
+<html lang="zh-HK"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Anson Game Center - Light Mode (Synced)</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@300;400;500;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script>
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#ffa500", 
+                        "secondary": "#4CAF50",
+                        "bg-start": "#f0f8ff",
+                        "bg-end": "#e6f7ff",
+                        "card-bg": "rgba(255, 255, 255, 0.9)",
+                        "text-header": "#333333",
+                        "text-body": "#666666",
+                    },
+                    fontFamily: {
+                        "display": ["Space Grotesk", "Noto Sans TC", "sans-serif"],
+                        "body": ["Noto Sans TC", "sans-serif"]
+                    },
+                    boxShadow: {
+                        "soft": "0 4px 20px -2px rgba(0, 0, 0, 0.05)",
+                        "glow": "0 0 15px rgba(255, 165, 0, 0.3)"
+                    }
+                },
+            },
+        }
+    </script>
+<style>
+        body {
+            font-family: 'Space Grotesk', 'Noto Sans TC', sans-serif;
+        }::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: transparent; 
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #cbd5e1; 
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #94a3b8; 
+        }
+    </style>
+</head>
+<body class="bg-gradient-to-b from-bg-start to-bg-end min-h-screen text-text-header flex flex-col font-display">
+<header class="sticky top-0 z-50 flex items-center justify-between whitespace-nowrap border-b border-white/40 bg-white/70 backdrop-blur-md px-6 py-4 shadow-sm transition-all">
+<div class="flex items-center gap-8">
+<div class="flex items-center gap-3 text-text-header">
+<div class="size-10 flex items-center justify-center rounded-xl bg-primary text-white shadow-lg shadow-orange-200">
+<span class="material-symbols-outlined">sports_esports</span>
+</div>
+<h2 class="text-text-header text-xl font-bold leading-tight tracking-tight">Anson Game</h2>
+</div>
+<div class="hidden md:flex items-center gap-6">
+<a class="text-text-header hover:text-primary transition-colors text-sm font-bold" href="#">首頁</a>
+<a class="text-text-body hover:text-primary transition-colors text-sm font-bold" href="#">遊戲庫</a>
+<a class="text-text-body hover:text-primary transition-colors text-sm font-bold" href="#">排行榜</a>
+<a class="text-text-body hover:text-primary transition-colors text-sm font-bold" href="#">我的最愛</a>
+</div>
+</div>
+<div class="flex flex-1 justify-end gap-4 items-center">
+<label class="hidden md:flex flex-col min-w-40 h-10 max-w-64 relative group">
+<div class="flex w-full flex-1 items-stretch rounded-full bg-white border border-gray-200 focus-within:border-primary focus-within:ring-2 focus-within:ring-primary/20 transition-all overflow-hidden shadow-sm">
+<div class="text-gray-400 flex items-center justify-center pl-3">
+<span class="material-symbols-outlined text-[20px]">search</span>
+</div>
+<input class="w-full bg-transparent border-none focus:ring-0 text-sm text-gray-700 placeholder:text-gray-400 px-2" placeholder="搜尋遊戲..."/>
+</div>
+</label>
+<div class="flex gap-3">
+<button aria-label="Toggle Theme" class="flex items-center justify-center size-10 rounded-full bg-orange-50 text-primary hover:bg-primary hover:text-white transition-all shadow-sm">
+<span class="material-symbols-outlined">light_mode</span>
+</button>
+<button class="flex items-center justify-center size-10 rounded-full bg-white text-gray-600 hover:text-primary hover:bg-gray-50 border border-gray-100 shadow-sm transition-colors">
+<span class="material-symbols-outlined">account_circle</span>
+</button>
+</div>
+</div>
+</header>
+<main class="flex-grow layout-container flex flex-col items-center">
+<div class="w-full max-w-[1400px] px-4 md:px-8 py-8 flex flex-col gap-10">
+<div class="@container w-full">
+<div class="relative w-full rounded-3xl overflow-hidden shadow-soft group bg-white">
+<div class="absolute inset-0 bg-cover bg-center transition-transform duration-700 group-hover:scale-105 opacity-90" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuCGz1KbUUXZOH4QuQ4m15vNGJ2Qc3meJhFeKkkTk1C7Nx4MkGY41XV8QKQJAE6-lQNkwKL09HLzoeWvDAFD4VLiAZstC6xfFzP2ktDuLbsV7As15DV5GwNPwQZa-x4qBHsUmWGb4333Ys6PZJvgIStXQJnyw6yTqYWxc_SWF3leHmiI_zq9gaxmyjusyMcljY3xL19V5COhXV6vIH6QEB5aVRqOuS0NjLd5QqwQq1QnujkdPnB-289Vw6twVWNwD4wAqx0DpDTNfDnt");'>
+</div>
+<div class="absolute inset-0 bg-gradient-to-r from-white/95 via-white/70 to-transparent"></div>
+<div class="relative z-10 flex flex-col justify-center min-h-[380px] p-8 md:p-16 max-w-2xl gap-5">
+<div class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white/90 backdrop-blur-sm w-fit shadow-sm border border-orange-100">
+<span class="size-2 rounded-full bg-primary animate-pulse"></span>
+<span class="text-xs font-bold text-primary uppercase tracking-wider">本週熱門推薦</span>
+</div>
+<h1 class="text-4xl md:text-6xl font-black text-text-header leading-tight tracking-tight">
+                            Cyber Racing 2077<br/><span class="text-primary">Neon City</span>
+</h1>
+<p class="text-text-body text-lg md:text-xl font-medium max-w-lg leading-relaxed">
+                            體驗極速快感，在充滿霓虹燈光的未來城市中穿梭，挑戰你的反應極限！
+                        </p>
+<div class="flex gap-4 pt-4">
+<button class="flex items-center gap-2 bg-primary hover:bg-orange-600 text-white px-8 py-3.5 rounded-xl font-bold text-lg shadow-lg shadow-orange-500/20 transform hover:-translate-y-1 transition-all">
+<span class="material-symbols-outlined">play_arrow</span>
+                                立即遊玩
+                            </button>
+<button class="flex items-center gap-2 bg-white hover:bg-gray-50 text-text-header px-6 py-3.5 rounded-xl font-bold text-lg shadow-md transition-all border border-gray-100">
+<span class="material-symbols-outlined">info</span>
+                                更多資訊
+                            </button>
+</div>
+</div>
+</div>
+</div>
+<div class="flex flex-col gap-4">
+<div class="flex items-center justify-between">
+<h2 class="text-2xl font-bold text-text-header flex items-center gap-2">
+<span class="material-symbols-outlined text-primary">category</span>
+                        遊戲分類
+                    </h2>
+</div>
+<div class="flex gap-3 overflow-x-auto pb-2 scrollbar-hide">
+<button class="flex shrink-0 items-center gap-2 rounded-full bg-primary text-white px-6 py-2.5 shadow-md shadow-orange-500/20 transition-transform hover:scale-105 font-bold text-sm">
+<span class="text-lg">🎮</span>
+                        全部
+                    </button>
+<button class="flex shrink-0 items-center gap-2 rounded-full bg-card-bg text-text-body px-6 py-2.5 shadow-sm hover:shadow-md hover:text-primary transition-all font-medium text-sm border border-white/50">
+<span class="text-lg">⚡</span>
+                        動作
+                    </button>
+<button class="flex shrink-0 items-center gap-2 rounded-full bg-card-bg text-text-body px-6 py-2.5 shadow-sm hover:shadow-md hover:text-primary transition-all font-medium text-sm border border-white/50">
+<span class="text-lg">🧩</span>
+                        益智
+                    </button>
+<button class="flex shrink-0 items-center gap-2 rounded-full bg-card-bg text-text-body px-6 py-2.5 shadow-sm hover:shadow-md hover:text-primary transition-all font-medium text-sm border border-white/50">
+<span class="text-lg">🏎️</span>
+                        競速
+                    </button>
+<button class="flex shrink-0 items-center gap-2 rounded-full bg-card-bg text-text-body px-6 py-2.5 shadow-sm hover:shadow-md hover:text-primary transition-all font-medium text-sm border border-white/50">
+<span class="text-lg">🕹️</span>
+                        街機
+                    </button>
+</div>
+</div>
+<section class="flex flex-col gap-6 pb-12">
+<div class="flex items-center justify-between">
+<h2 class="text-2xl font-bold text-text-header flex items-center gap-2">
+<span class="material-symbols-outlined text-secondary">grid_view</span>
+                        所有遊戲 <span class="text-gray-400 text-lg font-normal ml-1">(16+)</span>
+</h2>
+<div class="flex gap-2">
+<button class="size-10 flex items-center justify-center rounded-xl bg-card-bg border border-white/60 text-gray-500 hover:text-primary shadow-sm hover:shadow-md transition-all">
+<span class="material-symbols-outlined">filter_list</span>
+</button>
+<button class="size-10 flex items-center justify-center rounded-xl bg-card-bg border border-white/60 text-gray-500 hover:text-primary shadow-sm hover:shadow-md transition-all">
+<span class="material-symbols-outlined">sort</span>
+</button>
+</div>
+</div>
+<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 xl:grid-cols-5 gap-6">
+<div class="group relative bg-card-bg rounded-2xl overflow-hidden shadow-soft hover:shadow-xl hover:shadow-orange-500/10 transition-all duration-300 hover:-translate-y-1 flex flex-col h-full border border-white/50">
+<div class="relative aspect-[4/3] overflow-hidden bg-gray-100 flex items-center justify-center">
+<span class="text-6xl group-hover:scale-110 transition-transform duration-500">🐍</span>
+<div class="absolute top-3 right-3 bg-white/90 backdrop-blur-sm p-2 rounded-full shadow-sm cursor-pointer hover:text-red-500 text-gray-400 transition-colors">
+<span class="material-symbols-outlined text-[18px] block">favorite</span>
+</div>
+</div>
+<div class="p-4 flex flex-col flex-grow">
+<h3 class="font-bold text-lg text-text-header line-clamp-1 group-hover:text-primary transition-colors">貪食蛇</h3>
+<p class="text-xs text-text-body font-medium mb-4">經典 • 休閒</p>
+<button class="mt-auto w-full bg-orange-50 hover:bg-primary hover:text-white text-primary font-bold py-2.5 rounded-xl transition-colors flex items-center justify-center gap-2 border border-orange-100">
+<span class="material-symbols-outlined text-[20px]">play_circle</span>
+                                開始
+                            </button>
+</div>
+</div>
+<div class="group relative bg-card-bg rounded-2xl overflow-hidden shadow-soft hover:shadow-xl hover:shadow-orange-500/10 transition-all duration-300 hover:-translate-y-1 flex flex-col h-full border border-white/50">
+<div class="relative aspect-[4/3] overflow-hidden bg-gray-100 flex items-center justify-center">
+<span class="text-6xl group-hover:scale-110 transition-transform duration-500">🏎️</span>
+<div class="absolute top-3 right-3 bg-white/90 backdrop-blur-sm p-2 rounded-full shadow-sm cursor-pointer hover:text-red-500 text-gray-400 transition-colors">
+<span class="material-symbols-outlined text-[18px] block">favorite</span>
+</div>
+<div class="absolute bottom-3 left-3 bg-secondary text-white text-xs font-bold px-2.5 py-1 rounded-md shadow-sm">
+                                熱門
+                            </div>
+</div>
+<div class="p-4 flex flex-col flex-grow">
+<h3 class="font-bold text-lg text-text-header line-clamp-1 group-hover:text-primary transition-colors">賽車競技</h3>
+<p class="text-xs text-text-body font-medium mb-4">競速 • 多人</p>
+<button class="mt-auto w-full bg-orange-50 hover:bg-primary hover:text-white text-primary font-bold py-2.5 rounded-xl transition-colors flex items-center justify-center gap-2 border border-orange-100">
+<span class="material-symbols-outlined text-[20px]">play_circle</span>
+                                開始
+                            </button>
+</div>
+</div>
+<div class="group relative bg-card-bg rounded-2xl overflow-hidden shadow-soft hover:shadow-xl hover:shadow-orange-500/10 transition-all duration-300 hover:-translate-y-1 flex flex-col h-full border border-white/50">
+<div class="relative aspect-[4/3] overflow-hidden bg-gray-100 flex items-center justify-center">
+<span class="text-6xl group-hover:scale-110 transition-transform duration-500">🧱</span>
+<div class="absolute top-3 right-3 bg-white/90 backdrop-blur-sm p-2 rounded-full shadow-sm cursor-pointer hover:text-red-500 text-gray-400 transition-colors">
+<span class="material-symbols-outlined text-[18px] block">favorite</span>
+</div>
+</div>
+<div class="p-4 flex flex-col flex-grow">
+<h3 class="font-bold text-lg text-text-header line-clamp-1 group-hover:text-primary transition-colors">俄羅斯方塊</h3>
+<p class="text-xs text-text-body font-medium mb-4">益智 • 經典</p>
+<button class="mt-auto w-full bg-orange-50 hover:bg-primary hover:text-white text-primary font-bold py-2.5 rounded-xl transition-colors flex items-center justify-center gap-2 border border-orange-100">
+<span class="material-symbols-outlined text-[20px]">play_circle</span>
+                                開始
+                            </button>
+</div>
+</div>
+<div class="group relative bg-card-bg rounded-2xl overflow-hidden shadow-soft hover:shadow-xl hover:shadow-orange-500/10 transition-all duration-300 hover:-translate-y-1 flex flex-col h-full border border-white/50">
+<div class="relative aspect-[4/3] overflow-hidden bg-gray-100 flex items-center justify-center">
+<span class="text-6xl group-hover:scale-110 transition-transform duration-500">👾</span>
+<div class="absolute top-3 right-3 bg-white/90 backdrop-blur-sm p-2 rounded-full shadow-sm cursor-pointer hover:text-red-500 text-gray-400 transition-colors">
+<span class="material-symbols-outlined text-[18px] block">favorite</span>
+</div>
+</div>
+<div class="p-4 flex flex-col flex-grow">
+<h3 class="font-bold text-lg text-text-header line-clamp-1 group-hover:text-primary transition-colors">太空侵略者</h3>
+<p class="text-xs text-text-body font-medium mb-4">射擊 • 復古</p>
+<button class="mt-auto w-full bg-orange-50 hover:bg-primary hover:text-white text-primary font-bold py-2.5 rounded-xl transition-colors flex items-center justify-center gap-2 border border-orange-100">
+<span class="material-symbols-outlined text-[20px]">play_circle</span>
+                                開始
+                            </button>
+</div>
+</div>
+<div class="group relative bg-card-bg rounded-2xl overflow-hidden shadow-soft hover:shadow-xl hover:shadow-orange-500/10 transition-all duration-300 hover:-translate-y-1 flex flex-col h-full border border-white/50">
+<div class="relative aspect-[4/3] overflow-hidden bg-gray-100 flex items-center justify-center">
+<span class="text-6xl group-hover:scale-110 transition-transform duration-500">🏓</span>
+<div class="absolute top-3 right-3 bg-white/90 backdrop-blur-sm p-2 rounded-full shadow-sm cursor-pointer hover:text-red-500 text-gray-400 transition-colors">
+<span class="material-symbols-outlined text-[18px] block">favorite</span>
+</div>
+</div>
+<div class="p-4 flex flex-col flex-grow">
+<h3 class="font-bold text-lg text-text-header line-clamp-1 group-hover:text-primary transition-colors">乒乓球</h3>
+<p class="text-xs text-text-body font-medium mb-4">體育 • 雙人</p>
+<button class="mt-auto w-full bg-orange-50 hover:bg-primary hover:text-white text-primary font-bold py-2.5 rounded-xl transition-colors flex items-center justify-center gap-2 border border-orange-100">
+<span class="material-symbols-outlined text-[20px]">play_circle</span>
+                                開始
+                            </button>
+</div>
+</div>
+<div class="group relative bg-card-bg rounded-2xl overflow-hidden shadow-soft hover:shadow-xl hover:shadow-orange-500/10 transition-all duration-300 hover:-translate-y-1 flex flex-col h-full border border-white/50">
+<div class="relative aspect-[4/3] overflow-hidden bg-gray-100 flex items-center justify-center">
+<span class="text-6xl group-hover:scale-110 transition-transform duration-500">🔢</span>
+<div class="absolute top-3 right-3 bg-white/90 backdrop-blur-sm p-2 rounded-full shadow-sm cursor-pointer hover:text-red-500 text-gray-400 transition-colors">
+<span class="material-symbols-outlined text-[18px] block">favorite</span>
+</div>
+</div>
+<div class="p-4 flex flex-col flex-grow">
+<h3 class="font-bold text-lg text-text-header line-clamp-1 group-hover:text-primary transition-colors">2048</h3>
+<p class="text-xs text-text-body font-medium mb-4">益智 • 數學</p>
+<button class="mt-auto w-full bg-orange-50 hover:bg-primary hover:text-white text-primary font-bold py-2.5 rounded-xl transition-colors flex items-center justify-center gap-2 border border-orange-100">
+<span class="material-symbols-outlined text-[20px]">play_circle</span>
+                                開始
+                            </button>
+</div>
+</div>
+<div class="group relative bg-card-bg rounded-2xl overflow-hidden shadow-soft hover:shadow-xl hover:shadow-orange-500/10 transition-all duration-300 hover:-translate-y-1 flex flex-col h-full border border-white/50">
+<div class="relative aspect-[4/3] overflow-hidden bg-gray-100 flex items-center justify-center">
+<span class="text-6xl group-hover:scale-110 transition-transform duration-500">🐦</span>
+<div class="absolute top-3 right-3 bg-white/90 backdrop-blur-sm p-2 rounded-full shadow-sm cursor-pointer hover:text-red-500 text-gray-400 transition-colors">
+<span class="material-symbols-outlined text-[18px] block">favorite</span>
+</div>
+</div>
+<div class="p-4 flex flex-col flex-grow">
+<h3 class="font-bold text-lg text-text-header line-clamp-1 group-hover:text-primary transition-colors">飛揚小鳥</h3>
+<p class="text-xs text-text-body font-medium mb-4">休閒 • 挑戰</p>
+<button class="mt-auto w-full bg-orange-50 hover:bg-primary hover:text-white text-primary font-bold py-2.5 rounded-xl transition-colors flex items-center justify-center gap-2 border border-orange-100">
+<span class="material-symbols-outlined text-[20px]">play_circle</span>
+                                開始
+                            </button>
+</div>
+</div>
+<div class="group relative bg-card-bg rounded-2xl overflow-hidden shadow-soft hover:shadow-xl hover:shadow-orange-500/10 transition-all duration-300 hover:-translate-y-1 flex flex-col h-full border border-white/50">
+<div class="relative aspect-[4/3] overflow-hidden bg-gray-100 flex items-center justify-center">
+<span class="text-6xl group-hover:scale-110 transition-transform duration-500">🧱</span>
+<div class="absolute top-3 right-3 bg-white/90 backdrop-blur-sm p-2 rounded-full shadow-sm cursor-pointer hover:text-red-500 text-gray-400 transition-colors">
+<span class="material-symbols-outlined text-[18px] block">favorite</span>
+</div>
+</div>
+<div class="p-4 flex flex-col flex-grow">
+<h3 class="font-bold text-lg text-text-header line-clamp-1 group-hover:text-primary transition-colors">打磚塊</h3>
+<p class="text-xs text-text-body font-medium mb-4">街機 • 經典</p>
+<button class="mt-auto w-full bg-orange-50 hover:bg-primary hover:text-white text-primary font-bold py-2.5 rounded-xl transition-colors flex items-center justify-center gap-2 border border-orange-100">
+<span class="material-symbols-outlined text-[20px]">play_circle</span>
+                                開始
+                            </button>
+</div>
+</div>
+<div class="group relative bg-card-bg rounded-2xl overflow-hidden shadow-soft hover:shadow-xl hover:shadow-orange-500/10 transition-all duration-300 hover:-translate-y-1 flex flex-col h-full border border-white/50">
+<div class="relative aspect-[4/3] overflow-hidden bg-gray-100 flex items-center justify-center">
+<span class="text-6xl group-hover:scale-110 transition-transform duration-500">💣</span>
+<div class="absolute top-3 right-3 bg-white/90 backdrop-blur-sm p-2 rounded-full shadow-sm cursor-pointer hover:text-red-500 text-gray-400 transition-colors">
+<span class="material-symbols-outlined text-[18px] block">favorite</span>
+</div>
+</div>
+<div class="p-4 flex flex-col flex-grow">
+<h3 class="font-bold text-lg text-text-header line-clamp-1 group-hover:text-primary transition-colors">踩地雷</h3>
+<p class="text-xs text-text-body font-medium mb-4">益智 • 策略</p>
+<button class="mt-auto w-full bg-orange-50 hover:bg-primary hover:text-white text-primary font-bold py-2.5 rounded-xl transition-colors flex items-center justify-center gap-2 border border-orange-100">
+<span class="material-symbols-outlined text-[20px]">play_circle</span>
+                                開始
+                            </button>
+</div>
+</div>
+<div class="group relative bg-card-bg rounded-2xl overflow-hidden shadow-soft hover:shadow-xl hover:shadow-orange-500/10 transition-all duration-300 hover:-translate-y-1 flex flex-col h-full border border-white/50">
+<div class="relative aspect-[4/3] overflow-hidden bg-gray-100 flex items-center justify-center">
+<span class="text-6xl group-hover:scale-110 transition-transform duration-500">😯</span>
+<div class="absolute top-3 right-3 bg-white/90 backdrop-blur-sm p-2 rounded-full shadow-sm cursor-pointer hover:text-red-500 text-gray-400 transition-colors">
+<span class="material-symbols-outlined text-[18px] block">favorite</span>
+</div>
+</div>
+<div class="p-4 flex flex-col flex-grow">
+<h3 class="font-bold text-lg text-text-header line-clamp-1 group-hover:text-primary transition-colors">小精靈</h3>
+<p class="text-xs text-text-body font-medium mb-4">街機 • 迷宮</p>
+<button class="mt-auto w-full bg-orange-50 hover:bg-primary hover:text-white text-primary font-bold py-2.5 rounded-xl transition-colors flex items-center justify-center gap-2 border border-orange-100">
+<span class="material-symbols-outlined text-[20px]">play_circle</span>
+                                開始
+                            </button>
+</div>
+</div>
+</div>
+<div class="flex justify-center mt-6">
+<button class="flex items-center gap-2 text-gray-500 hover:text-primary font-bold text-sm bg-card-bg border border-white/50 px-8 py-3.5 rounded-xl shadow-sm hover:shadow-md transition-all">
+                        載入更多遊戲
+                        <span class="material-symbols-outlined">expand_more</span>
+</button>
+</div>
+</section>
+</div>
+</main>
+<footer class="bg-white/60 border-t border-white/50 backdrop-blur-sm mt-auto py-8">
+<div class="layout-container px-4 md:px-8 flex flex-col md:flex-row items-center justify-between gap-4 max-w-[1400px] mx-auto w-full">
+<p class="text-gray-500 text-sm font-medium">© 2024 Anson Game. 版權所有.</p>
+<div class="flex gap-6">
+<a class="text-gray-400 hover:text-primary transition-colors" href="#"><span class="material-symbols-outlined">help</span></a>
+<a class="text-gray-400 hover:text-primary transition-colors" href="#"><span class="material-symbols-outlined">privacy_tip</span></a>
+<a class="text-gray-400 hover:text-primary transition-colors" href="#"><span class="material-symbols-outlined">mail</span></a>
+</div>
+</div>
+</footer>
+
+</body></html>
